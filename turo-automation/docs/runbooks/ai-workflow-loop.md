@@ -60,7 +60,14 @@ If an answer is uncertain but actionable, choose the safest reasonable path and 
    - Run the relevant checks and tests for the change.
    - Fix obvious regressions caused by the work.
    - Perform a brief self-review for correctness, edge cases, and unintended side effects.
-6. Publish
+6. Sync docs
+   - Update `docs/` to match implemented reality.
+   - Typical updates include:
+     - `docs/planning/daily-plan.md`
+     - `docs/logs/dev-log.md`
+     - `docs/architecture/overview.md`
+     - `docs/product/mvp-spec.md`
+7. Publish
    - If the increment is reviewable, commit it:
      ```sh
      git add -A
@@ -69,16 +76,10 @@ If an answer is uncertain but actionable, choose the safest reasonable path and 
    - Open or update the PR.
    - Use standard GitHub CLI if available:
      ```sh
-     gh pr create --title "<pr-title>" --body "<pr-body>"
+     gh pr create --title "<pr-title>" --body "<pr-body>" --label "auto-merge"
      ```
    - If the repo has a local PR helper, it may be used instead.
-7. Sync docs
-   - Update `docs/` to match implemented reality.
-   - Typical updates include:
-     - `docs/planning/daily-plan.md`
-     - `docs/logs/dev-log.md`
-     - `docs/architecture/overview.md`
-     - `docs/product/mvp-spec.md`
+   - wait 15 sec for PR auto merge, and rebase main.
 8. Report
    - Output the run summary using the format below.
 

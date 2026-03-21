@@ -212,3 +212,7 @@ __marimo__/
 # Keep frontend utility modules tracked
 !homepage/src/lib/
 !homepage/src/lib/*.ts
+!turo-automation/web/src/lib/
+!turo-automation/web/src/lib/*.ts
+!turo-automation/worker/src/lib/
+!turo-automation/worker/src/lib/*.ts

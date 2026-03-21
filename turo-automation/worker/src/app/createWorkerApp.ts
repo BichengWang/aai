@@ -10,6 +10,7 @@ import {
   type JobRunRepository,
 } from "@turo-automation/shared";
 import { createFixtureAdapters } from "../adapters/createFixtureAdapters.js";
+import { createSupabaseAdapters } from "../adapters/createSupabaseAdapters.js";
 import { runDailyDigestJob } from "../jobs/runDailyDigestJob.js";
 import { runImportTripsJob } from "../jobs/runImportTripsJob.js";
 import { runLateReturnScanJob } from "../jobs/runLateReturnScanJob.js";
@@ -36,49 +37,57 @@ function buildJobRun(params: {
   };
 }
 
-async function persistJobRun(jobRunRepository: JobRunRepository, jobRun: JobRun) {
+async function persistJobRun(
+  jobRunRepository: JobRunRepository,
+  jobRun: JobRun
+) {
   await jobRunRepository.saveJobRun(jobRun);
 }
 
+const useSupabase = Boolean(
+  process.env["SUPABASE_URL"] && process.env["SUPABASE_KEY"]
+);
+
 export function createWorkerApp() {
-  const adapters = createFixtureAdapters();
   const generatedAt = getWorkerNowIso();
   const today = getWorkerToday();
 
-  const getTodayOpsSnapshot = createGetTodayOpsSnapshotUseCase({
-    tripRepository: adapters.tripRepository,
-    taskRepository: adapters.taskRepository,
-    incidentRepository: adapters.incidentRepository,
-    messageRepository: adapters.messageRepository,
-    jobRunRepository: adapters.jobRunRepository,
-    guests: adapters.guests,
-    vehicles: adapters.vehicles,
-  });
-  const importTrips = createImportTripsUseCase({
-    tripImportSource: adapters.tripImportSource,
-    tripRepository: adapters.tripRepository,
-  });
-  const generateLifecycleTasks = createGenerateLifecycleTasksUseCase({
-    tripRepository: adapters.tripRepository,
-    taskRepository: adapters.taskRepository,
-    vehicles: adapters.vehicles,
-  });
-  const detectLateReturns = createDetectLateReturnsUseCase({
-    tripRepository: adapters.tripRepository,
-    incidentRepository: adapters.incidentRepository,
-    notifier: adapters.notifier,
-    vehicles: adapters.vehicles,
-  });
-  const buildDailyDigest = createBuildDailyDigestUseCase({
-    getTodayOpsSnapshot,
-    notifier: adapters.notifier,
-  });
-
   return {
     async run() {
-      logWorkerEvent("boot", {
-        appName,
-        mode: "fixture-backed-interface-pr",
+      const mode = useSupabase ? "supabase" : "fixture";
+      logWorkerEvent("boot", { appName, mode });
+
+      const adapters = useSupabase
+        ? await createSupabaseAdapters()
+        : createFixtureAdapters();
+
+      const getTodayOpsSnapshot = createGetTodayOpsSnapshotUseCase({
+        tripRepository: adapters.tripRepository,
+        taskRepository: adapters.taskRepository,
+        incidentRepository: adapters.incidentRepository,
+        messageRepository: adapters.messageRepository,
+        jobRunRepository: adapters.jobRunRepository,
+        guests: adapters.guests,
+        vehicles: adapters.vehicles,
+      });
+      const importTrips = createImportTripsUseCase({
+        tripImportSource: adapters.tripImportSource,
+        tripRepository: adapters.tripRepository,
+      });
+      const generateLifecycleTasks = createGenerateLifecycleTasksUseCase({
+        tripRepository: adapters.tripRepository,
+        taskRepository: adapters.taskRepository,
+        vehicles: adapters.vehicles,
+      });
+      const detectLateReturns = createDetectLateReturnsUseCase({
+        tripRepository: adapters.tripRepository,
+        incidentRepository: adapters.incidentRepository,
+        notifier: adapters.notifier,
+        vehicles: adapters.vehicles,
+      });
+      const buildDailyDigest = createBuildDailyDigestUseCase({
+        getTodayOpsSnapshot,
+        notifier: adapters.notifier,
       });
 
       const snapshotResult = await runTodayOpsSnapshotJob({
@@ -95,7 +104,7 @@ export function createWorkerApp() {
           summary: `Snapshot contains ${snapshotResult.data.summary.pickupCount} pickups.`,
           issueCount: snapshotResult.issues.length,
           ok: snapshotResult.ok,
-        }),
+        })
       );
 
       const importResult = await runImportTripsJob({
@@ -109,10 +118,10 @@ export function createWorkerApp() {
         buildJobRun({
           jobName: "trip_import",
           startedAt: generatedAt,
-          summary: `Imported ${importResult.data.importedTrips.length} trips from fixture source.`,
+          summary: `Imported ${importResult.data.importedTrips.length} trips.`,
           issueCount: importResult.issues.length,
           ok: importResult.ok,
-        }),
+        })
       );
 
       const lifecycleResult = await runLifecycleTasksJob({
@@ -129,7 +138,7 @@ export function createWorkerApp() {
           summary: `Created ${lifecycleResult.data.createdTasks.length} lifecycle tasks.`,
           issueCount: lifecycleResult.issues.length,
           ok: lifecycleResult.ok,
-        }),
+        })
       );
 
       const lateReturnResult = await runLateReturnScanJob({
@@ -146,7 +155,7 @@ export function createWorkerApp() {
           summary: `Created ${lateReturnResult.data.incidentsCreated.length} late return incidents.`,
           issueCount: lateReturnResult.issues.length,
           ok: lateReturnResult.ok,
-        }),
+        })
       );
 
       const dailyDigestResult = await runDailyDigestJob({
@@ -161,10 +170,10 @@ export function createWorkerApp() {
         buildJobRun({
           jobName: "daily_digest",
           startedAt: generatedAt,
-          summary: "Daily digest sent to fixture notifier.",
+          summary: "Daily digest dispatched.",
           issueCount: dailyDigestResult.issues.length,
           ok: dailyDigestResult.ok,
-        }),
+        })
       );
     },
   };

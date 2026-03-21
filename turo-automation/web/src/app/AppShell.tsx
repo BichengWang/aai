@@ -1,7 +1,8 @@
-import { appName, getFixtureTodayOpsSnapshot, type UseCaseIssue } from "@turo-automation/shared";
+import { appName, type UseCaseIssue } from "@turo-automation/shared";
 import { useEffect, useState } from "react";
 import type { TodayOpsSnapshot } from "@turo-automation/shared";
 import { OpsDashboard } from "../features/OpsDashboard";
+import { loadSnapshot } from "../lib/loadSnapshot";
 
 type LoadState = "idle" | "loading" | "ready" | "failed";
 
@@ -13,63 +14,72 @@ export function AppShell() {
   useEffect(() => {
     let isMounted = true;
 
-    async function loadSnapshot() {
+    async function load() {
       setLoadState("loading");
 
       try {
-        const result = await getFixtureTodayOpsSnapshot();
-        if (!isMounted) {
-          return;
-        }
-
+        const result = await loadSnapshot();
+        if (!isMounted) return;
         setSnapshot(result.data);
         setIssues(result.issues);
         setLoadState("ready");
       } catch {
-        if (!isMounted) {
-          return;
-        }
-
+        if (!isMounted) return;
         setLoadState("failed");
       }
     }
 
-    void loadSnapshot();
+    void load();
 
     return () => {
       isMounted = false;
     };
   }, []);
 
+  const isSupabaseBacked = Boolean(
+    (import.meta as unknown as { env: Record<string, string> }).env[
+      "VITE_SUPABASE_URL"
+    ]
+  );
+
   return (
     <main className="app-shell">
       <div className="app-frame">
         <header className="masthead">
           <div>
-            <p className="eyebrow">Host Mode Interface PR</p>
+            <p className="eyebrow">
+              {isSupabaseBacked ? "Supabase-backed" : "Fixture-backed"}
+            </p>
             <h1>{appName}</h1>
             <p className="lead">
-              Interface-first dashboard shell wired to the shared ops snapshot contract.
+              Host ops dashboard — reads from{" "}
+              {isSupabaseBacked
+                ? "real Supabase persistence"
+                : "fixture data (no VITE_SUPABASE_URL set)"}
+              .
             </p>
           </div>
 
           <div className="status-panel">
-            <span className={`status-badge status-${loadState}`}>{loadState}</span>
-            <p>
-              This UI consumes fixture-backed shared use cases only. No direct worker, SQL, or
-              browser adapter coupling is present in the web package.
-            </p>
+            <span className={`status-badge status-${loadState}`}>
+              {loadState}
+            </span>
           </div>
         </header>
 
         {loadState === "failed" ? (
           <section className="failure-panel">
             <h2>Snapshot unavailable</h2>
-            <p>The shared fixture-backed snapshot failed to load.</p>
+            <p>
+              Failed to load the ops snapshot. Check your connection and
+              credentials.
+            </p>
           </section>
         ) : null}
 
-        {snapshot ? <OpsDashboard snapshot={snapshot} issues={issues} /> : null}
+        {snapshot ? (
+          <OpsDashboard snapshot={snapshot} issues={issues} />
+        ) : null}
       </div>
     </main>
   );

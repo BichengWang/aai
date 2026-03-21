@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "dev": "node --watch --enable-source-maps src/index.ts"
+    "dev": "tsx watch src/index.ts"
   },
   "dependencies": {
     "@turo-automation/shared": "0.1.0"
   },
   "devDependencies": {
     "@types/node": "24.3.1",
+    "tsx": "^4.21.0",
     "typescript": "5.8.3"
   }
 }
