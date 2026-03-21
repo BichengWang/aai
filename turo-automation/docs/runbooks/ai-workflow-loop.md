@@ -73,13 +73,15 @@ If an answer is uncertain but actionable, choose the safest reasonable path and 
      git add -A
      git commit -m "<commit-message>"
      ```
+   - Never add `Co-Authored-By` trailers or override git author/committer identity.
    - Open or update the PR.
-   - Use standard GitHub CLI if available:
+   - For new PRs, use the local helper:
      ```sh
-     gh pr create --title "<pr-title>" --body "<pr-body>" --label "auto-merge"
+     g pr "<pr-title>"
      ```
-   - If the repo has a local PR helper, it may be used instead.
-   - wait 15 sec for PR auto merge, and rebase main.
+   - After submitting or updating the PR, wait 15 seconds and check whether it merged into `main`.
+   - If the PR conflicts with `main`, resolve the conflict immediately, verify again, and push the fix.
+   - If the PR merged, rebase or sync from updated `main` before starting the next iteration.
 8. Report
    - Output the run summary using the format below.
 
@@ -125,3 +127,4 @@ git branch -d <branch-name>
 - Do not widen scope to unrelated work.
 - Do not mark speculative or unverified work as complete.
 - Keep docs aligned with implemented reality, not intent.
+- Do not add co-authors or alternate author metadata to commits.
