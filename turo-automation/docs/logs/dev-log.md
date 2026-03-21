@@ -390,3 +390,14 @@ Chronological notes on repo setup, architecture decisions, implementation progre
   - returns `null` when the web app is running fixture-only with no Supabase env
 
 **Verification**: `npm test` — 24/24 pass
+
+### Incident dashboard actions (Iter 42)
+
+- Updated `web/src/features/OpsDashboard.tsx` to add incident status controls:
+  - `Investigate`
+  - `Waiting`
+  - `Resolve`
+- Wired the buttons to `actOnIncident()` behind the Supabase env gate
+- Added local incident status state so the row reflects the returned status immediately after action
+
+**Verification**: `npm test` — 24/24 pass

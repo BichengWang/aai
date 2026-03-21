@@ -1,4 +1,5 @@
 import type {
+  Incident,
   TodayOpsSnapshot,
   TripTimelineEntry,
   UseCaseIssue,
@@ -6,6 +7,7 @@ import type {
 import { useState } from "react";
 import { formatCompactDateTime, formatLabel } from "../lib/format";
 import { actOnApproval } from "../lib/approvalActions";
+import { actOnIncident } from "../lib/incidentActions";
 import { loadTripTimeline } from "../lib/loadTripTimeline";
 import { SectionCard } from "../ui/SectionCard";
 import { TripTimelinePanel } from "./TripTimelinePanel";
@@ -18,9 +20,21 @@ export function OpsDashboard(props: {
   const { snapshot, issues, onApprovalActioned } = props;
   const [actioningId, setActioningId] = useState<string | null>(null);
   const [actionedIds, setActionedIds] = useState<Set<string>>(new Set());
+  const [actioningIncidentId, setActioningIncidentId] = useState<string | null>(null);
+  const [incidentStatuses, setIncidentStatuses] = useState<
+    Record<string, Incident["status"]>
+  >({});
   const [selectedTripId, setSelectedTripId] = useState<string | null>(null);
   const [timelineEntries, setTimelineEntries] = useState<TripTimelineEntry[]>([]);
   const [timelineLoading, setTimelineLoading] = useState(false);
+  const canActOnIncidents = Boolean(
+    (import.meta as unknown as { env: Record<string, string> }).env[
+      "VITE_SUPABASE_URL"
+    ] &&
+      (import.meta as unknown as { env: Record<string, string> }).env[
+        "VITE_SUPABASE_KEY"
+      ]
+  );
 
   async function handleSelectTrip(tripId: string) {
     if (selectedTripId === tripId) {
@@ -48,6 +62,26 @@ export function OpsDashboard(props: {
       onApprovalActioned?.();
     } finally {
       setActioningId(null);
+    }
+  }
+
+  async function handleIncidentAction(
+    incidentId: string,
+    status: Incident["status"]
+  ) {
+    if (!canActOnIncidents) return;
+
+    setActioningIncidentId(incidentId);
+    try {
+      const result = await actOnIncident(incidentId, status, "web.reviewer");
+      if (result?.ok) {
+        setIncidentStatuses((prev) => ({
+          ...prev,
+          [incidentId]: result.data.incident.status,
+        }));
+      }
+    } finally {
+      setActioningIncidentId(null);
     }
   }
 
@@ -124,38 +158,83 @@ export function OpsDashboard(props: {
           </div>
         ))}
 
-        {snapshot.activeIssues.map((incident) => (
-          <div
-            className={`list-row incident-row${incident.tripId ? " list-row-clickable" : ""}${selectedTripId === incident.tripId ? " list-row-selected" : ""}`}
-            key={incident.incidentId}
-            role={incident.tripId ? "button" : undefined}
-            tabIndex={incident.tripId ? 0 : undefined}
-            onClick={
-              incident.tripId ? () => handleSelectTrip(incident.tripId) : undefined
-            }
-            onKeyDown={
-              incident.tripId
-                ? (e) => e.key === "Enter" && handleSelectTrip(incident.tripId)
-                : undefined
-            }
-          >
-            <div>
-              <strong>{incident.summary}</strong>
-              <p>
-                {incident.vehicleLabel} ·{" "}
-                {incident.externalTripId ?? incident.tripId ?? "no trip"} ·{" "}
-                {incident.ownerId ?? "unassigned"}
-              </p>
+        {snapshot.activeIssues.map((incident) => {
+          const displayStatus =
+            incidentStatuses[incident.incidentId] ?? incident.status;
+          const isActioning = actioningIncidentId === incident.incidentId;
+
+          return (
+            <div
+              className={`list-row incident-row${incident.tripId ? " list-row-clickable" : ""}${selectedTripId === incident.tripId ? " list-row-selected" : ""}`}
+              key={incident.incidentId}
+              role={incident.tripId ? "button" : undefined}
+              tabIndex={incident.tripId ? 0 : undefined}
+              onClick={
+                incident.tripId ? () => handleSelectTrip(incident.tripId) : undefined
+              }
+              onKeyDown={
+                incident.tripId
+                  ? (e) => e.key === "Enter" && handleSelectTrip(incident.tripId)
+                  : undefined
+              }
+            >
+              <div>
+                <strong>{incident.summary}</strong>
+                <p>
+                  {incident.vehicleLabel} ·{" "}
+                  {incident.externalTripId ?? incident.tripId ?? "no trip"} ·{" "}
+                  {incident.ownerId ?? "unassigned"}
+                </p>
+              </div>
+              <div className="list-meta">
+                <span className={`pill pill-${incident.severity}`}>
+                  {formatLabel(incident.severity)}
+                </span>
+                <span>{formatLabel(displayStatus)}</span>
+                <span>{formatCompactDateTime(incident.openedAt)}</span>
+                {canActOnIncidents && (
+                  <span className="approval-actions">
+                    {displayStatus !== "investigating" && (
+                      <button
+                        disabled={isActioning}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          void handleIncidentAction(
+                            incident.incidentId,
+                            "investigating"
+                          );
+                        }}
+                      >
+                        Investigate
+                      </button>
+                    )}
+                    {displayStatus !== "waiting" && (
+                      <button
+                        disabled={isActioning}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          void handleIncidentAction(incident.incidentId, "waiting");
+                        }}
+                      >
+                        Waiting
+                      </button>
+                    )}
+                    <button
+                      className="btn-approve"
+                      disabled={isActioning || displayStatus === "resolved"}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void handleIncidentAction(incident.incidentId, "resolved");
+                      }}
+                    >
+                      {isActioning ? "..." : "Resolve"}
+                    </button>
+                  </span>
+                )}
+              </div>
             </div>
-            <div className="list-meta">
-              <span className={`pill pill-${incident.severity}`}>
-                {formatLabel(incident.severity)}
-              </span>
-              <span>{formatLabel(incident.status)}</span>
-              <span>{formatCompactDateTime(incident.openedAt)}</span>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </SectionCard>
 
       <SectionCard
