@@ -128,9 +128,16 @@ export function OpsDashboard(props: {
           <div className="list-row incident-row" key={incident.incidentId}>
             <div>
               <strong>{incident.summary}</strong>
-              <p>{formatLabel(incident.severity)}</p>
+              <p>
+                {incident.vehicleLabel} ·{" "}
+                {incident.externalTripId ?? incident.tripId ?? "no trip"} ·{" "}
+                {incident.ownerId ?? "unassigned"}
+              </p>
             </div>
             <div className="list-meta">
+              <span className={`pill pill-${incident.severity}`}>
+                {formatLabel(incident.severity)}
+              </span>
               <span>{formatLabel(incident.status)}</span>
               <span>{formatCompactDateTime(incident.openedAt)}</span>
             </div>

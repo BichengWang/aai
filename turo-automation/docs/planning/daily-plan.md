@@ -33,7 +33,7 @@ Move through Phase 5 dashboard enrichment, starting with incident workflow.
 
 ## Today's Priorities
 - [x] Add incident status transition use-case support
-- [ ] Surface richer incident context in the dashboard
+- [x] Surface richer incident context in the dashboard
 - [ ] Wire incident actions into the web dashboard with refresh-after-action
 - [ ] Keep docs aligned with implemented dashboard behavior
 - [ ] Keep Playwright out of the critical path

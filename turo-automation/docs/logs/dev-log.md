@@ -361,3 +361,14 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 - Added contract assertions covering the richer incident snapshot payload
 
 **Verification**: `npm test` — 24/24 pass
+
+### Incident dashboard context (Iter 39)
+
+- Updated `web/src/features/OpsDashboard.tsx` incident rows to show:
+  - vehicle label
+  - trip external ID
+  - current owner assignment
+- Promoted incident severity to a pill so status and severity read distinctly in the dashboard
+- Updated `docs/planning/daily-plan.md` to mark richer incident context complete
+
+**Verification**: `npm test` — 24/24 pass
