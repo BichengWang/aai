@@ -6,7 +6,7 @@ Use this file for the current working plan. Keep it short, current, and actionab
 2026-03-21
 
 ## Objective
-Move through Phase 5 dashboard enrichment, starting with incident workflow.
+Close Phase 5 and define the next hardening slice for production mutations.
 
 ## Completed
 - [x] Shared domain, ports, fixtures, and use-case contracts
@@ -35,7 +35,7 @@ Move through Phase 5 dashboard enrichment, starting with incident workflow.
 - [x] Add incident status transition use-case support
 - [x] Surface richer incident context in the dashboard
 - [x] Wire incident actions into the web dashboard with refresh-after-action
-- [ ] Keep docs aligned with implemented dashboard behavior
+- [x] Keep docs aligned with implemented dashboard behavior
 - [ ] Keep Playwright out of the critical path
 
 ## Risks / Open Questions
@@ -44,4 +44,4 @@ Move through Phase 5 dashboard enrichment, starting with incident workflow.
 - When does an approved message draft actually get sent on the guest-facing channel?
 
 ## Next Suggested Step
-Add an incident action use case and wire status transitions into the dashboard so operators can move issues from open/investigating/waiting to resolved without leaving the app.
+Define the production actor identity source for dashboard mutations so approval and incident actions stop relying on placeholder `web.reviewer` values.

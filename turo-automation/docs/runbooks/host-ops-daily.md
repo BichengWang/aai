@@ -21,6 +21,11 @@ Standard operating procedure for Turo host daily operations using the automation
    - Any task more than 30 minutes past due should be escalated or reassigned.
    - Priority: `urgent` > `high` > `medium` > `low`.
 
+5. **Review active incidents**.
+   - Click an incident row to open the trip timeline side panel.
+   - Use **Investigate**, **Waiting**, or **Resolve** in the dashboard when the status changes.
+   - Confirm the row refreshes after the action before moving on.
+
 ---
 
 ## Pre-Trip Checklist (2 hours before pickup)
@@ -44,7 +49,7 @@ Standard operating procedure for Turo host daily operations using the automation
 ## End-of-Day Review
 
 1. Check Worker Health section for any failed jobs.
-2. Review active incidents — resolve or update status where possible.
+2. Review active incidents — resolve or update status in the dashboard where possible.
 3. Confirm the daily digest was sent to the ops Slack channel.
 
 ---

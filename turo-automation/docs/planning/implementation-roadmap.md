@@ -55,24 +55,31 @@ PR slices:
 3. operational runbooks and alert tuning ✓ (`host-ops-daily.md`, `incident-response.md`)
 4. richer analytics and utilization reporting ✓ (`GetVehicleUtilization` use case)
 
-## Phase 5 — Dashboard Enrichment (in progress)
+## Phase 5 — Dashboard Enrichment ✓
 Objective: surface the new data from Phases 3–4 in the operator UI.
 
 PR slices:
 1. trip timeline panel in OpsDashboard (wire `GetTripTimeline` to selected-trip view) ✓
 2. vehicle utilization panel (wire `GetVehicleUtilization` to dashboard sidebar) ✓
-3. incident list panel with status transitions (surface `DetectTripAnomalies` output)
+3. incident list panel with status transitions (surface `DetectTripAnomalies` output) ✓
+
+## Phase 6 — Production Workflow Hardening (next)
+Objective: tighten identity, mutation boundaries, and guest-send safety before broader rollout.
+
+PR slices:
+1. actor identity model for approval / incident mutations
+2. explicit guest-send path after approval
+3. decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary
 
 ## Current Highest-Priority Next PR
-Phase 5 item 3: incident list panel with status transitions:
-- Enrich the active-issue model with operator-facing trip and vehicle context
-- Add an incident action use case for status changes
-- Wire the dashboard to let operators resolve or progress active incidents
+Phase 6 item 1: actor identity model for approval / incident mutations:
+- replace placeholder `web.reviewer` actor strings with a defined operator identity source
+- decide how `reviewedBy` and incident `ownerId` should be populated in production
+- keep the mutation path auditable before enabling broader sends
 
 ## Why This Is Next
-- Phases 0–4 are fully complete
-- Phase 5 items 1 and 2 are already implemented on `main`
-- The remaining gap is closing the loop on incidents from inside the dashboard
+- Phase 5 is now complete on `main`
+- Remaining open questions are about production identity and safe mutation boundaries, not missing dashboard UI
 
 ## Rules for Future PRs
 - one highest-priority PR at a time

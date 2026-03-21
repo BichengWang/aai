@@ -419,3 +419,16 @@ Chronological notes on repo setup, architecture decisions, implementation progre
   - dashboard mutations require `VITE_SUPABASE_*` web env vars
 
 **Verification**: docs-only sync against current implementation
+
+### Phase 5 docs closeout (Iter 45)
+
+- Updated `docs/planning/implementation-roadmap.md`:
+  - marked Phase 5 complete
+  - added Phase 6 planning around production mutation hardening
+- Updated `docs/architecture/overview.md` to move dashboard incident actions from planned to implemented reality
+- Updated `docs/runbooks/host-ops-daily.md` with the current incident workflow:
+  - incident rows open the trip timeline
+  - operators can Investigate / Waiting / Resolve directly in the dashboard
+- Updated `docs/planning/daily-plan.md` to mark docs alignment complete and point next work at production actor identity
+
+**Verification**: docs-only sync against current implementation
