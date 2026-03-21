@@ -16,8 +16,9 @@ export function OpsDashboard(props: {
   snapshot: TodayOpsSnapshot;
   issues: UseCaseIssue[];
   onApprovalActioned?: () => void;
+  onIncidentActioned?: () => void;
 }) {
-  const { snapshot, issues, onApprovalActioned } = props;
+  const { snapshot, issues, onApprovalActioned, onIncidentActioned } = props;
   const [actioningId, setActioningId] = useState<string | null>(null);
   const [actionedIds, setActionedIds] = useState<Set<string>>(new Set());
   const [actioningIncidentId, setActioningIncidentId] = useState<string | null>(null);
@@ -79,6 +80,7 @@ export function OpsDashboard(props: {
           ...prev,
           [incidentId]: result.data.incident.status,
         }));
+        onIncidentActioned?.();
       }
     } finally {
       setActioningIncidentId(null);

@@ -14,10 +14,26 @@ export function AppShell() {
   const [loadState, setLoadState] = useState<LoadState>("idle");
   const [utilizationItems, setUtilizationItems] = useState<VehicleUtilizationItem[]>([]);
 
+  async function loadDashboard() {
+    setLoadState("loading");
+
+    try {
+      const [snapshotResult, utilizationResult] = await Promise.all([
+        loadSnapshot(),
+        loadVehicleUtilization(30),
+      ]);
+      setSnapshot(snapshotResult.data);
+      setIssues(snapshotResult.issues);
+      setUtilizationItems(utilizationResult.data.items);
+      setLoadState("ready");
+    } catch {
+      setLoadState("failed");
+    }
+  }
+
   useEffect(() => {
     let isMounted = true;
-
-    async function load() {
+    void (async () => {
       setLoadState("loading");
 
       try {
@@ -34,9 +50,7 @@ export function AppShell() {
         if (!isMounted) return;
         setLoadState("failed");
       }
-    }
-
-    void load();
+    })();
 
     return () => {
       isMounted = false;
@@ -86,7 +100,12 @@ export function AppShell() {
 
         {snapshot ? (
           <>
-            <OpsDashboard snapshot={snapshot} issues={issues} />
+            <OpsDashboard
+              snapshot={snapshot}
+              issues={issues}
+              onApprovalActioned={() => void loadDashboard()}
+              onIncidentActioned={() => void loadDashboard()}
+            />
             {utilizationItems.length > 0 && (
               <VehicleUtilizationPanel items={utilizationItems} windowDays={30} />
             )}

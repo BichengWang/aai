@@ -401,3 +401,11 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 - Added local incident status state so the row reflects the returned status immediately after action
 
 **Verification**: `npm test` — 24/24 pass
+
+### Dashboard refresh after actions (Iter 43)
+
+- Updated `web/src/app/AppShell.tsx` to expose a reusable dashboard reload path
+- Wired `OpsDashboard` callbacks so both approval actions and incident actions reload snapshot/utilization data after success
+- Updated `docs/planning/daily-plan.md` to mark incident actions with refresh complete
+
+**Verification**: `npm test` — 24/24 pass
