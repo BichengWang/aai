@@ -372,3 +372,12 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 - Updated `docs/planning/daily-plan.md` to mark richer incident context complete
 
 **Verification**: `npm test` — 24/24 pass
+
+### Incident rows open trip timeline (Iter 40)
+
+- Updated `web/src/features/OpsDashboard.tsx` so active-incident rows:
+  - reuse the selected-trip timeline behavior already used by pickup/return rows
+  - are keyboard accessible when a trip is attached to the incident
+  - show selected-row styling when the trip timeline is open from an incident
+
+**Verification**: `npm test` — 24/24 pass

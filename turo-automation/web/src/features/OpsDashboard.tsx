@@ -125,7 +125,20 @@ export function OpsDashboard(props: {
         ))}
 
         {snapshot.activeIssues.map((incident) => (
-          <div className="list-row incident-row" key={incident.incidentId}>
+          <div
+            className={`list-row incident-row${incident.tripId ? " list-row-clickable" : ""}${selectedTripId === incident.tripId ? " list-row-selected" : ""}`}
+            key={incident.incidentId}
+            role={incident.tripId ? "button" : undefined}
+            tabIndex={incident.tripId ? 0 : undefined}
+            onClick={
+              incident.tripId ? () => handleSelectTrip(incident.tripId) : undefined
+            }
+            onKeyDown={
+              incident.tripId
+                ? (e) => e.key === "Enter" && handleSelectTrip(incident.tripId)
+                : undefined
+            }
+          >
             <div>
               <strong>{incident.summary}</strong>
               <p>
