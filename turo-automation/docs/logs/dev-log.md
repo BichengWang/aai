@@ -381,3 +381,12 @@ Chronological notes on repo setup, architecture decisions, implementation progre
   - show selected-row styling when the trip timeline is open from an incident
 
 **Verification**: `npm test` — 24/24 pass
+
+### Web incident action client (Iter 41)
+
+- Added `web/src/lib/incidentActions.ts`
+  - mirrors the existing approval action pattern
+  - uses `createActOnIncidentUseCase()` with the Supabase incident repository
+  - returns `null` when the web app is running fixture-only with no Supabase env
+
+**Verification**: `npm test` — 24/24 pass
