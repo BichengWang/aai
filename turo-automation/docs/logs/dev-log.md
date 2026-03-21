@@ -350,3 +350,14 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 - Updated `docs/planning/daily-plan.md` to mark incident action use-case support complete
 
 **Verification**: `npm test` — 24/24 pass
+
+### Incident context read model (Iter 38)
+
+- Enriched `TodayOpsIncidentItem` in `shared/src/application/index.ts` with:
+  - `externalTripId`
+  - `vehicleLabel`
+  - `ownerId`
+- Updated `buildTodayOpsSnapshotModel()` to derive trip and vehicle context for each active incident
+- Added contract assertions covering the richer incident snapshot payload
+
+**Verification**: `npm test` — 24/24 pass

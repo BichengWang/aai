@@ -65,9 +65,12 @@ export interface TodayOpsTripItem {
 export interface TodayOpsIncidentItem {
   incidentId: string;
   tripId: string | null;
+  externalTripId: string | null;
+  vehicleLabel: string;
   summary: string;
   severity: Incident["severity"];
   status: Incident["status"];
+  ownerId: string | null;
   openedAt: ISODateString;
 }
 
@@ -537,6 +540,7 @@ export function buildTodayOpsSnapshotModel(input: {
       (vehicle) => [vehicle.id, `${vehicle.nickname} (${vehicle.plate ?? "no plate"})`] as const,
     ),
   );
+  const tripsById = new Map(input.trips.map((trip) => [trip.id, trip] as const));
 
   const pickups = input.trips
     .filter((trip) => dayPrefix(trip.pickupAt) === input.today)
@@ -546,14 +550,22 @@ export function buildTodayOpsSnapshotModel(input: {
     .map((trip) => buildTripLabel(trip, guestsById, vehiclesById));
   const activeIssues = input.incidents
     .filter((incident) => incident.status !== "resolved" && incident.status !== "closed")
-    .map((incident) => ({
-      incidentId: incident.id,
-      tripId: incident.tripId,
-      summary: incident.summary,
-      severity: incident.severity,
-      status: incident.status,
-      openedAt: incident.openedAt,
-    }));
+    .map((incident) => {
+      const trip = incident.tripId ? tripsById.get(incident.tripId) ?? null : null;
+
+      return {
+        incidentId: incident.id,
+        tripId: incident.tripId,
+        externalTripId: trip?.externalTripId ?? null,
+        vehicleLabel:
+          vehiclesById.get(incident.vehicleId ?? trip?.vehicleId ?? "") ?? "Unknown vehicle",
+        summary: incident.summary,
+        severity: incident.severity,
+        status: incident.status,
+        ownerId: incident.ownerId,
+        openedAt: incident.openedAt,
+      };
+    });
   const pendingApprovals = input.approvalRequests
     .filter((approvalRequest) => approvalRequest.status === "pending")
     .map((approvalRequest) => ({

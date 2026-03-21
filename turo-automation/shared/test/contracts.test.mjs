@@ -44,6 +44,9 @@ test("GetTodayOpsSnapshot returns the typed fixture snapshot", async () => {
   assert.equal(result.ok, true);
   assert.equal(result.data.pickups.length, 1);
   assert.equal(result.data.returns.length, 2);
+  assert.equal(result.data.activeIssues[0].externalTripId, "TU-1003");
+  assert.equal(result.data.activeIssues[0].vehicleLabel, "Polestar 2 (9ABC123)");
+  assert.equal(result.data.activeIssues[0].ownerId, "ops.lead");
   assert.equal(result.data.pendingApprovals.length, 1);
   assert.equal(result.data.overdueTasks.length, 1);
 });
