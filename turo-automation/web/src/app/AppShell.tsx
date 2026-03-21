@@ -1,8 +1,10 @@
-import { appName, type UseCaseIssue } from "@turo-automation/shared";
+import { appName, type UseCaseIssue, type VehicleUtilizationItem } from "@turo-automation/shared";
 import { useEffect, useState } from "react";
 import type { TodayOpsSnapshot } from "@turo-automation/shared";
 import { OpsDashboard } from "../features/OpsDashboard";
+import { VehicleUtilizationPanel } from "../features/VehicleUtilizationPanel";
 import { loadSnapshot } from "../lib/loadSnapshot";
+import { loadVehicleUtilization } from "../lib/loadVehicleUtilization";
 
 type LoadState = "idle" | "loading" | "ready" | "failed";
 
@@ -10,6 +12,7 @@ export function AppShell() {
   const [snapshot, setSnapshot] = useState<TodayOpsSnapshot | null>(null);
   const [issues, setIssues] = useState<UseCaseIssue[]>([]);
   const [loadState, setLoadState] = useState<LoadState>("idle");
+  const [utilizationItems, setUtilizationItems] = useState<VehicleUtilizationItem[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -18,10 +21,14 @@ export function AppShell() {
       setLoadState("loading");
 
       try {
-        const result = await loadSnapshot();
+        const [snapshotResult, utilizationResult] = await Promise.all([
+          loadSnapshot(),
+          loadVehicleUtilization(30),
+        ]);
         if (!isMounted) return;
-        setSnapshot(result.data);
-        setIssues(result.issues);
+        setSnapshot(snapshotResult.data);
+        setIssues(snapshotResult.issues);
+        setUtilizationItems(utilizationResult.data.items);
         setLoadState("ready");
       } catch {
         if (!isMounted) return;
@@ -78,7 +85,12 @@ export function AppShell() {
         ) : null}
 
         {snapshot ? (
-          <OpsDashboard snapshot={snapshot} issues={issues} />
+          <>
+            <OpsDashboard snapshot={snapshot} issues={issues} />
+            {utilizationItems.length > 0 && (
+              <VehicleUtilizationPanel items={utilizationItems} windowDays={30} />
+            )}
+          </>
         ) : null}
       </div>
     </main>

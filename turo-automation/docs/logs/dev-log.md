@@ -185,3 +185,145 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 - Implement Slack notifier adapter (`SLACK_WEBHOOK_URL` env var)
 - Implement real trip import-source adapter
 - Add `.env.example` documenting required environment variables
+
+### Slack notifier adapter
+
+- Added `shared/src/adapters/slack/notifier.ts` with:
+  - `createSlackNotifier(webhookUrl)` — posts to a Slack incoming webhook
+  - `createEnvSlackNotifier()` — reads `SLACK_WEBHOOK_URL`; returns no-op when absent
+- Wired into `createSupabaseAdapters` — replaces the inline no-op notifier
+- Added `.env.example` with documentation for `SUPABASE_URL`, `SUPABASE_KEY`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_KEY`, `SLACK_WEBHOOK_URL`
+
+### Architecture docs
+
+- Rewrote `docs/architecture/overview.md` to reflect implemented adapter layer, env-gating pattern, and active/planned integrations table
+
+### CSV trip import-source adapter
+
+- Added `worker/src/adapters/csv/tripImportSource.ts`:
+  - `createCsvTripImportSource(filePath)` — reads a CSV file and maps rows to `TripImportRow[]`
+  - `createEnvCsvTripImportSource()` — reads `TRIP_IMPORT_CSV_PATH`; returns no-op when absent
+  - Built-in CSV parser handles quoted fields; skips rows missing required fields
+- Wired into `createSupabaseAdapters` — replaces the inline noop import source
+- Added `TRIP_IMPORT_CSV_PATH` to `.env.example` with expected column documentation
+- Added 3 CSV adapter unit tests (`worker/test/csv-import.test.mjs`)
+- Updated root `package.json` test script to include CSV tests
+
+### Verification
+
+- `npm test` — 7/7 pass
+
+### Next
+
+- Add sample trips.csv to help operators get started without configuring a full import pipeline
+- Consider a simple Turo-export → CSV mapping script
+- Wire the Slack notifier to the web approval workflow (approval button → Slack notification)
+
+### VehicleRepository + GuestRepository ports (fix import FK constraint gap)
+
+- Added `VehicleRepository` and `GuestRepository` interfaces to `shared/src/ports/index.ts`
+- Added `createInMemoryVehicleRepository` and `createInMemoryGuestRepository` to `shared/src/application/index.ts`
+- Added Supabase implementations: `shared/src/adapters/supabase/vehicleRepository.ts` and `guestRepository.ts`
+- Updated `createImportTripsUseCase` to accept optional `guestRepository?` and `vehicleRepository?` — when provided, derives and upserts guests/vehicles from CSV rows before saving trips (fixes FK constraint failures on real Supabase)
+- Updated `createSupabaseAdapters` to use the new repos instead of raw array fetches
+- Updated `createWorkerApp.ts` to pass repos to import use-case in Supabase mode
+
+**Verification**: `npm test` — 7/7 pass
+
+### Next
+
+- Add approval action endpoint (approve/reject a pending message draft)
+- Consider web API route for approval actions backed by Supabase
+- Improve coverage: add test for CSV import guest/vehicle upsert path
+
+### Approval actions wired to web dashboard (Iter 23)
+
+- Updated `web/src/features/OpsDashboard.tsx`:
+  - Added `actOnApproval` import from `../lib/approvalActions`
+  - Per-row approve/reject buttons appear when `approval.status === "pending"` and row not yet actioned
+  - Local `actioningId` + `actionedIds` state prevents double-submission and shows "actioned" pill after success
+  - `onApprovalActioned?` callback prop available for parent to trigger reload
+- Added `web/src/lib/approvalActions.ts` with `actOnApproval(approvalRequestId, decision, reviewedBy)` — noop when Supabase env absent
+
+**Verification**: `npm run build` + `npm test` — 9/9 pass, clean build
+
+**Phase 2 status**: items 1–4 complete; item 5 (templated message bodies) is next
+
+### Message body template renderer (Iter 25)
+
+- Added `renderMessageTemplate(ctx)` to `shared/src/application/index.ts`:
+  - Supports `pretrip_reminder`, `return_reminder`, `incident_notice` template keys
+  - Renders real guest name, vehicle nickname, trip ID, and dates into the message body
+  - Falls back to `[templateKey] Trip ... — Vehicle — Guest` for unknown keys
+- Updated `createCreateMessageDraftUseCase` to accept optional `guests[]` and `vehicles[]`; renders template body when present
+- Added 3 contract tests: template rendering assertions for pre-trip and return reminder, plus end-to-end draft creation test
+
+**Verification**: `npm test` — 12/12 pass
+
+### Scheduled worker framework (Iter 26)
+
+- Added `worker/src/scheduler/createJobScheduler.ts`:
+  - `createJobScheduler(jobs[])` takes `{name, intervalMs, run}` entries
+  - Each job runs immediately on `start()`, then repeats at `intervalMs`
+  - Job failures are caught, logged, and isolated — they do not affect other jobs
+  - `stop()` clears all intervals for graceful shutdown
+- Added `runScheduled()` to `createWorkerApp()`:
+  - Same use-case wiring as `run()` but feeds a `JobScheduler`
+  - Job intervals configurable via env vars (`INTERVAL_IMPORT_MS`, `INTERVAL_LIFECYCLE_MS`, etc.)
+  - Registers `SIGTERM` / `SIGINT` handlers for graceful shutdown
+- Updated `worker/src/index.ts`: reads `WORKER_MODE` env var; `scheduled` → `runScheduled()`, else `run()`
+- Added `WORKER_MODE` and interval vars to `.env.example`
+- Added 3 scheduler unit tests
+
+**Verification**: `npm test` — 15/15 pass
+
+### Phase 3 completion: DetectTripAnomalies + GenerateMessageDrafts (Iters 28–30)
+
+- Added `createGenerateMessageDraftsUseCase()`:
+  - Scans upcoming/active trips within configurable window (default 24h)
+  - Creates `pretrip_reminder` and `return_reminder` drafts with real template bodies
+  - Idempotent via `tripId:templateKey` deduplication
+  - Wired to both `run()` and `runScheduled()` at 30-min interval
+- Added `computeTripIssueIncidents()` + `createDetectTripAnomaliesUseCase()`:
+  - Combines late return detection + trip-issue incident creation
+  - Issue-status trips with return in the future get a new `other` incident
+  - Late-return path unchanged; overlap prevented by return-time check
+- Added `generate_drafts` to `JobName` domain type
+- Created PR #53 covering all Phase 2 + Phase 3 work
+
+**Verification**: `npm test` — 17/17 pass
+
+### Phase 4: Reliability + Extensions (Iters 31–32)
+
+- Added `worker/src/scheduler/withRetry.ts`:
+  - `withRetry(fn, label, opts)` with exponential backoff
+  - Default: 3 attempts, 2s base delay, factor 2
+  - Wired into `createJobScheduler` — each job auto-retried on failure
+  - Per-job `maxAttempts` and `retryDelayMs` overrides available
+- Added 4 `withRetry` unit tests + 1 scheduler retry integration test
+- Added `createGetTripTimelineUseCase()`:
+  - Aggregates `TripEvent`, `Task`, `Incident`, and `MessageDraft` for a tripId
+  - Returns entries sorted by timestamp ascending
+  - Contract test verifies all 4 entry kinds and sort order
+
+**Verification**: `npm test` — 22/22 pass
+
+### GetVehicleUtilization use case (Iter 34)
+
+- Added `VehicleUtilizationItem` type and `GetVehicleUtilizationUseCase` to `shared/src/application/index.ts`:
+  - Accepts an array of trips and a date range; computes per-vehicle utilization rate
+  - Utilization = booked days / total days in range (capped at 1.0)
+  - Contract test verifies correct rate calculation and zero-rate for unboked vehicles
+- Added contract test in `shared/test/contracts.test.mjs`
+
+**Verification**: `npm test` — 23/23 pass
+
+### Roadmap update (Iter 35)
+
+- Marked Phase 3 and Phase 4 fully complete in `docs/planning/implementation-roadmap.md`
+- Added Phase 5 — Dashboard Enrichment with 3 planned PR slices:
+  1. Trip timeline panel (wire `GetTripTimeline` to selected-trip view)
+  2. Vehicle utilization panel (wire `GetVehicleUtilization` to sidebar)
+  3. Incident list panel with status transitions
+- Current highest-priority: Phase 5 item 1 (trip timeline panel)
+

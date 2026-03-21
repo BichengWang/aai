@@ -1,15 +1,58 @@
-import type { TodayOpsSnapshot, UseCaseIssue } from "@turo-automation/shared";
+import type {
+  TodayOpsSnapshot,
+  TripTimelineEntry,
+  UseCaseIssue,
+} from "@turo-automation/shared";
+import { useState } from "react";
 import { formatCompactDateTime, formatLabel } from "../lib/format";
+import { actOnApproval } from "../lib/approvalActions";
+import { loadTripTimeline } from "../lib/loadTripTimeline";
 import { SectionCard } from "../ui/SectionCard";
+import { TripTimelinePanel } from "./TripTimelinePanel";
 
 export function OpsDashboard(props: {
   snapshot: TodayOpsSnapshot;
   issues: UseCaseIssue[];
+  onApprovalActioned?: () => void;
 }) {
-  const { snapshot, issues } = props;
+  const { snapshot, issues, onApprovalActioned } = props;
+  const [actioningId, setActioningId] = useState<string | null>(null);
+  const [actionedIds, setActionedIds] = useState<Set<string>>(new Set());
+  const [selectedTripId, setSelectedTripId] = useState<string | null>(null);
+  const [timelineEntries, setTimelineEntries] = useState<TripTimelineEntry[]>([]);
+  const [timelineLoading, setTimelineLoading] = useState(false);
+
+  async function handleSelectTrip(tripId: string) {
+    if (selectedTripId === tripId) {
+      setSelectedTripId(null);
+      return;
+    }
+    setSelectedTripId(tripId);
+    setTimelineLoading(true);
+    try {
+      const result = await loadTripTimeline(tripId);
+      setTimelineEntries(result.data.entries);
+    } finally {
+      setTimelineLoading(false);
+    }
+  }
+
+  async function handleApproval(
+    approvalRequestId: string,
+    decision: "approved" | "rejected"
+  ) {
+    setActioningId(approvalRequestId);
+    try {
+      await actOnApproval(approvalRequestId, decision, "web.reviewer");
+      setActionedIds((prev) => new Set([...prev, approvalRequestId]));
+      onApprovalActioned?.();
+    } finally {
+      setActioningId(null);
+    }
+  }
 
   return (
-    <div className="dashboard-grid">
+    <div className={`dashboard-grid${selectedTripId ? " has-panel" : ""}`}>
       <section className="metrics-strip">
         <article>
           <span>Pickups</span>
@@ -31,10 +74,17 @@ export function OpsDashboard(props: {
 
       <SectionCard
         title="Today’s pickups"
-        subtitle="Trip-level read model from the shared snapshot contract."
+        subtitle="Click a row to open the trip timeline."
       >
         {snapshot.pickups.map((trip) => (
-          <div className="list-row" key={trip.tripId}>
+          <div
+            className={`list-row list-row-clickable${selectedTripId === trip.tripId ? " list-row-selected" : ""}`}
+            key={trip.tripId}
+            role="button"
+            tabIndex={0}
+            onClick={() => handleSelectTrip(trip.tripId)}
+            onKeyDown={(e) => e.key === "Enter" && handleSelectTrip(trip.tripId)}
+          >
             <div>
               <strong>{trip.vehicleLabel}</strong>
               <p>
@@ -51,10 +101,17 @@ export function OpsDashboard(props: {
 
       <SectionCard
         title="Returns and issues"
-        subtitle="Return-side exceptions stay visible before live integrations land."
+        subtitle="Click a trip row to open the trip timeline."
       >
         {snapshot.returns.map((trip) => (
-          <div className="list-row" key={trip.tripId}>
+          <div
+            className={`list-row list-row-clickable${selectedTripId === trip.tripId ? " list-row-selected" : ""}`}
+            key={trip.tripId}
+            role="button"
+            tabIndex={0}
+            onClick={() => handleSelectTrip(trip.tripId)}
+            onKeyDown={(e) => e.key === "Enter" && handleSelectTrip(trip.tripId)}
+          >
             <div>
               <strong>{trip.vehicleLabel}</strong>
               <p>
@@ -85,18 +142,47 @@ export function OpsDashboard(props: {
         title="Approval queue"
         subtitle="Guest-facing messaging stays draft-first and approval gated."
       >
-        {snapshot.pendingApprovals.map((approval) => (
-          <div className="list-row" key={approval.approvalRequestId}>
-            <div>
-              <strong>{approval.tripId}</strong>
-              <p>Requested by {approval.requestedBy}</p>
+        {snapshot.pendingApprovals.map((approval) => {
+          const isActioning = actioningId === approval.approvalRequestId;
+          const isActioned = actionedIds.has(approval.approvalRequestId);
+          return (
+            <div className="list-row" key={approval.approvalRequestId}>
+              <div>
+                <strong>{approval.tripId}</strong>
+                <p>Requested by {approval.requestedBy}</p>
+              </div>
+              <div className="list-meta">
+                <span className="pill">{formatLabel(approval.status)}</span>
+                <span>{formatCompactDateTime(approval.requestedAt)}</span>
+                {!isActioned && approval.status === "pending" && (
+                  <span className="approval-actions">
+                    <button
+                      className="btn-approve"
+                      disabled={isActioning}
+                      onClick={() =>
+                        handleApproval(approval.approvalRequestId, "approved")
+                      }
+                    >
+                      {isActioning ? "..." : "Approve"}
+                    </button>
+                    <button
+                      className="btn-reject"
+                      disabled={isActioning}
+                      onClick={() =>
+                        handleApproval(approval.approvalRequestId, "rejected")
+                      }
+                    >
+                      Reject
+                    </button>
+                  </span>
+                )}
+                {isActioned && (
+                  <span className="pill pill-completed">actioned</span>
+                )}
+              </div>
             </div>
-            <div className="list-meta">
-              <span className="pill">{formatLabel(approval.status)}</span>
-              <span>{formatCompactDateTime(approval.requestedAt)}</span>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </SectionCard>
 
       <SectionCard
@@ -154,6 +240,14 @@ export function OpsDashboard(props: {
           </div>
         ))}
       </SectionCard>
+
+      {selectedTripId && (
+        <TripTimelinePanel
+          tripId={selectedTripId}
+          entries={timelineLoading ? [] : timelineEntries}
+          onClose={() => setSelectedTripId(null)}
+        />
+      )}
     </div>
   );
 }

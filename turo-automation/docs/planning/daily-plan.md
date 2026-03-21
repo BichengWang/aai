@@ -6,34 +6,37 @@ Use this file for the current working plan. Keep it short, current, and actionab
 2026-03-21
 
 ## Objective
-Move `turo-automation` from fixture-backed contracts to real persistence-backed adapters in small, reviewable slices.
+Move to Phase 2: real notifications and the approval workflow.
 
-## Today's Priorities
-- [x] Save the host mode plan into the subtree
-- [x] Create shared domain, ports, fixtures, and use-case contracts
-- [x] Refactor the web shell to consume `TodayOpsSnapshot`
-- [x] Refactor the worker to run fixture-backed contract jobs
-- [x] Add build and contract-test verification
-- [x] Add missing persistence schema slices for incidents, message threads, message drafts, approval requests, and job runs / audit trail
-- [x] Implement Supabase-backed repository adapters for trips, tasks, incidents, messages, approvals, and job runs (in `shared/src/adapters/supabase/`)
-- [x] Replace web fixture loading with repository-backed reads that still return `TodayOpsSnapshot` (env-gated: `VITE_SUPABASE_URL`)
-- [x] Replace worker fixture adapters with Supabase persistence adapters (env-gated: `SUPABASE_URL`)
-- [ ] Implement real Slack notifier adapter to replace noop stub
-- [ ] Implement real trip import-source adapter (CSV / Turo export)
-- [ ] Add `.env.example` with required environment variable documentation
-- [ ] Keep Playwright out of the critical path until the persistence-backed operator workflow is stable
+## Completed (Phase 1)
+- [x] Shared domain, ports, fixtures, and use-case contracts
+- [x] Fixture-backed ops dashboard shell (web)
+- [x] Fixture-backed worker job runner
+- [x] Supabase migration 0001: vehicles, guests, trips, tasks
+- [x] Supabase migration 0002: incidents, trip_events, message_threads, message_drafts, approval_requests, job_runs
+- [x] Supabase-backed repository adapters for all entities (in `shared/src/adapters/supabase/`)
+- [x] VehicleRepository + GuestRepository ports + Supabase adapters
+- [x] Import use-case upserts guests/vehicles when repos provided (fixes FK constraint gap)
+- [x] Worker env-gated: `SUPABASE_URL` → Supabase mode; absent → fixture mode
+- [x] Web env-gated: `VITE_SUPABASE_URL` → Supabase snapshot; absent → fixture snapshot
+- [x] Slack notifier adapter (`SLACK_WEBHOOK_URL`)
+- [x] CSV trip import adapter (`TRIP_IMPORT_CSV_PATH`)
+- [x] `.env.example` with all required env vars
+- [x] 8/8 automated tests pass
+- [x] README with setup instructions and adapter mode table
+- [x] Architecture docs updated
 
-## Candidate MVP Workflows
-1. Upcoming pickup / return dashboard
-2. Auto-generated ops tasks per trip
-3. Guest message drafting and approval
-4. Late return / issue alerting in Slack
-5. Daily team summary
+## Today's Priorities (Phase 2 start)
+- [ ] Add approval action to the web dashboard (approve/reject a pending draft)
+- [ ] Add `ApprovalRepository` mutation method (or reuse `saveApprovalRequests`) for state transitions
+- [ ] Define a minimal web API module for approval actions backed by Supabase
+- [ ] Add Slack notification when an approval is acted on
+- [ ] Keep Playwright out of the critical path
 
 ## Risks / Open Questions
-- Slack webhook URL / channel configuration for the notifier adapter
-- Which trip import format: CSV export from Turo, manual entry, or API?
-- When should supervised Playwright be introduced as an optional adapter?
+- Should approval actions be a direct Supabase client call from the web, or go through a worker endpoint?
+- When does the message draft actually get sent (guest-facing channel send)?
+- What user identity/auth is used for the `reviewedBy` field on approval requests?
 
 ## Next Suggested Step
-Wire the Slack notifier adapter using an incoming webhook URL from a `SLACK_WEBHOOK_URL` env var. This unblocks real approval notifications and the daily digest.
+Add an `ApproveMessageDraft` use-case and wire an approval action button in the web dashboard that calls it directly via the Supabase client.

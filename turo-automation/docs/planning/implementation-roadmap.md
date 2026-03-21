@@ -25,45 +25,54 @@ PR slices:
 6. add Supabase-backed repository adapters in `shared/src/adapters/supabase/` ✓
 7. wire worker + web to Supabase adapters (env-gated, fixture fallback) ✓
 
-## Phase 2 — Real Notifications + Import
+## Phase 2 — Real Notifications + Import ✓
 Objective: connect the system to real external services.
 
 PR slices:
-1. Slack notifier adapter (`SLACK_WEBHOOK_URL` env var)
-2. trip import-source adapter (CSV / Turo export)
-3. `.env.example` with required environment variable documentation
-4. approval state transitions via UI actions
-5. templated pre-trip and return reminder drafts
+1. Slack notifier adapter (`SLACK_WEBHOOK_URL` env var) ✓
+2. trip import-source adapter (CSV / Turo export) ✓
+3. `.env.example` with required environment variable documentation ✓
+4. approval state transitions via UI actions ✓
+5. templated pre-trip and return reminder drafts ✓
 
-## Phase 3 — Automation Engine
+## Phase 3 — Automation Engine ✓
 Objective: reduce repetitive manual work with safe background jobs.
 
 PR slices:
-1. scheduled worker framework (cron / queue)
-2. trip lifecycle task generation from real trips
-3. late return detection with real Slack alerts
-4. daily ops digest to Slack
-5. incident creation from predefined triggers
+1. scheduled worker framework (`WORKER_MODE=scheduled`, interval-based) ✓
+2. trip lifecycle task generation from real trips ✓ (GenerateLifecycleTasks use case + scheduler)
+3. late return detection with real Slack alerts ✓ (DetectLateReturns + Slack notifier)
+4. daily ops digest to Slack ✓ (BuildDailyDigest + scheduled)
+5. auto-generate pre-trip and return reminder drafts ✓ (GenerateMessageDrafts use case)
+6. incident creation from predefined triggers ✓ (DetectTripAnomalies: late returns + issue-status trips)
 
-## Phase 4 — Reliability + Extensions
+## Phase 4 — Reliability + Extensions ✓
 Objective: improve correctness, visibility, and operator trust.
 
 PR slices:
-1. audit log / event timeline improvements
-2. retry + failure handling for worker jobs
-3. operational runbooks and alert tuning
-4. richer analytics and utilization reporting
+1. audit log / event timeline improvements ✓ (`GetTripTimeline` use case)
+2. retry + failure handling for worker jobs ✓ (`withRetry` wrapper in scheduler)
+3. operational runbooks and alert tuning ✓ (`host-ops-daily.md`, `incident-response.md`)
+4. richer analytics and utilization reporting ✓ (`GetVehicleUtilization` use case)
+
+## Phase 5 — Dashboard Enrichment (next)
+Objective: surface the new data from Phases 3–4 in the operator UI.
+
+PR slices:
+1. trip timeline panel in OpsDashboard (wire `GetTripTimeline` to selected-trip view)
+2. vehicle utilization panel (wire `GetVehicleUtilization` to dashboard sidebar)
+3. incident list panel with status transitions (surface `DetectTripAnomalies` output)
 
 ## Current Highest-Priority Next PR
-Wire the Slack notifier adapter so that approval requests and daily digests reach the ops channel:
-- add `shared/src/adapters/slack/notifier.ts` implementing `OpsNotifier` via incoming webhook
-- gate on `SLACK_WEBHOOK_URL` env var; noop if absent
-- replace `createNoopNotifier()` in `worker/src/adapters/createSupabaseAdapters.ts`
+Phase 5 item 1: trip timeline panel in OpsDashboard:
+- Add a trip-detail side panel that calls `GetTripTimeline` for the selected trip
+- Render timeline entries (events, tasks, incidents, drafts) sorted by timestamp
+- Wire to existing fixture data for immediate local testing
 
 ## Why This Is Next
-- the Supabase repository adapters now exist and the build/tests pass
-- the notifier is the last stub in the worker's real-data path
-- once notifications fire, the daily digest and approval workflow are operationally useful
+- Phases 0–4 are fully complete
+- The operator UI still only shows the snapshot view; no drill-down exists
+- Trip timeline is the single highest-value addition: surfaces all context in one place
 
 ## Rules for Future PRs
 - one highest-priority PR at a time

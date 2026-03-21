@@ -1,6 +1,7 @@
 import type {
   ApprovalRequest,
   ApprovalStatus,
+  Guest,
   Incident,
   ISODateString,
   JobName,
@@ -20,6 +21,7 @@ import type {
 } from "../domain/index.js";
 import type {
   BrowserAssistPort,
+  GuestRepository,
   IncidentRepository,
   JobRunRepository,
   MessageRepository,
@@ -27,6 +29,7 @@ import type {
   TaskRepository,
   TripImportSource,
   TripRepository,
+  VehicleRepository,
 } from "../ports/index.js";
 
 export type UseCaseSeverity = "info" | "warning" | "error";
@@ -212,6 +215,104 @@ export interface BuildDailyDigestUseCase {
   ): Promise<UseCaseResult<BuildDailyDigestData>>;
 }
 
+export interface ActOnApprovalInput {
+  approvalRequestId: string;
+  decision: "approved" | "rejected";
+  reviewedBy: string;
+  reviewedAt: ISODateString;
+  notes?: string;
+}
+
+export interface ActOnApprovalData {
+  approvalRequest: ApprovalRequest;
+  draft: MessageDraft;
+}
+
+export interface ActOnApprovalUseCase {
+  execute(
+    input: ActOnApprovalInput,
+  ): Promise<UseCaseResult<ActOnApprovalData>>;
+}
+
+export interface GenerateMessageDraftsInput {
+  asOf: ISODateString;
+  requestedBy: string;
+  /** Hours before pickup to generate a pre-trip reminder (default: 24) */
+  preTripWindowHours?: number;
+  /** Hours before return to generate a return reminder (default: 24) */
+  returnWindowHours?: number;
+}
+
+export interface GenerateMessageDraftsData {
+  createdDrafts: MessageDraft[];
+  skippedCount: number;
+}
+
+export interface GenerateMessageDraftsUseCase {
+  execute(
+    input: GenerateMessageDraftsInput,
+  ): Promise<UseCaseResult<GenerateMessageDraftsData>>;
+}
+
+export type TimelineEventKind = "trip_event" | "task" | "incident" | "draft";
+
+export interface TripTimelineEntry {
+  kind: TimelineEventKind;
+  id: string;
+  timestamp: ISODateString;
+  label: string;
+  detail: string | null;
+}
+
+export interface GetTripTimelineInput {
+  tripId: string;
+  generatedAt: ISODateString;
+}
+
+export interface GetTripTimelineData {
+  tripId: string;
+  entries: TripTimelineEntry[];
+}
+
+export interface GetTripTimelineUseCase {
+  execute(
+    input: GetTripTimelineInput,
+  ): Promise<UseCaseResult<GetTripTimelineData>>;
+}
+
+export interface VehicleUtilizationItem {
+  vehicleId: string;
+  vehicleNickname: string;
+  totalTrips: number;
+  completedTrips: number;
+  activeTrips: number;
+  cancelledTrips: number;
+  totalRevenueAmount: number;
+  utilizationDays: number;
+  /** Total calendar days in the window */
+  windowDays: number;
+  /** Ratio of utilizationDays / windowDays (0–1) */
+  utilizationRate: number;
+}
+
+export interface GetVehicleUtilizationInput {
+  windowStart: ISODateString;
+  windowEnd: ISODateString;
+  generatedAt: ISODateString;
+}
+
+export interface GetVehicleUtilizationData {
+  items: VehicleUtilizationItem[];
+  windowStart: ISODateString;
+  windowEnd: ISODateString;
+}
+
+export interface GetVehicleUtilizationUseCase {
+  execute(
+    input: GetVehicleUtilizationInput,
+  ): Promise<UseCaseResult<GetVehicleUtilizationData>>;
+}
+
 function cloneValue<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
 }
@@ -270,6 +371,53 @@ function buildTripLabel(
     returnAt: trip.returnAt,
     needsDelivery: trip.deliveryRequired,
   };
+}
+
+export interface MessageTemplateContext {
+  templateKey: string;
+  guestFirstName: string;
+  vehicleNickname: string;
+  externalTripId: string;
+  pickupAt: ISODateString;
+  returnAt: ISODateString;
+  pickupLocation: string;
+}
+
+export function renderMessageTemplate(ctx: MessageTemplateContext): string {
+  const pickupDate = ctx.pickupAt.slice(0, 10);
+  const returnDate = ctx.returnAt.slice(0, 10);
+
+  switch (ctx.templateKey) {
+    case "pretrip_reminder":
+      return [
+        `Hi ${ctx.guestFirstName}! This is a quick reminder that your Turo trip (${ctx.externalTripId}) is coming up.`,
+        ``,
+        `Vehicle: ${ctx.vehicleNickname}`,
+        `Pickup: ${pickupDate} at ${ctx.pickupLocation}`,
+        `Return: ${returnDate}`,
+        ``,
+        `Please review the trip details and let us know if you have any questions. Drive safe!`,
+      ].join("\n");
+
+    case "return_reminder":
+      return [
+        `Hi ${ctx.guestFirstName}! Just a reminder that your ${ctx.vehicleNickname} (trip ${ctx.externalTripId}) is due back on ${returnDate}.`,
+        ``,
+        `Return location: ${ctx.pickupLocation}`,
+        ``,
+        `Please ensure the vehicle is returned on time and in good condition. Thank you!`,
+      ].join("\n");
+
+    case "incident_notice":
+      return [
+        `Hi ${ctx.guestFirstName}, we wanted to follow up regarding your recent trip (${ctx.externalTripId}) with ${ctx.vehicleNickname}.`,
+        ``,
+        `Our team will be in touch to discuss the details. Please respond to this message or call us if you have questions.`,
+      ].join("\n");
+
+    default:
+      return `[${ctx.templateKey}] Trip ${ctx.externalTripId} — ${ctx.vehicleNickname} — ${ctx.guestFirstName}`;
+  }
 }
 
 function buildDigestText(snapshot: TodayOpsSnapshot): string {
@@ -591,6 +739,312 @@ export function computeLateReturnIncidents(input: {
   );
 }
 
+export interface DetectTripAnomaliesInput {
+  asOf: ISODateString;
+  openedBy: string;
+}
+
+export interface DetectTripAnomaliesData {
+  incidentsCreated: Incident[];
+  lateReturns: number;
+  tripIssues: number;
+}
+
+export interface DetectTripAnomaliesUseCase {
+  execute(
+    input: DetectTripAnomaliesInput,
+  ): Promise<UseCaseResult<DetectTripAnomaliesData>>;
+}
+
+export function computeTripIssueIncidents(input: {
+  asOf: ISODateString;
+  openedBy: string;
+  trips: Trip[];
+  incidents: Incident[];
+  vehicles: Vehicle[];
+}): Incident[] {
+  const openIssueIncidentByTripId = new Set(
+    input.incidents
+      .filter(
+        (incident) =>
+          incident.type === "other" &&
+          incident.status !== "resolved" &&
+          incident.status !== "closed" &&
+          incident.tripId,
+      )
+      .map((incident) => incident.tripId as string),
+  );
+  const vehiclesById = new Map(input.vehicles.map((v) => [v.id, v]));
+
+  const asOfMs = Date.parse(input.asOf);
+
+  return input.trips
+    .filter(
+      (trip) =>
+        trip.status === "issue" &&
+        // Exclude trips already past return time — those are handled by late return detection
+        Date.parse(trip.returnAt) >= asOfMs &&
+        !openIssueIncidentByTripId.has(trip.id),
+    )
+    .map((trip) => {
+      const vehicle = vehiclesById.get(trip.vehicleId);
+      const vehicleLabel = vehicle?.nickname ?? trip.vehicleId;
+      return {
+        id: stableId(["incident", trip.id, "trip-issue"]),
+        tripId: trip.id,
+        vehicleId: trip.vehicleId,
+        type: "other" as const,
+        severity: "medium" as const,
+        status: "open" as const,
+        summary: `Trip issue flagged on ${vehicleLabel}`,
+        details: `Trip ${trip.externalTripId} is in 'issue' status with no active incident.`,
+        ownerId: input.openedBy,
+        openedAt: input.asOf,
+        resolvedAt: null,
+        createdAt: input.asOf,
+        updatedAt: input.asOf,
+      };
+    });
+}
+
+export function createDetectTripAnomaliesUseCase(deps: {
+  tripRepository: TripRepository;
+  incidentRepository: IncidentRepository;
+  notifier: OpsNotifier;
+  vehicles: Vehicle[];
+}): DetectTripAnomaliesUseCase {
+  return {
+    async execute(input) {
+      const [trips, incidents] = await Promise.all([
+        deps.tripRepository.listTrips(),
+        deps.incidentRepository.listIncidents(),
+      ]);
+
+      const lateReturnResult = computeLateReturnIncidents({
+        asOf: input.asOf,
+        openedBy: input.openedBy,
+        trips,
+        incidents,
+        vehicles: deps.vehicles,
+      });
+
+      const tripIssueIncidents = computeTripIssueIncidents({
+        asOf: input.asOf,
+        openedBy: input.openedBy,
+        trips,
+        incidents,
+        vehicles: deps.vehicles,
+      });
+
+      const allNew = [...lateReturnResult.data.incidentsCreated, ...tripIssueIncidents];
+
+      if (allNew.length > 0) {
+        await deps.incidentRepository.saveIncidents(allNew);
+        await Promise.all(
+          allNew.map((incident) =>
+            deps.notifier.notifyIncidentDetected({
+              incidentId: incident.id,
+              tripId: incident.tripId,
+              type: incident.type,
+            }).catch(() => {}),
+          ),
+        );
+      }
+
+      const useCaseIssues: UseCaseIssue[] =
+        allNew.length > 0
+          ? [
+              {
+                code: "ANOMALIES_DETECTED",
+                message: `${allNew.length} trip anomaly incidents created (${lateReturnResult.data.incidentsCreated.length} late returns, ${tripIssueIncidents.length} trip issues).`,
+                severity: "warning" as const,
+                entityType: "incident",
+              },
+            ]
+          : [];
+
+      return makeResult(
+        {
+          incidentsCreated: allNew,
+          lateReturns: lateReturnResult.data.incidentsCreated.length,
+          tripIssues: tripIssueIncidents.length,
+        },
+        useCaseIssues,
+        input.asOf,
+      );
+    },
+  };
+}
+
+export function createGetTripTimelineUseCase(deps: {
+  tripRepository: TripRepository;
+  taskRepository: TaskRepository;
+  incidentRepository: IncidentRepository;
+  messageRepository: MessageRepository;
+}): GetTripTimelineUseCase {
+  return {
+    async execute(input) {
+      const [tripEvents, tasks, incidents, drafts] = await Promise.all([
+        deps.tripRepository.listTripEvents(),
+        deps.taskRepository.listTasks(),
+        deps.incidentRepository.listIncidents(),
+        deps.messageRepository.listDrafts(),
+      ]);
+
+      const entries: TripTimelineEntry[] = [];
+
+      for (const event of tripEvents.filter((e) => e.tripId === input.tripId)) {
+        entries.push({
+          kind: "trip_event",
+          id: event.id,
+          timestamp: event.eventTime,
+          label: event.eventType.replace(/_/g, " "),
+          detail: event.source,
+        });
+      }
+
+      for (const task of tasks.filter((t) => t.tripId === input.tripId)) {
+        entries.push({
+          kind: "task",
+          id: task.id,
+          timestamp: task.dueAt ?? task.createdAt,
+          label: task.title,
+          detail: task.status,
+        });
+      }
+
+      for (const incident of incidents.filter((i) => i.tripId === input.tripId)) {
+        entries.push({
+          kind: "incident",
+          id: incident.id,
+          timestamp: incident.openedAt,
+          label: incident.summary,
+          detail: incident.status,
+        });
+      }
+
+      for (const draft of drafts.filter((d) => d.tripId === input.tripId)) {
+        entries.push({
+          kind: "draft",
+          id: draft.id,
+          timestamp: draft.createdAt,
+          label: `Draft: ${draft.templateKey}`,
+          detail: draft.state,
+        });
+      }
+
+      entries.sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+
+      const issues: UseCaseIssue[] =
+        entries.length === 0
+          ? [
+              {
+                code: "NO_TIMELINE_ENTRIES",
+                message: `No timeline entries found for trip ${input.tripId}.`,
+                severity: "info" as const,
+                entityType: "trip",
+                entityId: input.tripId,
+              },
+            ]
+          : [];
+
+      return makeResult(
+        { tripId: input.tripId, entries },
+        issues,
+        input.generatedAt,
+      );
+    },
+  };
+}
+
+export function createGetVehicleUtilizationUseCase(deps: {
+  tripRepository: TripRepository;
+  vehicles: Vehicle[];
+}): GetVehicleUtilizationUseCase {
+  return {
+    async execute(input) {
+      const trips = await deps.tripRepository.listTrips();
+      const windowStartMs = Date.parse(input.windowStart);
+      const windowEndMs = Date.parse(input.windowEnd);
+      const windowDays = Math.max(1, Math.round((windowEndMs - windowStartMs) / 86_400_000));
+
+      // Filter trips that overlap with the window
+      const windowTrips = trips.filter((trip) => {
+        const pickupMs = Date.parse(trip.pickupAt);
+        const returnMs = Date.parse(trip.returnAt);
+        return pickupMs < windowEndMs && returnMs > windowStartMs;
+      });
+
+      const vehiclesById = new Map(deps.vehicles.map((v) => [v.id, v]));
+      const statsByVehicle = new Map<string, {
+        totalTrips: number;
+        completedTrips: number;
+        activeTrips: number;
+        cancelledTrips: number;
+        totalRevenueAmount: number;
+        utilizationMs: number;
+      }>();
+
+      for (const vehicle of deps.vehicles) {
+        statsByVehicle.set(vehicle.id, {
+          totalTrips: 0,
+          completedTrips: 0,
+          activeTrips: 0,
+          cancelledTrips: 0,
+          totalRevenueAmount: 0,
+          utilizationMs: 0,
+        });
+      }
+
+      for (const trip of windowTrips) {
+        const stats = statsByVehicle.get(trip.vehicleId);
+        if (!stats) continue;
+
+        stats.totalTrips++;
+        if (trip.status === "completed") stats.completedTrips++;
+        else if (trip.status === "active") stats.activeTrips++;
+        else if (trip.status === "cancelled") stats.cancelledTrips++;
+        stats.totalRevenueAmount += trip.tripTotalAmount ?? 0;
+
+        // Clamp trip overlap to the window
+        const effectiveStart = Math.max(Date.parse(trip.pickupAt), windowStartMs);
+        const effectiveEnd = Math.min(Date.parse(trip.returnAt), windowEndMs);
+        if (effectiveEnd > effectiveStart) {
+          stats.utilizationMs += effectiveEnd - effectiveStart;
+        }
+      }
+
+      const items: VehicleUtilizationItem[] = [];
+      for (const vehicle of deps.vehicles) {
+        const stats = statsByVehicle.get(vehicle.id);
+        if (!stats) continue;
+        const utilizationDays = stats.utilizationMs / 86_400_000;
+        items.push({
+          vehicleId: vehicle.id,
+          vehicleNickname: vehicle.nickname,
+          totalTrips: stats.totalTrips,
+          completedTrips: stats.completedTrips,
+          activeTrips: stats.activeTrips,
+          cancelledTrips: stats.cancelledTrips,
+          totalRevenueAmount: Math.round(stats.totalRevenueAmount * 100) / 100,
+          utilizationDays: Math.round(utilizationDays * 100) / 100,
+          windowDays,
+          utilizationRate: Math.round((utilizationDays / windowDays) * 10_000) / 10_000,
+        });
+      }
+
+      // Sort by utilization rate descending
+      items.sort((a, b) => b.utilizationRate - a.utilizationRate);
+
+      return makeResult(
+        { items, windowStart: input.windowStart, windowEnd: input.windowEnd },
+        [],
+        input.generatedAt,
+      );
+    },
+  };
+}
+
 export function createGetTodayOpsSnapshotUseCase(deps: {
   tripRepository: TripRepository;
   taskRepository: TaskRepository;
@@ -628,6 +1082,10 @@ export function createGetTodayOpsSnapshotUseCase(deps: {
 export function createImportTripsUseCase(deps: {
   tripImportSource: TripImportSource;
   tripRepository: TripRepository;
+  /** Optional: when provided, guests derived from import rows are upserted before trips. */
+  guestRepository?: GuestRepository;
+  /** Optional: when provided, vehicles derived from import rows are upserted before trips. */
+  vehicleRepository?: VehicleRepository;
 }): ImportTripsUseCase {
   return {
     async execute(input) {
@@ -639,6 +1097,73 @@ export function createImportTripsUseCase(deps: {
       const tripsByExternalId = new Map(
         existingTrips.map((trip) => [trip.externalTripId, trip] as const),
       );
+
+      // Upsert guests derived from import rows when a guest repository is provided.
+      if (deps.guestRepository && rows.length > 0) {
+        const existingGuests = await deps.guestRepository.listGuests();
+        const existingGuestIds = new Set(existingGuests.map((g) => g.id));
+        const seenGuestIds = new Set<string>();
+        const newGuests: Guest[] = [];
+        for (const row of rows) {
+          const guestId = stableId(["guest", row.guestFullName]);
+          if (!existingGuestIds.has(guestId) && !seenGuestIds.has(guestId)) {
+            seenGuestIds.add(guestId);
+            const nameParts = row.guestFullName.split(" ");
+            newGuests.push({
+              id: guestId,
+              firstName: nameParts[0] ?? "",
+              lastName: nameParts.slice(1).join(" "),
+              fullName: row.guestFullName,
+              phone: row.guestPhone,
+              email: row.guestEmail,
+              driverLicenseLast4: null,
+              rating: null,
+              notes: null,
+              createdAt: input.importedAt,
+              updatedAt: input.importedAt,
+            });
+          }
+        }
+        if (newGuests.length > 0) {
+          await deps.guestRepository.saveGuests(newGuests);
+        }
+      }
+
+      // Upsert vehicles derived from import rows when a vehicle repository is provided.
+      if (deps.vehicleRepository && rows.length > 0) {
+        const existingVehicles = await deps.vehicleRepository.listVehicles();
+        const existingVehicleIds = new Set(existingVehicles.map((v) => v.id));
+        const seenVehicleIds = new Set<string>();
+        const newVehicles: Vehicle[] = [];
+        for (const row of rows) {
+          const vehicleId = stableId(["vehicle", row.vehicleNickname]);
+          if (
+            !existingVehicleIds.has(vehicleId) &&
+            !seenVehicleIds.has(vehicleId)
+          ) {
+            seenVehicleIds.add(vehicleId);
+            newVehicles.push({
+              id: vehicleId,
+              vin: null,
+              plate: null,
+              nickname: row.vehicleNickname,
+              make: row.vehicleNickname,
+              model: row.vehicleNickname,
+              year: null,
+              status: "active",
+              location: null,
+              odometer: null,
+              fuelType: null,
+              notes: "Auto-created from CSV import. Update make/model/year.",
+              createdAt: input.importedAt,
+              updatedAt: input.importedAt,
+            });
+          }
+        }
+        if (newVehicles.length > 0) {
+          await deps.vehicleRepository.saveVehicles(newVehicles);
+        }
+      }
 
       const importedTrips: Trip[] = [];
       const importedTripEvents: TripEvent[] = [];
@@ -725,6 +1250,10 @@ export function createGenerateLifecycleTasksUseCase(deps: {
 export function createCreateMessageDraftUseCase(deps: {
   tripRepository: TripRepository;
   messageRepository: MessageRepository;
+  /** Optional: when provided, used to render template body with guest first name. */
+  guests?: Array<{ id: string; firstName: string; fullName: string }>;
+  /** Optional: when provided, used to render template body with vehicle nickname. */
+  vehicles?: Vehicle[];
 }): CreateMessageDraftUseCase {
   return {
     async execute(input) {
@@ -766,13 +1295,25 @@ export function createCreateMessageDraftUseCase(deps: {
         await deps.messageRepository.saveThreads([thread]);
       }
 
+      const guest = deps.guests?.find((g) => g.id === trip.guestId);
+      const vehicle = deps.vehicles?.find((v) => v.id === trip.vehicleId);
+      const body = renderMessageTemplate({
+        templateKey: input.templateKey,
+        guestFirstName: guest?.firstName ?? guest?.fullName ?? "there",
+        vehicleNickname: vehicle?.nickname ?? trip.vehicleId,
+        externalTripId: trip.externalTripId,
+        pickupAt: trip.pickupAt,
+        returnAt: trip.returnAt,
+        pickupLocation: trip.pickupLocation,
+      });
+
       const draft: MessageDraft = {
         id: stableId(["draft", trip.id, input.templateKey, input.createdAt]),
         threadId: thread.id,
         tripId: trip.id,
         direction: "outbound",
         channel: "turo",
-        body: `Draft for ${input.templateKey} on trip ${trip.externalTripId}.`,
+        body,
         templateKey: input.templateKey,
         approvalStatus: "pending" as ApprovalStatus,
         state: "awaiting_approval",
@@ -914,6 +1455,268 @@ export function createBuildDailyDigestUseCase(deps: {
         },
         snapshotResult.issues,
         input.generatedAt,
+      );
+    },
+  };
+}
+
+export function createGenerateMessageDraftsUseCase(deps: {
+  tripRepository: TripRepository;
+  messageRepository: MessageRepository;
+  notifier: OpsNotifier;
+  guests: Array<{ id: string; firstName?: string; fullName: string }>;
+  vehicles: Vehicle[];
+}): GenerateMessageDraftsUseCase {
+  return {
+    async execute(input) {
+      const preTripWindowMs = (input.preTripWindowHours ?? 24) * 3_600_000;
+      const returnWindowMs = (input.returnWindowHours ?? 24) * 3_600_000;
+      const asOfMs = Date.parse(input.asOf);
+
+      const [trips, existingDrafts, existingThreads] = await Promise.all([
+        deps.tripRepository.listTrips(),
+        deps.messageRepository.listDrafts(),
+        deps.messageRepository.listThreads(),
+      ]);
+
+      const existingDraftKeys = new Set(
+        existingDrafts.map((d) => `${d.tripId}:${d.templateKey}`),
+      );
+      const threadByTripId = new Map(
+        existingThreads.map((t) => [t.tripId, t]),
+      );
+      const guestsById = new Map(deps.guests.map((g) => [g.id, g]));
+      const vehiclesById = new Map(deps.vehicles.map((v) => [v.id, v]));
+
+      const newDrafts: MessageDraft[] = [];
+      const newThreads: MessageThread[] = [];
+      let skippedCount = 0;
+
+      for (const trip of trips) {
+        const pickupMs = Date.parse(trip.pickupAt);
+        const returnMs = Date.parse(trip.returnAt);
+        const guest = guestsById.get(trip.guestId);
+        const vehicle = vehiclesById.get(trip.vehicleId);
+
+        const templateCtx = {
+          vehicleNickname: vehicle?.nickname ?? trip.vehicleId,
+          externalTripId: trip.externalTripId,
+          pickupAt: trip.pickupAt,
+          returnAt: trip.returnAt,
+          pickupLocation: trip.pickupLocation,
+          guestFirstName: guest?.firstName ?? guest?.fullName?.split(" ")[0] ?? "there",
+        };
+
+        // Pre-trip reminder: upcoming trips with pickup within the window
+        if (
+          trip.status === "upcoming" &&
+          pickupMs > asOfMs &&
+          pickupMs - asOfMs <= preTripWindowMs &&
+          !existingDraftKeys.has(`${trip.id}:pretrip_reminder`)
+        ) {
+          let thread = threadByTripId.get(trip.id);
+          if (!thread) {
+            thread = {
+              id: stableId(["thread", trip.id]),
+              tripId: trip.id,
+              guestId: trip.guestId,
+              channel: "turo",
+              status: "drafting",
+              lastMessageAt: input.asOf,
+              ownerId: input.requestedBy,
+              createdAt: input.asOf,
+              updatedAt: input.asOf,
+            };
+            newThreads.push(thread);
+            threadByTripId.set(trip.id, thread);
+          }
+
+          newDrafts.push({
+            id: stableId(["draft", trip.id, "pretrip_reminder", input.asOf]),
+            threadId: thread.id,
+            tripId: trip.id,
+            direction: "outbound",
+            channel: "turo",
+            body: renderMessageTemplate({ ...templateCtx, templateKey: "pretrip_reminder" }),
+            templateKey: "pretrip_reminder",
+            approvalStatus: "pending",
+            state: "awaiting_approval",
+            requestedBy: input.requestedBy,
+            createdAt: input.asOf,
+            updatedAt: input.asOf,
+          });
+        } else if (
+          trip.status === "upcoming" &&
+          pickupMs > asOfMs &&
+          pickupMs - asOfMs <= preTripWindowMs
+        ) {
+          skippedCount++;
+        }
+
+        // Return reminder: active trips with return within the window
+        if (
+          trip.status === "active" &&
+          returnMs > asOfMs &&
+          returnMs - asOfMs <= returnWindowMs &&
+          !existingDraftKeys.has(`${trip.id}:return_reminder`)
+        ) {
+          let thread = threadByTripId.get(trip.id);
+          if (!thread) {
+            thread = {
+              id: stableId(["thread", trip.id]),
+              tripId: trip.id,
+              guestId: trip.guestId,
+              channel: "turo",
+              status: "drafting",
+              lastMessageAt: input.asOf,
+              ownerId: input.requestedBy,
+              createdAt: input.asOf,
+              updatedAt: input.asOf,
+            };
+            newThreads.push(thread);
+            threadByTripId.set(trip.id, thread);
+          }
+
+          newDrafts.push({
+            id: stableId(["draft", trip.id, "return_reminder", input.asOf]),
+            threadId: thread.id,
+            tripId: trip.id,
+            direction: "outbound",
+            channel: "turo",
+            body: renderMessageTemplate({ ...templateCtx, templateKey: "return_reminder" }),
+            templateKey: "return_reminder",
+            approvalStatus: "pending",
+            state: "awaiting_approval",
+            requestedBy: input.requestedBy,
+            createdAt: input.asOf,
+            updatedAt: input.asOf,
+          });
+        } else if (
+          trip.status === "active" &&
+          returnMs > asOfMs &&
+          returnMs - asOfMs <= returnWindowMs
+        ) {
+          skippedCount++;
+        }
+      }
+
+      if (newThreads.length > 0) {
+        await deps.messageRepository.saveThreads(newThreads);
+      }
+
+      if (newDrafts.length > 0) {
+        await deps.messageRepository.saveDrafts(newDrafts);
+        // Notify for each new draft
+        await Promise.all(
+          newDrafts.map((draft) =>
+            deps.notifier.notifyApprovalRequested({
+              approvalRequestId: stableId(["approval", draft.id]),
+              draftId: draft.id,
+              tripId: draft.tripId,
+            }).catch(() => {}),
+          ),
+        );
+      }
+
+      const issues: UseCaseIssue[] =
+        newDrafts.length === 0
+          ? [
+              {
+                code: "NO_DRAFTS_GENERATED",
+                message: "No new message drafts were generated for the current trip window.",
+                severity: "info" as const,
+              },
+            ]
+          : [];
+
+      return makeResult({ createdDrafts: newDrafts, skippedCount }, issues, input.asOf);
+    },
+  };
+}
+
+export function createActOnApprovalUseCase(deps: {
+  messageRepository: MessageRepository;
+  notifier: OpsNotifier;
+}): ActOnApprovalUseCase {
+  return {
+    async execute(input) {
+      const approvalRequests = await deps.messageRepository.listApprovalRequests();
+      const existing = approvalRequests.find((a) => a.id === input.approvalRequestId);
+
+      if (!existing) {
+        return makeResult(
+          { approvalRequest: null as unknown as ApprovalRequest, draft: null as unknown as MessageDraft },
+          [
+            {
+              code: "APPROVAL_REQUEST_NOT_FOUND",
+              message: `Approval request ${input.approvalRequestId} not found.`,
+              severity: "error",
+              entityType: "approval_request",
+              entityId: input.approvalRequestId,
+            },
+          ],
+          input.reviewedAt,
+        );
+      }
+
+      if (existing.status !== "pending") {
+        return makeResult(
+          { approvalRequest: existing, draft: null as unknown as MessageDraft },
+          [
+            {
+              code: "APPROVAL_ALREADY_DECIDED",
+              message: `Approval request ${input.approvalRequestId} is already ${existing.status}.`,
+              severity: "error",
+              entityType: "approval_request",
+              entityId: input.approvalRequestId,
+            },
+          ],
+          input.reviewedAt,
+        );
+      }
+
+      const updatedApproval: ApprovalRequest = {
+        ...existing,
+        status: input.decision,
+        reviewedBy: input.reviewedBy,
+        reviewedAt: input.reviewedAt,
+        notes: input.notes ?? existing.notes,
+      };
+
+      const [savedApprovals] = await Promise.all([
+        deps.messageRepository.saveApprovalRequests([updatedApproval]),
+      ]);
+      const savedApproval = savedApprovals[0]!;
+
+      // Update the associated draft state
+      const drafts = await deps.messageRepository.listDrafts();
+      const draft = drafts.find((d) => d.id === existing.draftId);
+      let savedDraft = draft ?? (null as unknown as MessageDraft);
+
+      if (draft) {
+        const updatedDraft: MessageDraft = {
+          ...draft,
+          approvalStatus: input.decision === "approved" ? "approved" : "rejected",
+          state: input.decision === "approved" ? "ready_for_review" : "closed",
+          updatedAt: input.reviewedAt,
+        };
+        const [saved] = await deps.messageRepository.saveDrafts([updatedDraft]);
+        savedDraft = saved!;
+      }
+
+      // Notify via Slack if needed (non-blocking, failure does not fail the use-case)
+      if (input.decision === "approved" && draft) {
+        await deps.notifier.notifyApprovalRequested({
+          approvalRequestId: savedApproval.id,
+          draftId: draft.id,
+          tripId: existing.tripId,
+        }).catch(() => {});
+      }
+
+      return makeResult(
+        { approvalRequest: savedApproval, draft: savedDraft },
+        [],
+        input.reviewedAt,
       );
     },
   };
@@ -1098,6 +1901,50 @@ export function createInMemoryJobRunRepository(seed: {
     async saveJobRun(jobRun) {
       state.jobRuns.push(cloneValue(jobRun));
       return cloneValue(jobRun);
+    },
+  };
+}
+
+export function createInMemoryVehicleRepository(seed: {
+  vehicles: Vehicle[];
+}): VehicleRepository {
+  const state = { vehicles: cloneValue(seed.vehicles) };
+  return {
+    async listVehicles() {
+      return cloneValue(state.vehicles);
+    },
+    async saveVehicles(vehicles) {
+      for (const vehicle of vehicles) {
+        const index = state.vehicles.findIndex((v) => v.id === vehicle.id);
+        if (index >= 0) {
+          state.vehicles[index] = cloneValue(vehicle);
+        } else {
+          state.vehicles.push(cloneValue(vehicle));
+        }
+      }
+      return cloneValue(vehicles);
+    },
+  };
+}
+
+export function createInMemoryGuestRepository(seed: {
+  guests: Guest[];
+}): GuestRepository {
+  const state = { guests: cloneValue(seed.guests) };
+  return {
+    async listGuests() {
+      return cloneValue(state.guests);
+    },
+    async saveGuests(guests) {
+      for (const guest of guests) {
+        const index = state.guests.findIndex((g) => g.id === guest.id);
+        if (index >= 0) {
+          state.guests[index] = cloneValue(guest);
+        } else {
+          state.guests.push(cloneValue(guest));
+        }
+      }
+      return cloneValue(guests);
     },
   };
 }

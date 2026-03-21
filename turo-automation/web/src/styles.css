@@ -135,6 +135,157 @@ h1 {
   gap: 20px;
 }
 
+.dashboard-grid.has-panel {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) 360px;
+}
+
+.list-row-clickable {
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.list-row-clickable:hover {
+  background: rgba(20, 50, 71, 0.04);
+}
+
+.list-row-selected {
+  background: rgba(20, 50, 71, 0.07);
+  outline: 2px solid rgba(20, 50, 71, 0.18);
+  outline-offset: -2px;
+}
+
+/* Trip timeline panel */
+.timeline-panel {
+  grid-row: 1 / -1;
+  border: 1px solid rgba(17, 34, 49, 0.12);
+  border-radius: 22px;
+  background: rgba(255, 252, 247, 0.95);
+  box-shadow: 0 22px 60px rgba(49, 44, 33, 0.08);
+  overflow: hidden;
+  align-self: start;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid rgba(17, 34, 49, 0.08);
+}
+
+.timeline-header h2 {
+  margin: 4px 0 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: #5c6974;
+  font-size: 1rem;
+  border-radius: 8px;
+}
+
+.btn-close:hover {
+  background: rgba(17, 34, 49, 0.06);
+}
+
+.timeline-empty {
+  padding: 24px 22px;
+  color: #5c6974;
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.timeline-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.timeline-entry {
+  display: grid;
+  gap: 4px;
+  padding: 14px 22px;
+  border-top: 1px solid rgba(17, 34, 49, 0.06);
+}
+
+.timeline-entry:first-child {
+  border-top: 0;
+}
+
+.timeline-timestamp {
+  font-size: 11px;
+  color: #8d9baa;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.timeline-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeline-body strong {
+  font-size: 0.92rem;
+}
+
+.timeline-detail {
+  font-size: 0.85rem;
+  color: #5c6974;
+}
+
+.pill-trip_event { background: rgba(31, 90, 136, 0.12); color: #1c557f; }
+.pill-task       { background: rgba(219, 166, 79, 0.14); color: #8d5d22; }
+.pill-incident   { background: rgba(177, 66, 49, 0.12); color: #8f3729; }
+.pill-draft      { background: rgba(32, 125, 98, 0.14); color: #17604c; }
+
+.approval-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-approve,
+.btn-reject {
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+.btn-approve {
+  background: rgba(32, 125, 98, 0.14);
+  color: #17604c;
+}
+
+.btn-approve:hover:not(:disabled) {
+  background: rgba(32, 125, 98, 0.26);
+}
+
+.btn-reject {
+  background: rgba(177, 66, 49, 0.12);
+  color: #8f3729;
+}
+
+.btn-reject:hover:not(:disabled) {
+  background: rgba(177, 66, 49, 0.24);
+}
+
+.btn-approve:disabled,
+.btn-reject:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 .metrics-strip {
   grid-column: 1 / -1;
   display: grid;
@@ -232,4 +383,39 @@ h1 {
     justify-items: start;
     text-align: left;
   }
+}
+
+/* Vehicle utilization panel */
+.util-row {
+  align-items: center;
+}
+
+.util-bar-wrap {
+  min-width: 140px;
+  max-width: 160px;
+}
+
+.util-bar-track {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(17, 34, 49, 0.09);
+}
+
+.util-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #143247;
+  min-width: 2px;
+  transition: width 0.3s ease;
+}
+
+.util-bar-label {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #42515f;
+  letter-spacing: 0.04em;
+  text-align: right;
 }

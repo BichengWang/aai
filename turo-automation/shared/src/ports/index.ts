@@ -1,5 +1,6 @@
 import type {
   ApprovalRequest,
+  Guest,
   Incident,
   JobRun,
   MessageDraft,
@@ -8,7 +9,18 @@ import type {
   TripEvent,
   TripImportRow,
   Task,
+  Vehicle,
 } from "../domain/index.js";
+
+export interface VehicleRepository {
+  listVehicles(): Promise<Vehicle[]>;
+  saveVehicles(vehicles: Vehicle[]): Promise<Vehicle[]>;
+}
+
+export interface GuestRepository {
+  listGuests(): Promise<Guest[]>;
+  saveGuests(guests: Guest[]): Promise<Guest[]>;
+}
 
 export interface TripRepository {
   listTrips(): Promise<Trip[]>;

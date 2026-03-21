@@ -65,6 +65,7 @@ export type JobName =
   | "trip_import"
   | "lifecycle_tasks"
   | "late_return_scan"
+  | "generate_drafts"
   | "daily_digest";
 
 export interface Vehicle {

@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "npm run build --workspace @turo-automation/shared && npm run build --workspace @turo-automation/worker && npm run build --workspace @turo-automation/web",
-    "test": "npm run build && node --test shared/test/contracts.test.mjs worker/test/worker-app.test.mjs",
+    "test": "npm run build && node --test shared/test/contracts.test.mjs worker/test/worker-app.test.mjs worker/test/csv-import.test.mjs worker/test/scheduler.test.mjs",
     "dev:web": "npm run dev --workspace @turo-automation/web",
     "dev:worker": "npm run dev --workspace @turo-automation/worker"
   }

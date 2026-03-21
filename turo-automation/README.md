@@ -15,21 +15,73 @@ Centralize and automate daily host operations:
 
 ```text
 turo-automation/
+  data/               sample CSV files for local testing
   docs/
-    architecture/
-    logs/
-    planning/
-    product/
-    runbooks/
-  web/
-  worker/
-  shared/
+    architecture/     system design and data model
+    logs/             dev log (chronological notes)
+    planning/         daily plan + roadmap
+    product/          MVP spec
+    runbooks/         AI workflow runbooks
+  shared/             domain models, ports, use-cases, and adapters
+  supabase/
+    migrations/       SQL migration files
+  web/                React dashboard (Vite)
+  worker/             Node.js background job runner
+  .env.example        environment variable documentation
 ```
 
 ## Packages
-- `web/` — internal React dashboard
-- `worker/` — background job runner and automation engine
-- `shared/` — shared types and domain helpers
+
+- `shared/` — domain types, port interfaces, use-case implementations, and adapter implementations (Supabase, Slack)
+- `worker/` — background job runner; dispatches the five core jobs on each invocation
+- `web/` — internal React dashboard showing today's ops snapshot
+
+## Getting Started
+
+### 1. Install dependencies
+
+```sh
+npm install
+```
+
+### 2. Set up environment variables
+
+```sh
+cp .env.example .env
+# Edit .env with your Supabase project URL, key, Slack webhook URL, etc.
+```
+
+Without env vars the app runs against fixture data — useful for local development.
+
+### 3. Apply database migrations
+
+```sh
+supabase db push
+# or apply manually:
+psql $DATABASE_URL -f supabase/migrations/0001_turo_ops_core.sql
+psql $DATABASE_URL -f supabase/migrations/0002_turo_ops_incidents_messages_jobs.sql
+```
+
+### 4. Build and test
+
+```sh
+npm run build    # compile all packages
+npm test         # build + run 7 automated tests
+```
+
+### 5. Run the dashboard
+
+```sh
+npm run dev:web
+```
+
+### 6. Run the worker (one-shot)
+
+```sh
+npm run dev:worker
+```
+
+Set `TRIP_IMPORT_CSV_PATH=data/trips.sample.csv` to import the bundled sample trips.
 
 ## Working Principles
 
@@ -38,9 +90,13 @@ turo-automation/
 3. Record decisions in docs as we go.
 4. Treat daily plan and dev log as source-of-truth for active work.
 
-## Initial Priorities
+## Adapter Mode
 
-- Define MVP workflows
-- Draft system architecture and data model
-- Build internal dashboard + background worker
-- Add Slack-first operational notifications
+The worker and web fall back to fixture data when Supabase env vars are absent — safe for local dev and CI.
+
+| Feature | Env Var | Fallback |
+|---------|---------|---------|
+| Persistence | `SUPABASE_URL` + `SUPABASE_KEY` | in-memory fixtures |
+| Web data | `VITE_SUPABASE_URL` + `VITE_SUPABASE_KEY` | fixture snapshot |
+| Notifications | `SLACK_WEBHOOK_URL` | no-op (silent) |
+| Trip import | `TRIP_IMPORT_CSV_PATH` | empty (no imports) |
