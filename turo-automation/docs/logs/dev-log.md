@@ -339,3 +339,14 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 - Updated `docs/architecture/overview.md` to include the trip timeline and vehicle utilization dashboard surfaces
 
 **Verification**: docs-only sync against current `main` implementation
+
+### Incident action use case (Iter 37)
+
+- Added `createActOnIncidentUseCase()` to `shared/src/application/index.ts`
+  - updates incident status through `IncidentRepository`
+  - stamps `ownerId`, `resolvedAt`, and `updatedAt`
+  - returns a typed not-found error when the incident does not exist
+- Added a contract test covering the resolved transition path
+- Updated `docs/planning/daily-plan.md` to mark incident action use-case support complete
+
+**Verification**: `npm test` — 24/24 pass

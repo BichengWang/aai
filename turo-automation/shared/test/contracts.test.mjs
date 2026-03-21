@@ -4,6 +4,7 @@ import {
   FIXTURE_NOW,
   FIXTURE_TODAY,
   createActOnApprovalUseCase,
+  createActOnIncidentUseCase,
   createCreateMessageDraftUseCase,
   createDetectLateReturnsUseCase,
   createDetectTripAnomaliesUseCase,
@@ -175,6 +176,26 @@ test("ActOnApproval transitions a pending approval to approved and updates draft
   assert.equal(result.data.approvalRequest.reviewedBy, "test.reviewer");
   assert.equal(result.data.draft.approvalStatus, "approved");
   assert.equal(result.data.draft.state, "ready_for_review");
+});
+
+test("ActOnIncident transitions an incident to resolved and stamps actor metadata", async () => {
+  const context = createFixtureContext();
+  const useCase = createActOnIncidentUseCase({
+    incidentRepository: context.incidentRepository,
+  });
+
+  const result = await useCase.execute({
+    incidentId: "incident-cleaning-tu-1003",
+    status: "resolved",
+    actedBy: "ops.manager",
+    actedAt: FIXTURE_NOW,
+  });
+
+  assert.equal(result.ok, true);
+  assert.equal(result.data.incident.status, "resolved");
+  assert.equal(result.data.incident.ownerId, "ops.manager");
+  assert.equal(result.data.incident.resolvedAt, FIXTURE_NOW);
+  assert.equal(result.data.incident.updatedAt, FIXTURE_NOW);
 });
 
 test("renderMessageTemplate pretrip_reminder contains guest name and vehicle", () => {

@@ -234,6 +234,23 @@ export interface ActOnApprovalUseCase {
   ): Promise<UseCaseResult<ActOnApprovalData>>;
 }
 
+export interface ActOnIncidentInput {
+  incidentId: string;
+  status: Incident["status"];
+  actedBy: string;
+  actedAt: ISODateString;
+}
+
+export interface ActOnIncidentData {
+  incident: Incident;
+}
+
+export interface ActOnIncidentUseCase {
+  execute(
+    input: ActOnIncidentInput,
+  ): Promise<UseCaseResult<ActOnIncidentData>>;
+}
+
 export interface GenerateMessageDraftsInput {
   asOf: ISODateString;
   requestedBy: string;
@@ -1718,6 +1735,50 @@ export function createActOnApprovalUseCase(deps: {
         [],
         input.reviewedAt,
       );
+    },
+  };
+}
+
+export function createActOnIncidentUseCase(deps: {
+  incidentRepository: IncidentRepository;
+}): ActOnIncidentUseCase {
+  return {
+    async execute(input) {
+      const incidents = await deps.incidentRepository.listIncidents();
+      const existing = incidents.find((incident) => incident.id === input.incidentId);
+
+      if (!existing) {
+        return makeResult(
+          { incident: null as unknown as Incident },
+          [
+            {
+              code: "INCIDENT_NOT_FOUND",
+              message: `Incident ${input.incidentId} not found.`,
+              severity: "error",
+              entityType: "incident",
+              entityId: input.incidentId,
+            },
+          ],
+          input.actedAt,
+        );
+      }
+
+      const isResolvedState =
+        input.status === "resolved" || input.status === "closed";
+
+      const updatedIncident: Incident = {
+        ...existing,
+        status: input.status,
+        ownerId: input.actedBy,
+        resolvedAt: isResolvedState ? input.actedAt : null,
+        updatedAt: input.actedAt,
+      };
+
+      const [savedIncident] = await deps.incidentRepository.saveIncidents([
+        updatedIncident,
+      ]);
+
+      return makeResult({ incident: savedIncident! }, [], input.actedAt);
     },
   };
 }
