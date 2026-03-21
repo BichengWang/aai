@@ -327,3 +327,15 @@ Chronological notes on repo setup, architecture decisions, implementation progre
   3. Incident list panel with status transitions
 - Current highest-priority: Phase 5 item 1 (trip timeline panel)
 
+### Docs baseline sync (Iter 36)
+
+- Updated `docs/planning/daily-plan.md` to reflect implemented `main` reality:
+  - Phase 2-4 work already complete
+  - trip timeline and vehicle utilization dashboard slices already shipped
+  - incident workflow is now the highest-priority ready task
+- Updated `docs/planning/implementation-roadmap.md`:
+  - marked Phase 5 items 1 and 2 complete
+  - promoted Phase 5 item 3 (incident list panel with status transitions) to the active next PR
+- Updated `docs/architecture/overview.md` to include the trip timeline and vehicle utilization dashboard surfaces
+
+**Verification**: docs-only sync against current `main` implementation

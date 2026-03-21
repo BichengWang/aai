@@ -18,6 +18,8 @@ Vite + React internal dashboard. Reads from the `GetTodayOpsSnapshot` use-case a
 - Active incidents and pending approvals
 - Overdue tasks
 - Worker health summary
+- Selected-trip timeline via `GetTripTimeline`
+- Vehicle utilization sidebar via `GetVehicleUtilization`
 
 Data source is env-gated:
 - `VITE_SUPABASE_URL` + `VITE_SUPABASE_KEY` → Supabase-backed snapshot
@@ -58,3 +60,4 @@ web/src/lib/               → web-side adapter wiring
 - Trip import source (CSV / Turo export) — `TripImportSource` port stub ready
 - Email / SMS / WhatsApp — `OpsNotifier` port extensible
 - Playwright browser assist — `BrowserAssistPort` stub ready, gated behind explicit enablement
+- Incident status transitions in the web dashboard

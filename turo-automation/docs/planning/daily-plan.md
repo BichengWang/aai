@@ -6,9 +6,9 @@ Use this file for the current working plan. Keep it short, current, and actionab
 2026-03-21
 
 ## Objective
-Move to Phase 2: real notifications and the approval workflow.
+Move through Phase 5 dashboard enrichment, starting with incident workflow.
 
-## Completed (Phase 1)
+## Completed
 - [x] Shared domain, ports, fixtures, and use-case contracts
 - [x] Fixture-backed ops dashboard shell (web)
 - [x] Fixture-backed worker job runner
@@ -22,21 +22,26 @@ Move to Phase 2: real notifications and the approval workflow.
 - [x] Slack notifier adapter (`SLACK_WEBHOOK_URL`)
 - [x] CSV trip import adapter (`TRIP_IMPORT_CSV_PATH`)
 - [x] `.env.example` with all required env vars
-- [x] 8/8 automated tests pass
+- [x] Approval action in the web dashboard (approve/reject pending draft)
+- [x] Message template rendering for draft bodies
+- [x] Scheduled worker mode with retry handling
+- [x] Trip timeline side panel in the web dashboard
+- [x] Vehicle utilization panel in the web dashboard
+- [x] 23/23 automated tests pass
 - [x] README with setup instructions and adapter mode table
 - [x] Architecture docs updated
 
-## Today's Priorities (Phase 2 start)
-- [ ] Add approval action to the web dashboard (approve/reject a pending draft)
-- [ ] Add `ApprovalRepository` mutation method (or reuse `saveApprovalRequests`) for state transitions
-- [ ] Define a minimal web API module for approval actions backed by Supabase
-- [ ] Add Slack notification when an approval is acted on
+## Today's Priorities
+- [ ] Add incident status transition use-case support
+- [ ] Surface richer incident context in the dashboard
+- [ ] Wire incident actions into the web dashboard with refresh-after-action
+- [ ] Keep docs aligned with implemented dashboard behavior
 - [ ] Keep Playwright out of the critical path
 
 ## Risks / Open Questions
-- Should approval actions be a direct Supabase client call from the web, or go through a worker endpoint?
-- When does the message draft actually get sent (guest-facing channel send)?
-- What user identity/auth is used for the `reviewedBy` field on approval requests?
+- Should incident actions remain direct Supabase client calls from the web, or move behind a worker/API boundary later?
+- What actor identity should own `reviewedBy` and incident `ownerId` in production?
+- When does an approved message draft actually get sent on the guest-facing channel?
 
 ## Next Suggested Step
-Add an `ApproveMessageDraft` use-case and wire an approval action button in the web dashboard that calls it directly via the Supabase client.
+Add an incident action use case and wire status transitions into the dashboard so operators can move issues from open/investigating/waiting to resolved without leaving the app.

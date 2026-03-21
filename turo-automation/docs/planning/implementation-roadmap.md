@@ -55,24 +55,24 @@ PR slices:
 3. operational runbooks and alert tuning ✓ (`host-ops-daily.md`, `incident-response.md`)
 4. richer analytics and utilization reporting ✓ (`GetVehicleUtilization` use case)
 
-## Phase 5 — Dashboard Enrichment (next)
+## Phase 5 — Dashboard Enrichment (in progress)
 Objective: surface the new data from Phases 3–4 in the operator UI.
 
 PR slices:
-1. trip timeline panel in OpsDashboard (wire `GetTripTimeline` to selected-trip view)
-2. vehicle utilization panel (wire `GetVehicleUtilization` to dashboard sidebar)
+1. trip timeline panel in OpsDashboard (wire `GetTripTimeline` to selected-trip view) ✓
+2. vehicle utilization panel (wire `GetVehicleUtilization` to dashboard sidebar) ✓
 3. incident list panel with status transitions (surface `DetectTripAnomalies` output)
 
 ## Current Highest-Priority Next PR
-Phase 5 item 1: trip timeline panel in OpsDashboard:
-- Add a trip-detail side panel that calls `GetTripTimeline` for the selected trip
-- Render timeline entries (events, tasks, incidents, drafts) sorted by timestamp
-- Wire to existing fixture data for immediate local testing
+Phase 5 item 3: incident list panel with status transitions:
+- Enrich the active-issue model with operator-facing trip and vehicle context
+- Add an incident action use case for status changes
+- Wire the dashboard to let operators resolve or progress active incidents
 
 ## Why This Is Next
 - Phases 0–4 are fully complete
-- The operator UI still only shows the snapshot view; no drill-down exists
-- Trip timeline is the single highest-value addition: surfaces all context in one place
+- Phase 5 items 1 and 2 are already implemented on `main`
+- The remaining gap is closing the loop on incidents from inside the dashboard
 
 ## Rules for Future PRs
 - one highest-priority PR at a time
