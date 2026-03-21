@@ -409,3 +409,13 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 - Updated `docs/planning/daily-plan.md` to mark incident actions with refresh complete
 
 **Verification**: `npm test` — 24/24 pass
+
+### README sync to implemented workflow (Iter 44)
+
+- Updated `README.md` to reflect current `main` reality:
+  - worker runs six jobs and supports scheduled mode
+  - web dashboard now includes timeline drill-down, utilization, and approval/incident actions
+  - `npm test` currently validates 24 automated tests
+  - dashboard mutations require `VITE_SUPABASE_*` web env vars
+
+**Verification**: docs-only sync against current implementation

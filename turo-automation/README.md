@@ -33,8 +33,8 @@ turo-automation/
 ## Packages
 
 - `shared/` — domain types, port interfaces, use-case implementations, and adapter implementations (Supabase, Slack)
-- `worker/` — background job runner; dispatches the five core jobs on each invocation
-- `web/` — internal React dashboard showing today's ops snapshot
+- `worker/` — background job runner; dispatches six core jobs on each invocation or runs them on intervals in scheduled mode
+- `web/` — internal React dashboard showing today's ops snapshot, trip timeline drill-down, vehicle utilization, approval actions, and incident actions
 
 ## Getting Started
 
@@ -66,7 +66,7 @@ psql $DATABASE_URL -f supabase/migrations/0002_turo_ops_incidents_messages_jobs.
 
 ```sh
 npm run build    # compile all packages
-npm test         # build + run 7 automated tests
+npm test         # build + run 24 automated tests
 ```
 
 ### 5. Run the dashboard
@@ -82,6 +82,19 @@ npm run dev:worker
 ```
 
 Set `TRIP_IMPORT_CSV_PATH=data/trips.sample.csv` to import the bundled sample trips.
+
+### 7. Run the worker (scheduled mode)
+
+```sh
+WORKER_MODE=scheduled npm run dev:worker
+```
+
+Optional interval env vars:
+- `INTERVAL_IMPORT_MS`
+- `INTERVAL_LIFECYCLE_MS`
+- `INTERVAL_LATE_RETURN_MS`
+- `INTERVAL_GENERATE_DRAFTS_MS`
+- `INTERVAL_DAILY_DIGEST_MS`
 
 ## Working Principles
 
@@ -100,3 +113,5 @@ The worker and web fall back to fixture data when Supabase env vars are absent �
 | Web data | `VITE_SUPABASE_URL` + `VITE_SUPABASE_KEY` | fixture snapshot |
 | Notifications | `SLACK_WEBHOOK_URL` | no-op (silent) |
 | Trip import | `TRIP_IMPORT_CSV_PATH` | empty (no imports) |
+
+Approval and incident actions in the dashboard require the `VITE_SUPABASE_*` web env vars so the UI can persist state transitions.
