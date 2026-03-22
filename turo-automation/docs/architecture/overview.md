@@ -61,3 +61,18 @@ web/src/lib/               → web-side adapter wiring
 - Trip import source (CSV / Turo export) — `TripImportSource` port stub ready
 - Email / SMS / WhatsApp — `OpsNotifier` port extensible
 - Playwright browser assist — `BrowserAssistPort` stub ready, gated behind explicit enablement
+- Playwright browser automation package — planned as a new repo-local workspace package, gated behind explicit enablement and read-only-first flows
+
+## Browser Automation Direction
+A new browser automation package should be added inside this repo rather than built as a separate app. It should:
+- own Playwright session management and persisted auth state
+- expose narrow CLI/read-model style flows (`session:bootstrap`, `session:check`, `trips:list`, `trips:get`, `messages:list`)
+- keep selectors and browser-specific logic isolated from the current dashboard and worker packages
+- integrate with `worker/` only after the read-only flows are stable
+- defer all guest-facing writes until explicit approval/safety controls are designed
+
+Current implementation status:
+- `browser-agent/` workspace package exists
+- config/env parsing, runtime preparation, and local storage/artifact directories are implemented
+- `health:smoke`, `session:bootstrap`, and `session:check` commands exist with test coverage
+- live Turo page extraction and authenticated browser verification are not implemented yet

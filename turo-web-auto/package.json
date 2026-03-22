@@ -1,0 +1,27 @@
+{
+  "name": "turo-web-auto",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Minimal Turo web automation architecture and MVP scaffolding",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "dev:smoke": "tsx src/cli/index.ts health:smoke",
+    "session:bootstrap": "tsx src/cli/index.ts session:bootstrap",
+    "session:check": "tsx src/cli/index.ts session:check",
+    "trips:list": "tsx src/cli/index.ts trips:list",
+    "trips:get": "tsx src/cli/index.ts trips:get",
+    "messages:list": "tsx src/cli/index.ts messages:list"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "playwright": "^1.53.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2",
+    "@types/node": "^24.5.2"
+  }
+}

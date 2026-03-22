@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "turo-browser-agent"
+version = "0.2.0"
+description = "Python browser automation scaffold for Turo host workflows"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "playwright>=1.53,<2"
+]
+
+[project.scripts]
+turo-browser-agent = "turo_browser_agent.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

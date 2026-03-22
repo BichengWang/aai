@@ -1,0 +1,19 @@
+{
+  "name": "@turo-automation/browser-agent",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/cli.ts",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.53.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.1",
+    "tsx": "^4.21.0",
+    "typescript": "5.8.3"
+  }
+}
