@@ -432,3 +432,18 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 - Updated `docs/planning/daily-plan.md` to mark docs alignment complete and point next work at production actor identity
 
 **Verification**: docs-only sync against current implementation
+
+### Live browser-backed health check
+
+- Added `browser-agent/src/classify.ts` to conservatively classify Turo page state from URL/title/body text
+- Added `browser-agent/src/browser.ts` to snapshot minimal page metadata from a live Playwright page
+- Upgraded `browser-agent` `health:smoke` to perform a live read-only Playwright navigation to `TURO_BASE_URL`
+- `health:smoke` now returns:
+  - whether a local storage state file exists
+  - final URL
+  - page title
+  - conservative page classification (`authenticated`, `unauthenticated`, `unknown`)
+- Browser is always closed after the check; no writes are performed
+- Added tests for page classification and pre-launch runtime/state detection
+
+**Verification**: `npm test` — 36/36 pass

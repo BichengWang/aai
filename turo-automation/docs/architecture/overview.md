@@ -75,4 +75,5 @@ Current implementation status:
 - `browser-agent/` workspace package exists
 - config/env parsing, runtime preparation, and local storage/artifact directories are implemented
 - `health:smoke`, `session:bootstrap`, and `session:check` commands exist with test coverage
-- live Turo page extraction and authenticated browser verification are not implemented yet
+- `health:smoke` now performs a live read-only browser navigation to `TURO_BASE_URL`, snapshots minimal page metadata, and classifies the page conservatively as `authenticated`, `unauthenticated`, or `unknown`
+- authenticated trip/message extraction is not implemented yet

@@ -44,4 +44,4 @@ Close Phase 5 and define the next hardening slice for production mutations.
 - When does an approved message draft actually get sent on the guest-facing channel?
 
 ## Next Suggested Step
-Define the production actor identity source for dashboard mutations so approval and incident actions stop relying on placeholder `web.reviewer` values.
+Extend `browser-agent` from static prep/state checks into a live read-only browser health check, then use that as the base for authenticated trip/message extraction.
