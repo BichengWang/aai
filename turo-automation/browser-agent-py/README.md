@@ -27,7 +27,7 @@ After `python3 -m pip install -e .`, the `turo-browser-agent` console script is 
 This is a minimal real browser runner:
 - `health-smoke` launches a browser and opens Turo
 - `session-bootstrap` opens the login flow and waits for manual auth
-- `session-check` reuses saved browser state and checks whether the session still looks valid
+- `session-check` reuses saved browser state and verifies a protected host route, not just the public homepage
 - `trips-list` opens the host trips page and returns structured JSON or `login_required`
 
 It stays read-first and intentionally avoids guest-facing writes.
