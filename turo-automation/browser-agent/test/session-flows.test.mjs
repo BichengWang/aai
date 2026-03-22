@@ -4,7 +4,7 @@ import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { runSessionBootstrap } from '../dist/flows/sessionBootstrap.js';
-import { runSessionCheck } from '../dist/flows/sessionCheck.js';
+import { classifySessionStatus, runSessionCheck } from '../dist/flows/sessionCheck.js';
 
 async function withTempEnv(fn) {
   const tempDir = await mkdtemp(join(tmpdir(), 'browser-agent-'));
@@ -29,6 +29,18 @@ async function withTempEnv(fn) {
   }
 }
 
+test('classifySessionStatus reports missing state first', () => {
+  assert.equal(classifySessionStatus(false), 'missing_state');
+});
+
+test('classifySessionStatus reports authenticated when live page is authenticated', () => {
+  assert.equal(classifySessionStatus(true, 'authenticated'), 'authenticated');
+});
+
+test('classifySessionStatus reports stale_state when live page is unauthenticated', () => {
+  assert.equal(classifySessionStatus(true, 'unauthenticated'), 'stale_state');
+});
+
 test('runSessionBootstrap prepares storage and artifacts directories', async () => {
   await withTempEnv(async () => {
     const result = await runSessionBootstrap();
@@ -46,13 +58,35 @@ test('runSessionCheck reports missing state when state file is absent', async ()
   });
 });
 
-test('runSessionCheck reports ready_for_browser_check when state file exists', async () => {
+test('runSessionCheck reports authenticated when injected live inspection is authenticated', async () => {
   await withTempEnv(async (tempDir) => {
     const statePath = join(tempDir, 'storage', 'state.json');
     await runSessionBootstrap();
     await writeFile(statePath, JSON.stringify({ cookies: [] }), 'utf8');
-    const result = await runSessionCheck();
+    const result = await runSessionCheck(async () => ({
+      pageKind: 'authenticated',
+      pageTitle: 'Host dashboard',
+      finalUrl: 'https://turo.com/us/en/host/dashboard',
+      usingStorageState: true,
+    }));
     assert.equal(result.data.stateFileExists, true);
-    assert.equal(result.data.status, 'ready_for_browser_check');
+    assert.equal(result.data.status, 'authenticated');
+    assert.equal(result.data.pageKind, 'authenticated');
+  });
+});
+
+test('runSessionCheck reports stale_state when injected live inspection is unauthenticated', async () => {
+  await withTempEnv(async (tempDir) => {
+    const statePath = join(tempDir, 'storage', 'state.json');
+    await runSessionBootstrap();
+    await writeFile(statePath, JSON.stringify({ cookies: [] }), 'utf8');
+    const result = await runSessionCheck(async () => ({
+      pageKind: 'unauthenticated',
+      pageTitle: 'Log in | Turo',
+      finalUrl: 'https://turo.com/us/en/login',
+      usingStorageState: true,
+    }));
+    assert.equal(result.data.status, 'stale_state');
+    assert.match(result.warnings[0], /re-bootstrap/i);
   });
 });

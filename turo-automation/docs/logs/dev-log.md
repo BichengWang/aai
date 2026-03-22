@@ -447,3 +447,27 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 - Added tests for page classification and pre-launch runtime/state detection
 
 **Verification**: `npm test` — 36/36 pass
+
+### Read-only trip list scaffold
+
+- Updated `browser-agent/src/runtime.ts` so browser-agent flows reuse the saved Playwright storage state when `browser-agent/storage/state.json` exists
+- Added `browser-agent/src/flows/tripsList.ts` and wired a new `trips:list` CLI command
+- Extended `browser-agent/src/browser.ts` with conservative trip-link extraction from the host trips page
+- Added runtime and trip-extraction tests plus README updates for the new read-only command surface
+
+**Verification**: `npm test` — 39/39 pass
+
+### Live session check classification
+
+- Upgraded `browser-agent/src/flows/sessionCheck.ts` from file-existence only to a live read-only session inspection
+- `session:check` now reports `authenticated`, `stale_state`, `unknown`, or `missing_state`
+- Added injectable inspection path for tests so session classification logic is covered without requiring a live browser login in CI
+- Updated browser-agent README to document the more accurate session status contract
+
+**Verification**: `npm test` — 43/43 pass
+
+### Authenticated browser follow-up blocker
+
+- Checked the local repo for `browser-agent/storage/state.json` after publishing PR #69 and confirmed it is missing
+- Stopped before implementing trip-detail or richer authenticated extraction logic because there is no safe way to verify selectors against a logged-in Turo host session yet
+- Updated planning docs so the next step is explicit: bootstrap a browser session, confirm `session:check` returns `authenticated`, then continue read-only extraction work

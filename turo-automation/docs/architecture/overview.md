@@ -74,6 +74,8 @@ A new browser automation package should be added inside this repo rather than bu
 Current implementation status:
 - `browser-agent/` workspace package exists
 - config/env parsing, runtime preparation, and local storage/artifact directories are implemented
-- `health:smoke`, `session:bootstrap`, and `session:check` commands exist with test coverage
-- `health:smoke` now performs a live read-only browser navigation to `TURO_BASE_URL`, snapshots minimal page metadata, and classifies the page conservatively as `authenticated`, `unauthenticated`, or `unknown`
-- authenticated trip/message extraction is not implemented yet
+- `health:smoke`, `session:bootstrap`, `session:check`, and `trips:list` commands exist with test coverage
+- `health:smoke` performs a live read-only browser navigation to `TURO_BASE_URL`, snapshots minimal page metadata, and classifies the page conservatively as `authenticated`, `unauthenticated`, or `unknown`
+- `session:check` performs a live read-only inspection and reports whether saved auth appears authenticated, stale, missing, or unknown
+- `trips:list` performs a live read-only navigation to the host trips page, reuses saved storage state when present, and extracts conservative trip link summaries
+- authenticated trip-detail and message extraction are not implemented yet
