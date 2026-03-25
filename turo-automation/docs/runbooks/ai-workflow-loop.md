@@ -5,6 +5,8 @@ Run when previous PR merged into main.
 ## Mission
 Advance exactly one highest-priority, ready-to-execute development increment. Prefer continuing existing in-flight work. Only start a new branch and PR when no suitable active PR already exists.
 
+A task is only considered done once it is checked into `main`.
+
 ## Source of Truth
 Review these first:
 - `docs/planning/daily-plan.md`
@@ -59,7 +61,7 @@ If an answer is uncertain but actionable, choose the safest reasonable path and 
 5. Verify
    - Run the relevant checks and tests for the change.
    - Fix obvious regressions caused by the work.
-   - Perform a brief self-review for correctness, edge cases, and unintended side effects.
+   - Perform a brief self-review for correctness, edge cases, unintended side effects, and whether the diff is the smallest reviewable slice.
 6. Sync docs
    - Update `docs/` to match implemented reality.
    - Typical updates include:
@@ -74,14 +76,16 @@ If an answer is uncertain but actionable, choose the safest reasonable path and 
      git commit -m "<commit-message>"
      ```
    - Never add `Co-Authored-By` trailers or override git author/committer identity.
-   - Open or update the PR.
-   - For new PRs, use the local helper:
+   - Before opening or updating the PR, perform a brief self-review of the final diff for correctness, scope control, edge cases, and docs/test alignment.
+   - Open or update the PR against `main`.
+   - For new PRs, use the local helper and add the auto-merge label so the increment can merge directly into `main`:
      ```sh
-     g pr "<pr-title>"
+     g pr "<pr-title>" --label auto-merge
      ```
+   - If the helper is unavailable, use `gh pr create --base main --label auto-merge ...`.
    - After submitting or updating the PR, wait 15 seconds and check whether it merged into `main`.
    - If the PR conflicts with `main`, resolve the conflict immediately, verify again, and push the fix.
-   - If the PR merged, rebase or sync from updated `main` before starting the next iteration.
+   - If the PR merged directly into `main`, switch back to `main` and rebase or sync from updated `origin/main` before starting the next iteration.
 8. Report
    - Output the run summary using the format below.
 
@@ -126,5 +130,6 @@ git branch -d <branch-name>
 - Do not duplicate existing PRs.
 - Do not widen scope to unrelated work.
 - Do not mark speculative or unverified work as complete.
+- Do not treat local-only work or an open PR as done; done means merged into `main`.
 - Keep docs aligned with implemented reality, not intent.
 - Do not add co-authors or alternate author metadata to commits.

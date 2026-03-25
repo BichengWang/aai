@@ -41,3 +41,6 @@ In parallel, the repo now has a Python-first browser automation subtree at `brow
 - do not introduce unattended Turo interaction
 - keep guest-facing communication approval-gated
 - prefer reviewable PR slices over broad integration work
+- before sending a PR, do a brief self-review of the final diff
+- when opening PRs from the workflow loop, target `main` and add `--label auto-merge`
+- treat work as done only after it is merged into `main`
