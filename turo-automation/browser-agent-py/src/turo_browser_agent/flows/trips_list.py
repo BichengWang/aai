@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ..config import read_config
+from ..parsers import normalize_trip_item
 from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, prepare_runtime
 from ..types import create_result
 
@@ -11,54 +12,47 @@ TRIPS_URL = "https://turo.com/us/en/trips"
 
 JS_EXTRACT = r'''
 () => {
-  const anchors = Array.from(document.querySelectorAll('a[href*="/trips/"]'));
+  const anchors = Array.from(document.querySelectorAll('a[data-testid="baseTripCard"], a[href*="/reservation/"]'));
   const seen = new Set();
   const items = [];
 
   for (const anchor of anchors) {
-    const href = anchor.href;
+    const href = anchor.getAttribute('href') || anchor.href || '';
     if (!href || seen.has(href)) continue;
     seen.add(href);
 
-    let root = anchor;
-    for (let i = 0; i < 4; i += 1) {
-      if (!root.parentElement) break;
-      root = root.parentElement;
-    }
-
-    const text = (root.innerText || anchor.innerText || '').replace(/\s+/g, ' ').trim();
+    const text = (anchor.innerText || '').replace(/\s+/g, ' ').trim();
     if (!text) continue;
+
+    const paragraphs = Array.from(anchor.querySelectorAll('p'))
+      .map((el) => (el.innerText || '').replace(/\s+/g, ' ').trim())
+      .filter(Boolean);
+
+    const title = paragraphs.find((value) => /\b\d{4}\b/.test(value)) || paragraphs[1] || paragraphs[0] || null;
+    const location = paragraphs.find((value) => / – |, [A-Z]{2}\b/.test(value)) || null;
+    const guestLine = paragraphs.find((value) => /#\d+/.test(value)) || null;
+    const actor = guestLine ? guestLine.replace(/\s*#\d+.*/, '') : null;
+    const reservationIdMatch = href.match(/\/reservation\/(\d+)/);
+    const badge = Array.from(anchor.querySelectorAll('div, span'))
+      .map((el) => (el.innerText || '').replace(/\s+/g, ' ').trim())
+      .find((value) => /^(Booked|Upcoming|Ended|Completed|Canceled|Cancelled|In progress)/i.test(value)) || null;
 
     items.push({
       href,
       text,
+      title,
+      location,
+      actor,
+      guestLine,
+      reservationId: reservationIdMatch ? reservationIdMatch[1] : null,
+      badge,
     });
   }
 
   return items;
 }
 '''
-
-
-def _normalize_trip_item(raw: dict[str, str]) -> dict[str, str | None]:
-    text = raw.get("text", "")
-    parts = [part.strip() for part in text.split(" · ") if part.strip()]
-    title = parts[0] if parts else text[:120] or None
-    status = None
-    for candidate in ["Booked", "Upcoming", "In progress", "Completed", "Canceled", "Cancelled"]:
-      if candidate.lower() in text.lower():
-        status = candidate
-        break
-    return {
-        "title": title,
-        "status": status,
-        "href": raw.get("href"),
-        "rawText": text,
-    }
-
-
-
-def run_trips_list():
+def run_trips_list(args: list[str] | None = None):
     config = read_config()
     runtime = prepare_runtime(config)
 
@@ -76,7 +70,7 @@ def run_trips_list():
             lower = body_text.lower()
 
             if any(marker in lower for marker in LOGIN_MARKERS) or "/login" in url:
-                artifacts = capture_page_artifacts(page, config, "trips-list-login-required")
+                artifacts, artifact_warnings = capture_page_artifacts(page, config, "trips-list-login-required")
                 return create_result(
                     "trips:list",
                     {
@@ -89,16 +83,17 @@ def run_trips_list():
                         "trips": [],
                         "artifacts": artifacts,
                     },
-                    warnings=["Trips page requires a logged-in host browser session."],
+                    warnings=["Trips page requires a logged-in host browser session.", *artifact_warnings],
                 )
 
             raw_items = page.evaluate(JS_EXTRACT)
-            trips = [_normalize_trip_item(item) for item in raw_items]
-            artifacts = capture_page_artifacts(page, config, "trips-list")
+            trips = [normalize_trip_item(item) for item in raw_items]
+            artifacts, artifact_warnings = capture_page_artifacts(page, config, "trips-list")
 
-            warnings = None
+            warnings: list[str] = []
             if not trips:
-                warnings = ["Trips page loaded but no trip cards were extracted with the current parser."]
+                warnings.append("Trips page loaded but no trip cards were extracted with the current parser.")
+            warnings.extend(artifact_warnings)
 
             return create_result(
                 "trips:list",

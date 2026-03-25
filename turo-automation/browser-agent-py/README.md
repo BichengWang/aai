@@ -14,10 +14,12 @@ This subtree captures the learned browser automation steps as executable command
 - `./run session-bootstrap`
 - `./run session-check`
 - `./run trips-list`
+- `./run trip-get <reservation-id-or-url>`
 - `turo-browser-agent health-smoke`
 - `turo-browser-agent session-bootstrap`
 - `turo-browser-agent session-check`
 - `turo-browser-agent trips-list`
+- `turo-browser-agent trip-get <reservation-id-or-url>`
 
 The checked-in `./run` wrapper works without installing the package first.
 After `python3 -m pip install -e .`, the `turo-browser-agent` console script is also available.
@@ -29,8 +31,11 @@ This is a minimal real browser runner:
 - `session-bootstrap` opens the login flow and waits for manual auth
 - `session-check` reuses saved browser state and verifies a protected host route, not just the public homepage
 - `trips-list` opens the host trips page and returns structured JSON or `login_required`
+- `trip-get` opens one reservation detail page by ID or URL and returns a conservative structured summary
 
 It stays read-first and intentionally avoids guest-facing writes.
+
+For the practical auth playbook and troubleshooting guidance, read `docs/AUTH_RUNBOOK.md`.
 
 ## Three operating modes
 
@@ -71,6 +76,8 @@ export BROWSER_AGENT_CDP_URL=http://127.0.0.1:9222
 ./run health-smoke
 ./run session-bootstrap
 ./run session-check
+./run trips-list
+./run trip-get 54848775
 ```
 
 ## Local dev

@@ -492,3 +492,26 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 - `./run session-check` → `status: login_required`, `checkedUrl: https://turo.com/us/en/trips`, final URL redirects to `/login`
 - `BROWSER_AGENT_USE_CDP_ATTACH=true BROWSER_AGENT_CDP_URL=http://127.0.0.1:9222 ./run session-check` → still redirects protected route to `/login`
 - `BROWSER_AGENT_USE_CDP_ATTACH=true BROWSER_AGENT_CDP_URL=http://127.0.0.1:9222 .venv/bin/python /tmp/check_host.py` → public host-tools page loads, but protected `/us/en/trips` and `/us/en/account` routes redirect to login
+
+---
+
+## 2026-03-24
+
+### Read-only browser trip detail slice
+
+- Added `browser-agent-py/src/turo_browser_agent/flows/trip_get.py`
+  - accepts a reservation ID, reservation path, or full reservation URL
+  - opens the reservation detail page read-only
+  - returns `login_required` when the session is bounced to login
+  - extracts a conservative structured summary plus screenshot/HTML artifacts when the page loads
+- Added `browser-agent-py/src/turo_browser_agent/parsers.py`
+  - shared trip-list normalization
+  - reservation target resolution for `trip-get`
+  - conservative trip-detail parsing from headings, badges, key lines, and page text
+- Updated `browser-agent-py/src/turo_browser_agent/cli.py` so handlers receive trailing command arguments and wired the new `trip-get` command
+- Hardened artifact capture so screenshot failures do not suppress HTML capture or the main workflow result
+- Updated browser-agent docs plus repo planning/architecture docs to reflect that `trip-get` now exists and `messages-list` is the next read-only slice
+
+### Verification
+
+- `python3 -m unittest discover -s browser-agent-py/tests -p 'test_*.py'`

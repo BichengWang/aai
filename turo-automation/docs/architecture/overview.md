@@ -66,16 +66,17 @@ web/src/lib/               → web-side adapter wiring
 ## Browser Automation Direction
 A new browser automation package should be added inside this repo rather than built as a separate app. It should:
 - own Playwright session management and persisted auth state
-- expose narrow CLI/read-model style flows (`session:bootstrap`, `session:check`, `trips:list`, `trips:get`, `messages:list`)
+- expose narrow CLI/read-model style flows (`session:bootstrap`, `session:check`, `trips:list`, `trip-get`, `messages:list`)
 - keep selectors and browser-specific logic isolated from the current dashboard and worker packages
 - integrate with `worker/` only after the read-only flows are stable
 - defer all guest-facing writes until explicit approval/safety controls are designed
 
 Current implementation status:
-- `browser-agent/` workspace package exists
+- `browser-agent-py/` exists as the active Python-first browser automation subtree for live host-session work
 - config/env parsing, runtime preparation, and local storage/artifact directories are implemented
-- `health:smoke`, `session:bootstrap`, `session:check`, and `trips:list` commands exist with test coverage
+- `health:smoke`, `session:bootstrap`, `session:check`, `trips:list`, and `trip-get` commands exist with focused Python test coverage
 - `health:smoke` performs a live read-only browser navigation to `TURO_BASE_URL`, snapshots minimal page metadata, and classifies the page conservatively as `authenticated`, `unauthenticated`, or `unknown`
-- `session:check` performs a live read-only inspection and reports whether saved auth appears authenticated, stale, missing, or unknown
+- `session:check` performs a live read-only inspection against the protected host trips route so auth is verified on a real gated page
 - `trips:list` performs a live read-only navigation to the host trips page, reuses saved storage state when present, and extracts conservative trip link summaries
-- authenticated trip-detail and message extraction are not implemented yet
+- `trip-get` performs a live read-only reservation detail fetch by reservation ID or URL and returns a conservative structured summary with saved page artifacts
+- `messages-list` remains unimplemented pending live hardening of the authenticated trip-detail flow

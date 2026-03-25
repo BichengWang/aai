@@ -3,10 +3,10 @@
 Use this file for the current working plan. Keep it short, current, and actionable.
 
 ## Date
-2026-03-22
+2026-03-24
 
 ## Objective
-Verify authenticated browser-agent validation against a protected host route so the next read-only extraction slice can be verified safely.
+Harden the new read-only browser-agent reservation detail slice without pulling Playwright into the worker critical path.
 
 ## Completed
 - [x] Shared domain, ports, fixtures, and use-case contracts
@@ -32,17 +32,17 @@ Verify authenticated browser-agent validation against a protected host route so 
 - [x] Architecture docs updated
 
 ## Today's Priorities
-- [x] Add incident status transition use-case support
-- [x] Surface richer incident context in the dashboard
-- [x] Wire incident actions into the web dashboard with refresh-after-action
-- [x] Keep docs aligned with implemented dashboard behavior
+- [x] Verify browser auth on a protected host route instead of the public homepage
+- [x] Add a conservative read-only `trip-get` reservation detail flow in `browser-agent-py`
+- [x] Add focused parser/CLI coverage for the new `trip-get` slice
+- [x] Keep browser-agent docs aligned with implemented command behavior
 - [ ] Keep Playwright out of the critical path
 
 ## Risks / Open Questions
 - Should incident actions remain direct Supabase client calls from the web, or move behind a worker/API boundary later?
 - What actor identity should own `reviewedBy` and incident `ownerId` in production?
 - When does an approved message draft actually get sent on the guest-facing channel?
-- Browser-agent authenticated follow-up remains blocked until a protected host route loads without redirecting to `/login`; a public-homepage-only `session:check` is not sufficient.
+- Browser-agent authenticated extraction still depends on a real host-logged-in browser session for live selector verification; unit coverage only hardens parser behavior and CLI wiring.
 
 ## Next Suggested Step
-Re-bootstrap or re-attach the browser-agent against a real host-authenticated session, then verify `session:check` succeeds on the protected trips route before extending `trips:list` selector coverage or adding a trip-detail read model.
+Re-attach the browser-agent to a real host-authenticated Chrome session, verify `session-check` and `trip-get` against a live reservation page, then use that evidence to implement the next read-only `messages-list` slice.

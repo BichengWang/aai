@@ -60,18 +60,25 @@ def artifact_path(config: BrowserAgentConfig, prefix: str, suffix: str = ".png")
 
 
 
-def capture_page_artifacts(page, config: BrowserAgentConfig, prefix: str) -> list[str]:
+def capture_page_artifacts(page, config: BrowserAgentConfig, prefix: str) -> tuple[list[str], list[str]]:
     artifacts: list[str] = []
+    warnings: list[str] = []
 
     screenshot = artifact_path(config, prefix, ".png")
-    page.screenshot(path=str(screenshot), full_page=True)
-    artifacts.append(str(screenshot))
+    try:
+        page.screenshot(path=str(screenshot), full_page=True)
+        artifacts.append(str(screenshot))
+    except Exception as exc:
+        warnings.append(f"Screenshot capture failed: {exc}")
 
     html = artifact_path(config, prefix, ".html")
-    html.write_text(page.content(), encoding="utf-8")
-    artifacts.append(str(html))
+    try:
+        html.write_text(page.content(), encoding="utf-8")
+        artifacts.append(str(html))
+    except Exception as exc:
+        warnings.append(f"HTML capture failed: {exc}")
 
-    return artifacts
+    return artifacts, warnings
 
 
 

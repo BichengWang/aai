@@ -36,7 +36,11 @@ User / Scheduler / OpenClaw
 - `health-smoke`
 - `session-bootstrap`
 - `session-check`
-- later: `trips-list`, `trip-get`, `messages-list`
+- `trips-list`
+- `trip-get`
+- later: `messages-list`
+
+For operator-facing auth and login guidance, see `docs/AUTH_RUNBOOK.md`.
 
 ## Storage
 

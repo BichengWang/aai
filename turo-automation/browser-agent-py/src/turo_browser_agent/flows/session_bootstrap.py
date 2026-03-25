@@ -9,9 +9,7 @@ from ..types import create_result
 
 LOGIN_MARKERS = ["log in", "sign up", "continue with google"]
 
-
-
-def run_session_bootstrap():
+def run_session_bootstrap(args: list[str] | None = None):
     config = read_config()
     runtime = prepare_runtime(config)
 
@@ -34,18 +32,19 @@ def run_session_bootstrap():
                     break
                 time.sleep(2)
 
-            artifacts = capture_page_artifacts(page, config, "session-bootstrap")
+            artifacts, artifact_warnings = capture_page_artifacts(page, config, "session-bootstrap")
 
             if authenticated and not config.use_persistent_profile:
                 context.storage_state(path=str(config.storage_state_path))
 
-            warnings = None
+            warnings: list[str] = []
             if status == "awaiting_manual_login":
-                warnings = [
+                warnings.append(
                     "Browser opened, but login was not completed before timeout. Increase BROWSER_AGENT_BOOTSTRAP_WAIT_MS and retry."
-                ]
+                )
             elif status == "blocked":
-                warnings = ["Turo appears to be blocking this browser session."]
+                warnings.append("Turo appears to be blocking this browser session.")
+            warnings.extend(artifact_warnings)
 
             return create_result(
                 "session:bootstrap",

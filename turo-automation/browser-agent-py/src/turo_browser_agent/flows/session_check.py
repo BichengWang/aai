@@ -8,9 +8,7 @@ from ..types import create_result
 LOGIN_MARKERS = ["log in", "sign up", "join turo"]
 PROTECTED_TRIPS_URL = "https://turo.com/us/en/trips"
 
-
-
-def run_session_check():
+def run_session_check(args: list[str] | None = None):
     config = read_config()
     state_exists = config.storage_state_path.exists()
 
@@ -48,12 +46,13 @@ def run_session_check():
             if blocked:
                 status = "blocked"
 
-            artifacts = capture_page_artifacts(page, config, "session-check")
-            warnings = None
+            artifacts, artifact_warnings = capture_page_artifacts(page, config, "session-check")
+            warnings: list[str] = []
             if status == "login_required":
-                warnings = ["Browser state exists, but Turo still appears to require login."]
+                warnings.append("Browser state exists, but Turo still appears to require login.")
             elif status == "blocked":
-                warnings = ["Turo appears to be blocking this browser session."]
+                warnings.append("Turo appears to be blocking this browser session.")
+            warnings.extend(artifact_warnings)
 
             return create_result(
                 "session:check",

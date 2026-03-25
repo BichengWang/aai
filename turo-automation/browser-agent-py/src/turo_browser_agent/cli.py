@@ -6,6 +6,7 @@ import sys
 from .flows.health_smoke import run_health_smoke
 from .flows.session_bootstrap import run_session_bootstrap
 from .flows.session_check import run_session_check
+from .flows.trip_get import run_trip_get
 from .flows.trips_list import run_trips_list
 
 COMMANDS = {
@@ -13,6 +14,7 @@ COMMANDS = {
     "session-bootstrap": run_session_bootstrap,
     "session-check": run_session_check,
     "trips-list": run_trips_list,
+    "trip-get": run_trip_get,
 }
 
 
@@ -28,7 +30,7 @@ def main() -> int:
         sys.stderr.write(json.dumps({"ok": False, "error": f"Unknown command: {command}"}, indent=2) + "\n")
         return 1
 
-    result = handler()
+    result = handler(sys.argv[2:])
     sys.stdout.write(json.dumps(result.to_dict(), indent=2) + "\n")
     return 0
 
