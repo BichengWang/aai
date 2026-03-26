@@ -6,7 +6,7 @@ Use this file for the current working plan. Keep it short, current, and actionab
 2026-03-25
 
 ## Objective
-Harden the read-only `browser-agent-py` reservation detail slice and operator output while live host-session verification remains unavailable.
+Harden the new read-only browser-agent reservation detail slice without pulling Playwright into the worker critical path.
 
 ## Completed
 - [x] Shared domain, ports, fixtures, and use-case contracts
@@ -36,11 +36,8 @@ Harden the read-only `browser-agent-py` reservation detail slice and operator ou
 - [x] Add a conservative read-only `trip-get` reservation detail flow in `browser-agent-py`
 - [x] Add focused parser/CLI coverage for the new `trip-get` slice
 - [x] Keep browser-agent docs aligned with implemented command behavior
-- [x] Normalize `trip-get` guest names to return operator-ready values instead of raw `Guest:` labels
-- [x] Normalize `trip-get` pickup and return values to consistent operator-ready timestamps
-- [x] Normalize labeled reservation-detail location lines to operator-ready location values
+- [x] Centralize blocked/login page-state detection across the read-only browser-agent flows
 - [ ] Keep Playwright out of the critical path
-- [ ] Re-attach the browser-agent to a truly host-authenticated Chrome session for live selector verification
 
 ## Risks / Open Questions
 - Should incident actions remain direct Supabase client calls from the web, or move behind a worker/API boundary later?
@@ -49,4 +46,4 @@ Harden the read-only `browser-agent-py` reservation detail slice and operator ou
 - Browser-agent authenticated extraction still depends on a real host-logged-in browser session for live selector verification; unit coverage only hardens parser behavior and CLI wiring.
 
 ## Next Suggested Step
-Continue landing offline parser and output-hardening slices that do not depend on live auth, then re-attach the browser-agent to a truly host-authenticated Chrome session before implementing `messages-list`.
+Re-attach the browser-agent to a real host-authenticated Chrome session, verify `session-check` and `trip-get` against a live reservation page, then use that evidence to implement the next read-only `messages-list` slice.

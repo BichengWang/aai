@@ -40,6 +40,8 @@ User / Scheduler / OpenClaw
 - `trip-get`
 - later: `messages-list`
 
+Shared page-state helpers keep login-required and blocked-page detection consistent across the read-only flows.
+
 For operator-facing auth and login guidance, see `docs/AUTH_RUNBOOK.md`.
 
 ## Storage

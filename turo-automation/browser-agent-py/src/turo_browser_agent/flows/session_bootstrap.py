@@ -3,11 +3,9 @@ from __future__ import annotations
 import time
 
 from ..config import read_config
+from ..page_state import page_looks_blocked, page_looks_login_required
 from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, prepare_runtime
 from ..types import create_result
-
-
-LOGIN_MARKERS = ["log in", "sign up", "continue with google"]
 
 def run_session_bootstrap(args: list[str] | None = None):
     config = read_config()
@@ -23,10 +21,10 @@ def run_session_bootstrap(args: list[str] | None = None):
 
             while time.time() < deadline:
                 body_text = (page.locator("body").inner_text(timeout=3000) or "")[:2000].lower()
-                if "you've been blocked" in body_text:
+                if page_looks_blocked(page.title(), body_text):
                     status = "blocked"
                     break
-                if all(marker not in body_text for marker in LOGIN_MARKERS):
+                if not page_looks_login_required(page.title(), body_text):
                     authenticated = True
                     status = "authenticated"
                     break

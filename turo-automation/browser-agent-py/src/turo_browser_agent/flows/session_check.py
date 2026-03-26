@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from ..config import read_config
+from ..page_state import page_looks_blocked, page_looks_login_required
 from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page
 from ..types import create_result
 
-
-LOGIN_MARKERS = ["log in", "sign up", "join turo"]
 PROTECTED_TRIPS_URL = "https://turo.com/us/en/trips"
 
 def run_session_check(args: list[str] | None = None):
@@ -37,11 +36,10 @@ def run_session_check(args: list[str] | None = None):
             url = page.url
             cookies = context.cookies()
             body_text = (page.locator("body").inner_text(timeout=5000) or "")[:2000]
-            lower = body_text.lower()
 
-            blocked = "you've been blocked" in lower or "blocked" in title.lower()
+            blocked = page_looks_blocked(title, body_text)
             redirected_to_login = "/login" in url
-            looks_logged_out = redirected_to_login or any(marker in lower for marker in LOGIN_MARKERS)
+            looks_logged_out = redirected_to_login or page_looks_login_required(title, body_text)
             status = "authenticated" if not blocked and not looks_logged_out else "login_required"
             if blocked:
                 status = "blocked"

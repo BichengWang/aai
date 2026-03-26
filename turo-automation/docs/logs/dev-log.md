@@ -516,35 +516,19 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 - `python3 -m unittest discover -s browser-agent-py/tests -p 'test_*.py'`
 
----
-
 ## 2026-03-25
 
-### Browser trip detail guest normalization (Iter 1)
+### Shared page-state hardening
 
-- Updated `browser-agent-py/src/turo_browser_agent/parsers.py` so `trip-get` returns a cleaned guest name instead of the raw `Guest:` label when the detail parser finds guest metadata
-- Added parser assertions covering both `Guest: Alex Example` key-line extraction and `ALASTAIR'S TRIP` heading extraction
-- Updated `docs/planning/daily-plan.md` so the active plan reflects the current safe path: keep hardening read-only parser/output slices offline while live authenticated verification is still unavailable
-
-### Verification
-
-- `python3 -m unittest discover -s browser-agent-py/tests -p 'test_*.py'`
-
-### Browser trip detail time normalization (Iter 2)
-
-- Updated `browser-agent-py/src/turo_browser_agent/parsers.py` so `trip-get` strips `Pickup:` and `Return:` labels before returning the parsed pickup/return values
-- Kept the parser contract consistent with already-supported inline date extraction, so both labeled and unlabeled layouts now produce the same timestamp shape
-- Updated `docs/planning/daily-plan.md` to record the completed timestamp normalization slice
-
-### Verification
-
-- `python3 -m unittest discover -s browser-agent-py/tests -p 'test_*.py'`
-
-### Browser trip detail location normalization (Iter 3)
-
-- Updated `browser-agent-py/src/turo_browser_agent/parsers.py` so `trip-get` can extract labeled location lines such as `Pickup location:` or `Delivery location:` and return the cleaned location value
-- Kept the existing `LOCATION` section parsing intact while making the final fallback path clean operator-facing location labels before matching them
-- Added parser coverage for labeled airport-style location extraction and recorded the new completed slice in `docs/planning/daily-plan.md`
+- Added `browser-agent-py/src/turo_browser_agent/page_state.py` with shared conservative detection helpers for login-required and blocked pages
+- Wired the shared page-state helpers into:
+  - `browser-agent-py/src/turo_browser_agent/flows/health_smoke.py`
+  - `browser-agent-py/src/turo_browser_agent/flows/session_bootstrap.py`
+  - `browser-agent-py/src/turo_browser_agent/flows/session_check.py`
+  - `browser-agent-py/src/turo_browser_agent/flows/trips_list.py`
+  - `browser-agent-py/src/turo_browser_agent/flows/trip_get.py`
+- Added focused tests for login-required and blocked-page detection
+- Synced browser-agent docs and the daily plan to reflect the shared hardening layer
 
 ### Verification
 

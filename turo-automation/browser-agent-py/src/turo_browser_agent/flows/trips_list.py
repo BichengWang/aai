@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from ..config import read_config
+from ..page_state import page_looks_login_required
 from ..parsers import normalize_trip_item
 from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, prepare_runtime
 from ..types import create_result
 
-
-LOGIN_MARKERS = ["log in", "continue with google", "continue with email"]
 TRIPS_URL = "https://turo.com/us/en/trips"
 
 
@@ -67,9 +66,8 @@ def run_trips_list(args: list[str] | None = None):
             title = page.title()
             url = page.url
             body_text = (page.locator("body").inner_text(timeout=5000) or "")[:4000]
-            lower = body_text.lower()
 
-            if any(marker in lower for marker in LOGIN_MARKERS) or "/login" in url:
+            if page_looks_login_required(title, url, body_text):
                 artifacts, artifact_warnings = capture_page_artifacts(page, config, "trips-list-login-required")
                 return create_result(
                     "trips:list",

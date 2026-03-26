@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ..config import read_config
+from ..page_state import page_looks_blocked
 from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, prepare_runtime
 from ..types import create_result
 
@@ -18,7 +19,7 @@ def run_health_smoke(args: list[str] | None = None):
             title = page.title()
             url = page.url
             body_text = (page.locator("body").inner_text(timeout=5000) or "")[:500]
-            blocked = "blocked" in title.lower() or "you've been blocked" in body_text.lower()
+            blocked = page_looks_blocked(title, body_text)
             artifacts, artifact_warnings = capture_page_artifacts(page, config, "health-smoke")
 
             warnings: list[str] = []
