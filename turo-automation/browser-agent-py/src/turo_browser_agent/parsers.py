@@ -83,6 +83,13 @@ def _clean_trip_time(value: str | None) -> str | None:
     return cleaned or None
 
 
+def _clean_location(value: str | None) -> str | None:
+    if value is None:
+        return None
+    cleaned = re.sub(r"^(?:(pickup|return|delivery)\s+)?location\s*:\s*", "", value, flags=re.IGNORECASE).strip()
+    return cleaned or None
+
+
 def normalize_trip_item(raw: Mapping[str, str | None]) -> dict[str, str | None]:
     text = raw.get("text", "") or ""
     return {
@@ -203,11 +210,23 @@ def normalize_trip_detail(raw: Mapping[str, Any], final_url: str, body_text: str
         if location:
             break
 
+    if location is None:
+        location = _clean_location(
+            next(
+                (
+                    value
+                    for value in [*body_lines, *key_lines]
+                    if re.match(r"^(?:(pickup|return|delivery)\s+)?location\s*:", value, re.IGNORECASE)
+                ),
+                None,
+            )
+        )
+
     location = next(
         (
-            value
-            for value in ([location] if location else []) + [*body_lines, *key_lines]
-            if _looks_like_location(value)
+            candidate
+            for candidate in [_clean_location(value) for value in ([location] if location else []) + [*body_lines, *key_lines]]
+            if candidate and _looks_like_location(candidate)
         ),
         None,
     )

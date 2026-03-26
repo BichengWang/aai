@@ -94,6 +94,25 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(detail["location"], "1487 College Avenue, Palo Alto, CA 94306")
         self.assertEqual(detail["guest"], "Alastair")
 
+    def test_normalize_trip_detail_cleans_labeled_location_lines(self) -> None:
+        detail = normalize_trip_detail(
+            {
+                "headings": ["Trip details", "2022 Mazda CX-30"],
+                "badges": ["Booked"],
+                "keyLines": [
+                    "Guest: Jamie Example",
+                    "Pickup: Tue, Mar 25 at 10:00 AM",
+                    "Return: Thu, Mar 27 at 10:00 AM",
+                    "Pickup location: San Francisco International Airport",
+                    "Reservation #55213565",
+                ],
+            },
+            "https://turo.com/us/en/reservation/55213565",
+            "Trip details Booked Guest: Jamie Example Pickup Tue, Mar 25 at 10:00 AM Return Thu, Mar 27 at 10:00 AM Pickup location: San Francisco International Airport",
+        )
+
+        self.assertEqual(detail["location"], "San Francisco International Airport")
+
 
 if __name__ == "__main__":
     unittest.main()

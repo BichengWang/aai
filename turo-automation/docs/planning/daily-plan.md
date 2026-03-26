@@ -38,6 +38,7 @@ Harden the read-only `browser-agent-py` reservation detail slice and operator ou
 - [x] Keep browser-agent docs aligned with implemented command behavior
 - [x] Normalize `trip-get` guest names to return operator-ready values instead of raw `Guest:` labels
 - [x] Normalize `trip-get` pickup and return values to consistent operator-ready timestamps
+- [x] Normalize labeled reservation-detail location lines to operator-ready location values
 - [ ] Keep Playwright out of the critical path
 - [ ] Re-attach the browser-agent to a truly host-authenticated Chrome session for live selector verification
 

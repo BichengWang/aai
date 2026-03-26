@@ -539,3 +539,13 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 ### Verification
 
 - `python3 -m unittest discover -s browser-agent-py/tests -p 'test_*.py'`
+
+### Browser trip detail location normalization (Iter 3)
+
+- Updated `browser-agent-py/src/turo_browser_agent/parsers.py` so `trip-get` can extract labeled location lines such as `Pickup location:` or `Delivery location:` and return the cleaned location value
+- Kept the existing `LOCATION` section parsing intact while making the final fallback path clean operator-facing location labels before matching them
+- Added parser coverage for labeled airport-style location extraction and recorded the new completed slice in `docs/planning/daily-plan.md`
+
+### Verification
+
+- `python3 -m unittest discover -s browser-agent-py/tests -p 'test_*.py'`
