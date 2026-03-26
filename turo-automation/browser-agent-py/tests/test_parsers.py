@@ -58,8 +58,8 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(detail["status"], "Upcoming")
         self.assertEqual(detail["reservationId"], "54848775")
         self.assertEqual(detail["guest"], "Alex Example")
-        self.assertEqual(detail["pickup"], "Pickup: Tue, Mar 25 at 10:00 AM")
-        self.assertEqual(detail["return"], "Return: Thu, Mar 27 at 10:00 AM")
+        self.assertEqual(detail["pickup"], "Tue, Mar 25 at 10:00 AM")
+        self.assertEqual(detail["return"], "Thu, Mar 27 at 10:00 AM")
         self.assertEqual(detail["location"], "San Francisco, CA")
 
     def test_normalize_trip_detail_prefers_location_section_over_date_lines(self) -> None:

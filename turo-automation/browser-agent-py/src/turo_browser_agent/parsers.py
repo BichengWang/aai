@@ -76,6 +76,13 @@ def _clean_guest_name(value: str | None) -> str | None:
     return cleaned or None
 
 
+def _clean_trip_time(value: str | None) -> str | None:
+    if value is None:
+        return None
+    cleaned = re.sub(r"^(pickup|return|delivery)\s*:\s*", "", value, flags=re.IGNORECASE).strip()
+    return cleaned or None
+
+
 def normalize_trip_item(raw: Mapping[str, str | None]) -> dict[str, str | None]:
     text = raw.get("text", "") or ""
     return {
@@ -162,22 +169,26 @@ def normalize_trip_detail(raw: Mapping[str, Any], final_url: str, body_text: str
     if trip_return is None and len(inline_dates) > 1:
         trip_return = inline_dates[1]
     if pickup is None:
-        pickup = next(
-            (
-                value
-                for value in [*body_lines, *key_lines]
-                if value.lower().startswith("pickup:") and len(value) <= 120
-            ),
-            None,
+        pickup = _clean_trip_time(
+            next(
+                (
+                    value
+                    for value in [*body_lines, *key_lines]
+                    if value.lower().startswith("pickup:") and len(value) <= 120
+                ),
+                None,
+            )
         )
     if trip_return is None:
-        trip_return = next(
-            (
-                value
-                for value in [*body_lines, *key_lines]
-                if value.lower().startswith("return:") and len(value) <= 120
-            ),
-            None,
+        trip_return = _clean_trip_time(
+            next(
+                (
+                    value
+                    for value in [*body_lines, *key_lines]
+                    if value.lower().startswith("return:") and len(value) <= 120
+                ),
+                None,
+            )
         )
     location = location_summary_match.group(1).strip() if location_summary_match else None
     for index, value in enumerate(body_lines):

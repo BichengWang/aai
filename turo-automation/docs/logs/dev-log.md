@@ -529,3 +529,13 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 ### Verification
 
 - `python3 -m unittest discover -s browser-agent-py/tests -p 'test_*.py'`
+
+### Browser trip detail time normalization (Iter 2)
+
+- Updated `browser-agent-py/src/turo_browser_agent/parsers.py` so `trip-get` strips `Pickup:` and `Return:` labels before returning the parsed pickup/return values
+- Kept the parser contract consistent with already-supported inline date extraction, so both labeled and unlabeled layouts now produce the same timestamp shape
+- Updated `docs/planning/daily-plan.md` to record the completed timestamp normalization slice
+
+### Verification
+
+- `python3 -m unittest discover -s browser-agent-py/tests -p 'test_*.py'`
