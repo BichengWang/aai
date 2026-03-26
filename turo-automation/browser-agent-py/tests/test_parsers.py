@@ -57,7 +57,7 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(detail["vehicle"], "2023 Tesla Model 3")
         self.assertEqual(detail["status"], "Upcoming")
         self.assertEqual(detail["reservationId"], "54848775")
-        self.assertEqual(detail["guest"], "Guest: Alex Example")
+        self.assertEqual(detail["guest"], "Alex Example")
         self.assertEqual(detail["pickup"], "Pickup: Tue, Mar 25 at 10:00 AM")
         self.assertEqual(detail["return"], "Return: Thu, Mar 27 at 10:00 AM")
         self.assertEqual(detail["location"], "San Francisco, CA")
@@ -92,6 +92,7 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(detail["pickup"], "Sun, Mar 22 9:30 AM")
         self.assertEqual(detail["return"], "Mon, Mar 23 11:30 PM")
         self.assertEqual(detail["location"], "1487 College Avenue, Palo Alto, CA 94306")
+        self.assertEqual(detail["guest"], "Alastair")
 
 
 if __name__ == "__main__":

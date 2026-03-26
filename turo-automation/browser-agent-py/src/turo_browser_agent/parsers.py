@@ -69,6 +69,13 @@ def _looks_like_location(value: str) -> bool:
     )
 
 
+def _clean_guest_name(value: str | None) -> str | None:
+    if value is None:
+        return None
+    cleaned = re.sub(r"^guest:\s*", "", value, flags=re.IGNORECASE).strip()
+    return cleaned or None
+
+
 def normalize_trip_item(raw: Mapping[str, str | None]) -> dict[str, str | None]:
     text = raw.get("text", "") or ""
     return {
@@ -134,15 +141,17 @@ def normalize_trip_detail(raw: Mapping[str, Any], final_url: str, body_text: str
     if trip_heading:
         heading_match = TRIP_HEADING_RE.match(trip_heading)
         if heading_match:
-            guest = heading_match.group(1).title()
+            guest = _clean_guest_name(heading_match.group(1).title())
     if guest is None:
-        guest = next(
-            (
-                value
-                for value in [*body_lines, *key_lines]
-                if value.lower().startswith("guest:") and "switch to guest" not in value.lower()
-            ),
-            None,
+        guest = _clean_guest_name(
+            next(
+                (
+                    value
+                    for value in [*body_lines, *key_lines]
+                    if value.lower().startswith("guest:") and "switch to guest" not in value.lower()
+                ),
+                None,
+            )
         )
 
     date_lines = [value for value in body_lines if DATE_TIME_LINE_RE.match(value)]

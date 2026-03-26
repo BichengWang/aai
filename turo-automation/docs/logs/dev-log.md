@@ -515,3 +515,17 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 ### Verification
 
 - `python3 -m unittest discover -s browser-agent-py/tests -p 'test_*.py'`
+
+---
+
+## 2026-03-25
+
+### Browser trip detail guest normalization (Iter 1)
+
+- Updated `browser-agent-py/src/turo_browser_agent/parsers.py` so `trip-get` returns a cleaned guest name instead of the raw `Guest:` label when the detail parser finds guest metadata
+- Added parser assertions covering both `Guest: Alex Example` key-line extraction and `ALASTAIR'S TRIP` heading extraction
+- Updated `docs/planning/daily-plan.md` so the active plan reflects the current safe path: keep hardening read-only parser/output slices offline while live authenticated verification is still unavailable
+
+### Verification
+
+- `python3 -m unittest discover -s browser-agent-py/tests -p 'test_*.py'`
