@@ -36,24 +36,37 @@ export default function Contact() {
         <form className="contact-card" onSubmit={handleSubmit}>
           <label>
             Name
-            <input className="input" type="text" placeholder="Your name" />
+            <input
+              className="input"
+              type="text"
+              placeholder="Your name"
+              autoComplete="name"
+              required
+            />
           </label>
           <label>
             Email
-            <input className="input" type="email" placeholder="name@email.com" />
+            <input
+              className="input"
+              type="email"
+              placeholder="name@email.com"
+              autoComplete="email"
+              required
+            />
           </label>
           <label>
             Send us what you need
             <textarea
               className="input textarea"
               placeholder="Tell us about the service you need..."
+              required
             />
           </label>
-          <button className="button" type="submit">
-            Send message
+          <button className="button" type="submit" disabled={sent}>
+            {sent ? "Message sent" : "Send message"}
           </button>
           {sent ? (
-            <p className="form-success">
+            <p className="form-success" role="status" aria-live="polite">
               Thanks! We received your message and will follow up soon.
             </p>
           ) : null}
