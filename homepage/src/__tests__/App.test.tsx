@@ -26,5 +26,8 @@ describe("Altair homepage", () => {
     expect(
       screen.getByRole("link", { name: /start an enquiry/i })
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /browse services/i })
+    ).toBeInTheDocument();
   });
 });

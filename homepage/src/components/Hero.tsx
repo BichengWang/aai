@@ -17,7 +17,7 @@ export default function Hero() {
             </p>
             <p className="hero-subtitle">
               No subscription or credit fees. Share your email and postcode to
-              get started.
+              get started, or browse services first.
             </p>
             <div className="hero-form">
               <label>
@@ -41,6 +41,9 @@ export default function Hero() {
               <div className="hero-actions">
                 <Link className="button" to="/enquiry">
                   Start an enquiry
+                </Link>
+                <Link className="button ghost" to="/services">
+                  Browse services
                 </Link>
               </div>
             </div>
