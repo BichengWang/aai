@@ -18,9 +18,9 @@ TRIP_STATUS_CANDIDATES = [
 ]
 RESERVATION_PATH_RE = re.compile(r"/reservation/(\d+)")
 RESERVATION_TEXT_RE = re.compile(r"(?:reservation\s*#?\s*|#)(\d{6,})", re.IGNORECASE)
-DATE_TIME_LINE_RE = re.compile(r"^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s+[A-Z][a-z]{2}\s+\d{1,2}\s+\d{1,2}:\d{2}\s+[AP]M$", re.IGNORECASE)
+DATE_TIME_LINE_RE = re.compile(r"^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s+[A-Z][a-z]{2}\s+\d{1,2}(?:\s+at)?\s+\d{1,2}:\d{2}\s+[AP]M$", re.IGNORECASE)
 TRIP_HEADING_RE = re.compile(r"^(.+?)[\u2019']S TRIP$", re.IGNORECASE)
-INLINE_DATE_TIME_RE = re.compile(r"(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s+[A-Z][a-z]{2}\s+\d{1,2}\s+\d{1,2}:\d{2}\s+[AP]M", re.IGNORECASE)
+INLINE_DATE_TIME_RE = re.compile(r"(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s+[A-Z][a-z]{2}\s+\d{1,2}(?:\s+at)?\s+\d{1,2}:\d{2}\s+[AP]M", re.IGNORECASE)
 
 
 def _dedupe_texts(values: Iterable[str | None]) -> list[str]:

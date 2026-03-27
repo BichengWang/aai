@@ -99,6 +99,30 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(detail["location"], "1487 College Avenue, Palo Alto, CA 94306")
         self.assertEqual(detail["guest"], "Alastair")
 
+    def test_normalize_trip_detail_accepts_at_in_unlabeled_date_lines(self) -> None:
+        detail = normalize_trip_detail(
+            {
+                "headings": ["Trip details", "2022 Mazda CX-30"],
+                "badges": ["Booked"],
+                "keyLines": ["Guest: Jamie Example", "Reservation #55213565"],
+            },
+            "https://turo.com/us/en/reservation/55213565",
+            "\n".join(
+                [
+                    "Trip details",
+                    "2022 Mazda CX-30",
+                    "Booked",
+                    "Guest: Jamie Example",
+                    "Sun, Mar 22 at 9:30 AM",
+                    "Mon, Mar 23 at 11:30 PM",
+                    "Reservation #55213565",
+                ]
+            ),
+        )
+
+        self.assertEqual(detail["pickup"], "Sun, Mar 22 at 9:30 AM")
+        self.assertEqual(detail["return"], "Mon, Mar 23 at 11:30 PM")
+
     def test_normalize_trip_detail_cleans_labeled_location_lines(self) -> None:
         detail = normalize_trip_detail(
             {
