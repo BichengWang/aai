@@ -5,6 +5,7 @@ import {
   type UseCaseResult,
 } from "@turo-automation/shared";
 import { createClient } from "@supabase/supabase-js";
+import { getWebOperatorIdentity } from "./operatorIdentity";
 
 const SUPABASE_URL = (import.meta as unknown as { env: Record<string, string> })
   .env["VITE_SUPABASE_URL"];
@@ -29,9 +30,9 @@ const noopNotifier = {
 export async function actOnApproval(
   approvalRequestId: string,
   decision: "approved" | "rejected",
-  reviewedBy: string
+  reviewedBy: string | null = getWebOperatorIdentity()
 ): Promise<UseCaseResult<ActOnApprovalData> | null> {
-  if (!useSupabase) return null;
+  if (!useSupabase || !reviewedBy) return null;
 
   const client = createClient(SUPABASE_URL, SUPABASE_KEY);
   const messageRepository = createSupabaseMessageRepository(client);

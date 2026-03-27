@@ -8,6 +8,7 @@ import { useState } from "react";
 import { formatCompactDateTime, formatLabel } from "../lib/format";
 import { actOnApproval } from "../lib/approvalActions";
 import { actOnIncident } from "../lib/incidentActions";
+import { getWebOperatorIdentity } from "../lib/operatorIdentity";
 import { loadTripTimeline } from "../lib/loadTripTimeline";
 import { SectionCard } from "../ui/SectionCard";
 import { TripTimelinePanel } from "./TripTimelinePanel";
@@ -28,13 +29,24 @@ export function OpsDashboard(props: {
   const [selectedTripId, setSelectedTripId] = useState<string | null>(null);
   const [timelineEntries, setTimelineEntries] = useState<TripTimelineEntry[]>([]);
   const [timelineLoading, setTimelineLoading] = useState(false);
+  const operatorIdentity = getWebOperatorIdentity();
+  const canActOnApprovals = Boolean(
+    (import.meta as unknown as { env: Record<string, string> }).env[
+      "VITE_SUPABASE_URL"
+    ] &&
+      (import.meta as unknown as { env: Record<string, string> }).env[
+        "VITE_SUPABASE_KEY"
+      ] &&
+      operatorIdentity
+  );
   const canActOnIncidents = Boolean(
     (import.meta as unknown as { env: Record<string, string> }).env[
       "VITE_SUPABASE_URL"
     ] &&
       (import.meta as unknown as { env: Record<string, string> }).env[
         "VITE_SUPABASE_KEY"
-      ]
+      ] &&
+      operatorIdentity
   );
 
   async function handleSelectTrip(tripId: string) {
@@ -56,11 +68,15 @@ export function OpsDashboard(props: {
     approvalRequestId: string,
     decision: "approved" | "rejected"
   ) {
+    if (!canActOnApprovals) return;
+
     setActioningId(approvalRequestId);
     try {
-      await actOnApproval(approvalRequestId, decision, "web.reviewer");
-      setActionedIds((prev) => new Set([...prev, approvalRequestId]));
-      onApprovalActioned?.();
+      const result = await actOnApproval(approvalRequestId, decision);
+      if (result?.ok) {
+        setActionedIds((prev) => new Set([...prev, approvalRequestId]));
+        onApprovalActioned?.();
+      }
     } finally {
       setActioningId(null);
     }
@@ -74,7 +90,7 @@ export function OpsDashboard(props: {
 
     setActioningIncidentId(incidentId);
     try {
-      const result = await actOnIncident(incidentId, status, "web.reviewer");
+      const result = await actOnIncident(incidentId, status);
       if (result?.ok) {
         setIncidentStatuses((prev) => ({
           ...prev,
@@ -259,7 +275,7 @@ export function OpsDashboard(props: {
                   <span className="approval-actions">
                     <button
                       className="btn-approve"
-                      disabled={isActioning}
+                      disabled={isActioning || !canActOnApprovals}
                       onClick={() =>
                         handleApproval(approval.approvalRequestId, "approved")
                       }
@@ -268,7 +284,7 @@ export function OpsDashboard(props: {
                     </button>
                     <button
                       className="btn-reject"
-                      disabled={isActioning}
+                      disabled={isActioning || !canActOnApprovals}
                       onClick={() =>
                         handleApproval(approval.approvalRequestId, "rejected")
                       }

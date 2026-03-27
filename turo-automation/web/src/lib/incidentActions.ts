@@ -6,6 +6,7 @@ import {
   type UseCaseResult,
 } from "@turo-automation/shared";
 import { createClient } from "@supabase/supabase-js";
+import { getWebOperatorIdentity } from "./operatorIdentity";
 
 const SUPABASE_URL = (import.meta as unknown as { env: Record<string, string> })
   .env["VITE_SUPABASE_URL"];
@@ -17,9 +18,9 @@ const useSupabase = Boolean(SUPABASE_URL && SUPABASE_KEY);
 export async function actOnIncident(
   incidentId: string,
   status: Incident["status"],
-  actedBy: string,
+  actedBy: string | null = getWebOperatorIdentity(),
 ): Promise<UseCaseResult<ActOnIncidentData> | null> {
-  if (!useSupabase) return null;
+  if (!useSupabase || !actedBy) return null;
 
   const client = createClient(SUPABASE_URL, SUPABASE_KEY);
   const incidentRepository = createSupabaseIncidentRepository(client);

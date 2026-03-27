@@ -6,7 +6,7 @@ Use this file for the current working plan. Keep it short, current, and actionab
 2026-03-27
 
 ## Objective
-Harden the read-only browser-agent suite without pulling Playwright into the worker critical path.
+Harden web mutation actor identity before broader guest-send automation.
 
 ## Completed
 - [x] Shared domain, ports, fixtures, and use-case contracts
@@ -32,19 +32,14 @@ Harden the read-only browser-agent suite without pulling Playwright into the wor
 - [x] Architecture docs updated
 
 ## Today's Priorities
-- [x] Verify browser auth on a protected host route instead of the public homepage
-- [x] Add a conservative read-only `trip-get` reservation detail flow in `browser-agent-py`
-- [x] Add focused parser/CLI coverage for the new `trip-get` slice
-- [x] Keep browser-agent docs aligned with implemented command behavior
-- [x] Centralize blocked/login page-state detection across the read-only browser-agent flows
-- [x] Add a conservative read-only `messages-list` inbox/thread flow in `browser-agent-py`
-- [ ] Keep Playwright out of the critical path
+- [x] Replace placeholder `web.reviewer` actor strings with a defined operator identity source
+- [ ] Define the explicit guest-send path after approval
+- [ ] Decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary
 
 ## Risks / Open Questions
 - Should incident actions remain direct Supabase client calls from the web, or move behind a worker/API boundary later?
-- What actor identity should own `reviewedBy` and incident `ownerId` in production?
 - When does an approved message draft actually get sent on the guest-facing channel?
-- Browser-agent authenticated extraction still depends on a real host-logged-in browser session for live selector verification; unit coverage only hardens parser behavior and CLI wiring.
+- What should production set `VITE_OPERATOR_IDENTITY` to, and should it later come from auth context instead of build-time config?
 
 ## Next Suggested Step
-Re-attach the browser-agent to a real host-authenticated Chrome session, verify `session-check`, `trip-get`, and `messages-list` against live host pages, then use that evidence to harden the next browser slice.
+Define the explicit guest-send path after approval, then decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary.

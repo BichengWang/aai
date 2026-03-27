@@ -551,3 +551,18 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 ### Verification
 
 - `python3 -m unittest discover -s browser-agent-py/tests -p 'test_*.py'`
+
+## 2026-03-27
+
+### Web actor identity source
+
+- Added `web/src/lib/operatorIdentity.ts` to centralize the web mutation actor identity source from `VITE_OPERATOR_IDENTITY`
+- Updated approval and incident action helpers to use the shared operator identity source when present
+- Updated `OpsDashboard` to stop hardcoding `web.reviewer` and to disable approval/incident mutations when identity or Supabase config is missing
+- Documented the new `VITE_OPERATOR_IDENTITY` env var in `.env.example`
+- Advanced the roadmap to mark the actor identity slice complete and move the next priority to explicit guest-send safety
+
+### Verification
+
+- `npm run build`
+- `npm test`
