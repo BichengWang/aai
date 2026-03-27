@@ -15,11 +15,13 @@ This subtree captures the learned browser automation steps as executable command
 - `./run session-check`
 - `./run trips-list`
 - `./run trip-get <reservation-id-or-url>`
+- `./run messages-list`
 - `turo-browser-agent health-smoke`
 - `turo-browser-agent session-bootstrap`
 - `turo-browser-agent session-check`
 - `turo-browser-agent trips-list`
 - `turo-browser-agent trip-get <reservation-id-or-url>`
+- `turo-browser-agent messages-list`
 
 The checked-in `./run` wrapper works without installing the package first.
 After `python3 -m pip install -e .`, the `turo-browser-agent` console script is also available.
@@ -32,6 +34,7 @@ This is a minimal real browser runner:
 - `session-check` reuses saved browser state and verifies a protected host route, not just the public homepage
 - `trips-list` opens the host trips page and returns structured JSON or `login_required`
 - `trip-get` opens one reservation detail page by ID or URL and returns a conservative structured summary
+- `messages-list` opens the host messages page and returns structured thread summaries or `login_required`
 
 It stays read-first and intentionally avoids guest-facing writes.
 
@@ -78,6 +81,7 @@ export BROWSER_AGENT_CDP_URL=http://127.0.0.1:9222
 ./run session-check
 ./run trips-list
 ./run trip-get 54848775
+./run messages-list
 ```
 
 ## Local dev

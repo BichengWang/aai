@@ -38,7 +38,9 @@ User / Scheduler / OpenClaw
 - `session-check`
 - `trips-list`
 - `trip-get`
-- later: `messages-list`
+- `messages-list`
+
+The `messages-list` flow is now available as a conservative read-only inbox/thread summary command.
 
 Shared page-state helpers keep login-required and blocked-page detection consistent across the read-only flows.
 

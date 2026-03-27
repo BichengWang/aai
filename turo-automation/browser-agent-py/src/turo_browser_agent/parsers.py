@@ -90,6 +90,24 @@ def _clean_location(value: str | None) -> str | None:
     return cleaned or None
 
 
+def _clean_message_participant(value: str | None) -> str | None:
+    if value is None:
+        return None
+    cleaned = re.sub(r"^(?:guest|thread|conversation|message)\s*:\s*", "", value, flags=re.IGNORECASE).strip()
+    return cleaned or None
+
+
+def _looks_like_person_name(value: str | None) -> bool:
+    if value is None:
+        return False
+    cleaned = " ".join(value.split()).strip()
+    return bool(
+        cleaned
+        and not re.search(r"\d", cleaned)
+        and re.fullmatch(r"[A-Za-z][A-Za-z'\-]*(?:\s+[A-Za-z][A-Za-z'\-]*){1,2}", cleaned)
+    )
+
+
 def normalize_trip_item(raw: Mapping[str, str | None]) -> dict[str, str | None]:
     text = raw.get("text", "") or ""
     return {
@@ -246,4 +264,28 @@ def normalize_trip_detail(raw: Mapping[str, Any], final_url: str, body_text: str
         "badges": badges[:10],
         "keyLines": key_lines[:20],
         "rawTextSnippet": snippet,
+    }
+
+
+def normalize_message_thread(raw: Mapping[str, Any]) -> dict[str, Any]:
+    text = raw.get("text", "") or ""
+    title = raw.get("title") or text[:120] or None
+    guest = raw.get("guest") or _clean_message_participant(raw.get("actor"))
+    status = raw.get("status") or None
+    reservation_id = raw.get("reservationId") or extract_reservation_id(raw.get("href"), text)
+
+    if guest is None and text.lower().startswith("guest:"):
+        guest = _clean_message_participant(text)
+    if guest is None and _looks_like_person_name(title):
+        guest = _clean_message_participant(title)
+
+    return {
+        "title": title,
+        "guest": guest,
+        "status": status,
+        "unread": bool(raw.get("unread", False)),
+        "href": raw.get("href"),
+        "reservationId": reservation_id,
+        "lastMessageAt": raw.get("lastMessageAt"),
+        "rawText": text,
     }

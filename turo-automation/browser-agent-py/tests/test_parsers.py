@@ -6,7 +6,12 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from turo_browser_agent.parsers import normalize_trip_detail, normalize_trip_item, resolve_trip_target
+from turo_browser_agent.parsers import (
+    normalize_message_thread,
+    normalize_trip_detail,
+    normalize_trip_item,
+    resolve_trip_target,
+)
 
 
 class ParserTests(unittest.TestCase):
@@ -112,6 +117,27 @@ class ParserTests(unittest.TestCase):
         )
 
         self.assertEqual(detail["location"], "San Francisco International Airport")
+
+    def test_normalize_message_thread_extracts_thread_fields(self) -> None:
+        thread = normalize_message_thread(
+            {
+                "href": "/us/en/messages/threads/54848775",
+                "text": "Alex Lee 2023 Tesla Model 3 Reservation #54848775 Unread 2m ago",
+                "title": "Alex Lee",
+                "guest": None,
+                "reservationId": None,
+                "status": "Unread",
+                "lastMessageAt": "2026-03-27T10:00:00.000Z",
+                "unread": True,
+            }
+        )
+
+        self.assertEqual(thread["title"], "Alex Lee")
+        self.assertEqual(thread["guest"], "Alex Lee")
+        self.assertEqual(thread["reservationId"], "54848775")
+        self.assertEqual(thread["status"], "Unread")
+        self.assertTrue(thread["unread"])
+        self.assertEqual(thread["lastMessageAt"], "2026-03-27T10:00:00.000Z")
 
 
 if __name__ == "__main__":

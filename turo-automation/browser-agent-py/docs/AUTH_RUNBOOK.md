@@ -48,6 +48,7 @@ export BROWSER_AGENT_CDP_URL=http://127.0.0.1:9222
 ```bash
 ./run trips-list
 ./run trip-get 54848775
+./run messages-list
 ```
 
 ## Google OAuth guidance
@@ -104,5 +105,6 @@ Run in this order:
 - `session-check`
 - `trips-list`
 - `trip-get <reservation-id-or-url>`
+- `messages-list`
 
-If `session-check` shows authenticated access but `trips-list` still returns bad output, debug the extractor rather than repeating login.
+If `session-check` shows authenticated access but `trips-list` or `messages-list` still returns bad output, debug the extractor rather than repeating login.

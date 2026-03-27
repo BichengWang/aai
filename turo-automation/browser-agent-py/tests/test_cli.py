@@ -38,6 +38,23 @@ class CliTests(unittest.TestCase):
         self.assertEqual(observed, [["54848775"]])
         self.assertIn('"args": [\n    "54848775"\n  ]', stdout.getvalue())
 
+    def test_main_supports_messages_list_without_args(self) -> None:
+        observed: list[list[str]] = []
+
+        def handler(args: list[str] | None = None) -> _FakeResult:
+            observed.append(args or [])
+            return _FakeResult({"ok": True, "args": args or []})
+
+        stdout = io.StringIO()
+        with mock.patch.object(sys, "argv", ["turo-browser-agent", "messages-list"]):
+            with mock.patch.dict(cli.COMMANDS, {"messages-list": handler}):
+                with redirect_stdout(stdout):
+                    exit_code = cli.main()
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(observed, [[]])
+        self.assertIn('"args": []', stdout.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()

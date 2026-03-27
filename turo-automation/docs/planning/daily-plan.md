@@ -3,10 +3,10 @@
 Use this file for the current working plan. Keep it short, current, and actionable.
 
 ## Date
-2026-03-25
+2026-03-27
 
 ## Objective
-Harden the new read-only browser-agent reservation detail slice without pulling Playwright into the worker critical path.
+Harden the read-only browser-agent suite without pulling Playwright into the worker critical path.
 
 ## Completed
 - [x] Shared domain, ports, fixtures, and use-case contracts
@@ -37,6 +37,7 @@ Harden the new read-only browser-agent reservation detail slice without pulling 
 - [x] Add focused parser/CLI coverage for the new `trip-get` slice
 - [x] Keep browser-agent docs aligned with implemented command behavior
 - [x] Centralize blocked/login page-state detection across the read-only browser-agent flows
+- [x] Add a conservative read-only `messages-list` inbox/thread flow in `browser-agent-py`
 - [ ] Keep Playwright out of the critical path
 
 ## Risks / Open Questions
@@ -46,4 +47,4 @@ Harden the new read-only browser-agent reservation detail slice without pulling 
 - Browser-agent authenticated extraction still depends on a real host-logged-in browser session for live selector verification; unit coverage only hardens parser behavior and CLI wiring.
 
 ## Next Suggested Step
-Re-attach the browser-agent to a real host-authenticated Chrome session, verify `session-check` and `trip-get` against a live reservation page, then use that evidence to implement the next read-only `messages-list` slice.
+Re-attach the browser-agent to a real host-authenticated Chrome session, verify `session-check`, `trip-get`, and `messages-list` against live host pages, then use that evidence to harden the next browser slice.

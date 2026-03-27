@@ -23,7 +23,7 @@ Current status:
 - `trips-list` is implemented and extracts reservation cards from the real host trips page
 - `trip-get` is implemented as a conservative reservation detail fetch by reservation ID or URL
 - shared page-state helpers now centralize login-required and blocked-page detection across the read-only flows
-- `messages-list` remains the next read-only flow after trip detail hardening
+- `messages-list` is implemented as a conservative read-only inbox/thread summary flow
 
 ## Phase 3 — Hardening
 

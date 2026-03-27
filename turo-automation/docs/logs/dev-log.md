@@ -533,3 +533,21 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 ### Verification
 
 - `python3 -m unittest discover -s browser-agent-py/tests -p 'test_*.py'`
+
+## 2026-03-27
+
+### Read-only messages list slice
+
+- Added `browser-agent-py/src/turo_browser_agent/flows/messages_list.py`
+  - opens a conservative host messages URL read-only
+  - reuses shared login-required and blocked-page detection
+  - extracts a conservative structured thread summary plus screenshot/HTML artifacts when the page loads
+- Added `normalize_message_thread` to `browser-agent-py/src/turo_browser_agent/parsers.py`
+  - keeps thread title, guest, reservation id, unread flag, and raw text together
+- Wired `messages-list` into `browser-agent-py/src/turo_browser_agent/cli.py`
+- Updated browser-agent docs and the repo docs to reflect the new messages-list command surface
+- Added parser and CLI coverage for the new command
+
+### Verification
+
+- `python3 -m unittest discover -s browser-agent-py/tests -p 'test_*.py'`

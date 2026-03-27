@@ -79,4 +79,4 @@ Current implementation status:
 - `session:check` performs a live read-only inspection against the protected host trips route so auth is verified on a real gated page
 - `trips:list` performs a live read-only navigation to the host trips page, reuses saved storage state when present, and extracts conservative trip link summaries
 - `trip-get` performs a live read-only reservation detail fetch by reservation ID or URL and returns a conservative structured summary with saved page artifacts
-- `messages-list` remains unimplemented pending live hardening of the authenticated trip-detail flow
+- `messages-list` performs a live read-only navigation to the host messages page and returns conservative structured thread summaries with saved page artifacts
