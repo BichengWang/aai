@@ -27,6 +27,7 @@ Current status:
 - shared body-text capture now falls back cleanly when a page render is slow or the locator times out, so live flows keep returning structured output with warnings instead of hard-failing
 - all read-only browser-agent flows now capture failure screenshots and HTML artifacts before returning unexpected errors
 - trip-detail parsing now accepts unlabeled pickup/return date lines with an optional `at`
+- shared JS fragments now centralize the common `main`-scope and text-cleanup setup used by the read-only extractors
 
 ## Phase 3 — Hardening
 

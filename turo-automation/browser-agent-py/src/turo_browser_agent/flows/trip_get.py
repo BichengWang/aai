@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ..config import read_config
+from ..js_fragments import build_js_extract
 from ..page_state import page_looks_login_required
 from ..parsers import normalize_trip_detail, resolve_trip_target
 from ..runtime import (
@@ -13,10 +14,8 @@ from ..runtime import (
 )
 from ..types import create_result
 
-JS_EXTRACT = r'''
-() => {
-  const clean = (value) => (value || '').replace(/\s+/g, ' ').trim();
-  const inMain = document.querySelector('main') || document.body;
+JS_EXTRACT = build_js_extract(
+    r"""
   const headings = Array.from(inMain.querySelectorAll('h1, h2, h3'))
     .map((el) => clean(el.innerText))
     .filter(Boolean);
@@ -31,7 +30,8 @@ JS_EXTRACT = r'''
 
   return { headings, badges, keyLines };
 }
-'''
+"""
+)
 
 
 def run_trip_get(args: list[str] | None = None):

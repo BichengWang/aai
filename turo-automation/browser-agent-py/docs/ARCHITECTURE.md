@@ -42,7 +42,7 @@ User / Scheduler / OpenClaw
 
 The `messages-list` flow is now available as a conservative read-only inbox/thread summary command.
 
-Shared page-state helpers keep login-required and blocked-page detection consistent across the read-only flows, a shared body-text capture helper keeps transient render failures from hard-failing the commands, and all read-only flows capture failure screenshots/HTML before returning unexpected errors.
+Shared page-state helpers keep login-required and blocked-page detection consistent across the read-only flows, a shared body-text capture helper keeps transient render failures from hard-failing the commands, shared JS fragments centralize the common main-scope and text-cleanup setup used by the trip/message extractors, and all read-only flows capture failure screenshots/HTML before returning unexpected errors.
 
 For operator-facing auth and login guidance, see `docs/AUTH_RUNBOOK.md`.
 

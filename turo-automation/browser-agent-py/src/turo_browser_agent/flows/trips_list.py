@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ..config import read_config
+from ..js_fragments import build_js_extract
 from ..page_state import page_looks_login_required
 from ..parsers import normalize_trip_item
 from ..runtime import (
@@ -16,9 +17,9 @@ from ..types import create_result
 TRIPS_URL = "https://turo.com/us/en/trips"
 
 
-JS_EXTRACT = r'''
-() => {
-  const anchors = Array.from(document.querySelectorAll('a[data-testid="baseTripCard"], a[href*="/reservation/"]'));
+JS_EXTRACT = build_js_extract(
+    r"""
+  const anchors = Array.from(inMain.querySelectorAll('a[data-testid="baseTripCard"], a[href*="/reservation/"]'));
   const seen = new Set();
   const items = [];
 
@@ -57,7 +58,8 @@ JS_EXTRACT = r'''
 
   return items;
 }
-'''
+"""
+)
 def run_trips_list(args: list[str] | None = None):
     config = read_config()
     runtime = prepare_runtime(config)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ..config import read_config
+from ..js_fragments import build_js_extract
 from ..page_state import page_looks_blocked, page_looks_login_required
 from ..parsers import normalize_message_thread
 from ..runtime import (
@@ -16,10 +17,8 @@ from ..types import create_result
 MESSAGES_URL = "https://turo.com/us/en/messages"
 
 
-JS_EXTRACT = r'''
-() => {
-  const clean = (value) => (value || '').replace(/\s+/g, ' ').trim();
-  const inMain = document.querySelector('main') || document.body;
+JS_EXTRACT = build_js_extract(
+    r"""
   const anchors = Array.from(inMain.querySelectorAll('a[href*="/messages"], a[href*="/reservation/"]'));
   const seen = new Set();
   const items = [];
@@ -61,7 +60,8 @@ JS_EXTRACT = r'''
 
   return items;
 }
-'''
+"""
+)
 
 
 def run_messages_list(args: list[str] | None = None):
