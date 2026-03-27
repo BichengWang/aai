@@ -625,6 +625,35 @@ img {
   animation-delay: calc(var(--i, 0) * 0.12s);
 }
 
+.faq-card summary {
+  list-style: none;
+  cursor: pointer;
+  font-family: "Sora", "Manrope", sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.faq-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-card summary::after {
+  content: "+";
+  font-family: "Manrope", sans-serif;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: rgba(28, 27, 25, 0.55);
+}
+
+.faq-card[open] summary::after {
+  content: "–";
+}
+
 .split-layout {
   display: grid;
   gap: 28px;

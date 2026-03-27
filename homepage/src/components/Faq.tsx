@@ -11,14 +11,14 @@ export default function Faq() {
         </div>
         <div className="faq-grid">
           {faqs.map((item, index) => (
-            <div
+            <details
               key={item.question}
               className="faq-card"
               style={{ "--i": index } as CSSProperties}
             >
-              <h3>{item.question}</h3>
+              <summary className="faq-summary">{item.question}</summary>
               <p>{item.answer}</p>
-            </div>
+            </details>
           ))}
         </div>
       </div>
