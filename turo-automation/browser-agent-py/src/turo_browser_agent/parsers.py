@@ -115,13 +115,20 @@ def _looks_like_person_name(value: str | None) -> bool:
 
 def normalize_trip_item(raw: Mapping[str, str | None]) -> dict[str, str | None]:
     text = raw.get("text", "") or ""
+    title = raw.get("title") or text[:120] or None
+    status = extract_trip_status(text, raw.get("badge"))
+    location = raw.get("location")
+    guest = raw.get("actor")
+    reservation_id = raw.get("reservationId") or extract_reservation_id(raw.get("href"), text)
+    summary = _build_summary([status, title, guest, location, f"Reservation #{reservation_id}" if reservation_id else None])
     return {
-        "title": raw.get("title") or text[:120] or None,
-        "status": extract_trip_status(text, raw.get("badge")),
+        "title": title,
+        "status": status,
         "href": raw.get("href"),
-        "location": raw.get("location"),
-        "guest": raw.get("actor"),
-        "reservationId": raw.get("reservationId") or extract_reservation_id(raw.get("href"), text),
+        "location": location,
+        "guest": guest,
+        "reservationId": reservation_id,
+        "summary": summary,
         "rawText": text,
     }
 

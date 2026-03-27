@@ -31,6 +31,7 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(item["status"], "Upcoming")
         self.assertEqual(item["reservationId"], "54848775")
         self.assertEqual(item["guest"], "Alex")
+        self.assertEqual(item["summary"], "Upcoming · 2023 Tesla Model 3 · Alex · San Francisco, CA · Reservation #54848775")
 
     def test_resolve_trip_target_accepts_id_path_and_url(self) -> None:
         url_from_id, reservation_id = resolve_trip_target("54848775", "https://turo.com")
