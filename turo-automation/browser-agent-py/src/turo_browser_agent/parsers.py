@@ -38,6 +38,11 @@ def _dedupe_texts(values: Iterable[str | None]) -> list[str]:
     return items
 
 
+def _build_summary(parts: Iterable[str | None]) -> str | None:
+    items = _dedupe_texts(parts)
+    return " · ".join(items) if items else None
+
+
 def extract_trip_status(*values: str | None) -> str | None:
     haystack = " ".join(value for value in values if value).lower()
     for candidate in TRIP_STATUS_CANDIDATES:
@@ -250,6 +255,17 @@ def normalize_trip_detail(raw: Mapping[str, Any], final_url: str, body_text: str
     )
 
     snippet = " ".join(body_text.split()).strip()[:1000] or None
+    summary = _build_summary(
+        [
+            extract_trip_status(" ".join(headings), " ".join(badges), " ".join(key_lines), body_text),
+            headline,
+            guest,
+            pickup if pickup and trip_return is None else None,
+            trip_return if pickup is None and trip_return else None,
+            f"{pickup} → {trip_return}" if pickup and trip_return else None,
+            location,
+        ]
+    )
 
     return {
         "headline": headline,
@@ -260,6 +276,7 @@ def normalize_trip_detail(raw: Mapping[str, Any], final_url: str, body_text: str
         "pickup": pickup,
         "return": trip_return,
         "location": location,
+        "summary": summary,
         "headings": headings[:10],
         "badges": badges[:10],
         "keyLines": key_lines[:20],

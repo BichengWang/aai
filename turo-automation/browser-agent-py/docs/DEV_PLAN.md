@@ -28,6 +28,7 @@ Current status:
 - all read-only browser-agent flows now capture failure screenshots and HTML artifacts before returning unexpected errors
 - trip-detail parsing now accepts unlabeled pickup/return date lines with an optional `at`
 - shared JS fragments now centralize the common `main`-scope and text-cleanup setup used by the read-only extractors
+- trip-detail parsing now emits a concise operator summary alongside the structured fields
 
 ## Phase 3 — Hardening
 
