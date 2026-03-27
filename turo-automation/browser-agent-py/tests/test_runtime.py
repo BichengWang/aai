@@ -3,10 +3,12 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 import unittest
+from tempfile import TemporaryDirectory
+from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from turo_browser_agent.runtime import read_page_body_text
+from turo_browser_agent.runtime import capture_page_failure_artifacts, read_page_body_text
 
 
 class _Locator:
@@ -43,6 +45,14 @@ class _Page:
         return _Locator(self._locator_text, should_fail=self._locator_fails)
 
 
+class _ArtifactPage:
+    def screenshot(self, path: str, full_page: bool = False) -> None:
+        Path(path).write_bytes(b"fake-png")
+
+    def content(self) -> str:
+        return "<html><body>failure</body></html>"
+
+
 class RuntimeTests(unittest.TestCase):
     def test_read_page_body_text_uses_evaluation_result_first(self) -> None:
         page = _Page(evaluate_text="  hello world  ", locator_text="ignored")
@@ -69,6 +79,19 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(text, "")
         self.assertEqual(len(warnings), 1)
         self.assertIn("Body text capture via locator failed", warnings[0])
+
+    def test_capture_page_failure_artifacts_keeps_error_warning_and_files(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            config = SimpleNamespace(artifacts_dir=Path(tmpdir))
+            page = _ArtifactPage()
+
+            artifacts, warnings = capture_page_failure_artifacts(page, config, "session-check", "Failure message")
+
+            self.assertEqual(len(warnings), 1)
+            self.assertEqual(warnings[0], "Failure message")
+            self.assertEqual(len(artifacts), 2)
+            self.assertTrue(any(path.endswith(".png") for path in artifacts))
+            self.assertTrue(any(path.endswith(".html") for path in artifacts))
 
 
 if __name__ == "__main__":

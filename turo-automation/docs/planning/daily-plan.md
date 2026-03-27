@@ -30,6 +30,8 @@ Move the highest-priority read-only browser-assist flows forward so live host se
 - [x] Centralized direct web Supabase mutation boundary with helper coverage
 - [x] Browser agent read-only flows: `health:smoke`, `session:bootstrap`, `session:check`, `trips:list`, `trip-get`, `messages-list`
 - [x] Architecture and workflow docs updated through PR #82 closeout
+- [x] Shared safe browser body-text capture helper across browser-agent live flows
+- [x] Failure artifact capture for `health:smoke` and `session:check`
 
 ## Today's Priorities
 - [ ] Start the next 10-PR batch on browser-agent hardening, not new guest-facing capability
@@ -43,4 +45,4 @@ Move the highest-priority read-only browser-assist flows forward so live host se
 - When should browser-agent outputs begin feeding the dashboard/worker stack, and what proof should be required first?
 
 ## Next Suggested Step
-Use repo truth to select the next browser-agent batch, starting with the smallest high-signal read-only improvements around host session verification, richer reservation/message extraction, and artifact/operator ergonomics.
+Use repo truth to select the next browser-agent batch, starting with the smallest high-signal read-only improvements around selector centralization, parser resilience, and artifact/operator ergonomics.

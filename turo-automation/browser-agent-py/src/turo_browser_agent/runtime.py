@@ -81,6 +81,19 @@ def capture_page_artifacts(page, config: BrowserAgentConfig, prefix: str) -> tup
     return artifacts, warnings
 
 
+def capture_page_failure_artifacts(page, config: BrowserAgentConfig, prefix: str, warning: str) -> tuple[list[str], list[str]]:
+    artifacts: list[str] = []
+    warnings: list[str] = [warning]
+
+    if page is None:
+        return artifacts, warnings
+
+    failure_artifacts, artifact_warnings = capture_page_artifacts(page, config, f"{prefix}-error")
+    artifacts.extend(failure_artifacts)
+    warnings.extend(artifact_warnings)
+    return artifacts, warnings
+
+
 def read_page_body_text(page, *, limit: int, timeout_ms: int = 5000) -> tuple[str, list[str]]:
     warnings: list[str] = []
     text = ""
