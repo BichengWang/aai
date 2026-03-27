@@ -296,10 +296,19 @@ def normalize_message_thread(raw: Mapping[str, Any]) -> dict[str, Any]:
     if guest is None and _looks_like_person_name(title):
         guest = _clean_message_participant(title)
 
+    summary = _build_summary(
+        [
+            guest,
+            status if status else ("Unread" if raw.get("unread", False) else None),
+            f"Reservation #{reservation_id}" if reservation_id else None,
+        ]
+    )
+
     return {
         "title": title,
         "guest": guest,
         "status": status,
+        "summary": summary,
         "unread": bool(raw.get("unread", False)),
         "href": raw.get("href"),
         "reservationId": reservation_id,

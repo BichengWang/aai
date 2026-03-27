@@ -164,6 +164,7 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(thread["guest"], "Alex Lee")
         self.assertEqual(thread["reservationId"], "54848775")
         self.assertEqual(thread["status"], "Unread")
+        self.assertEqual(thread["summary"], "Alex Lee · Unread · Reservation #54848775")
         self.assertTrue(thread["unread"])
         self.assertEqual(thread["lastMessageAt"], "2026-03-27T10:00:00.000Z")
 
