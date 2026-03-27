@@ -69,6 +69,25 @@ img {
   border-bottom: 1px solid rgba(28, 27, 25, 0.08);
 }
 
+.skip-link {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  transform: translate(-50%, -180%);
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #201c17;
+  color: #f7f2ed;
+  font-size: 0.9rem;
+  font-weight: 700;
+  z-index: 20;
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus {
+  transform: translate(-50%, 0);
+}
+
 .nav {
   display: flex;
   align-items: center;
@@ -96,6 +115,10 @@ img {
 }
 
 .nav-links a:hover {
+  color: var(--ink);
+}
+
+.nav-links a[aria-current="page"] {
   color: var(--ink);
 }
 

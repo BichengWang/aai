@@ -1,4 +1,4 @@
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { Link, NavLink, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Enquiry from "./pages/Enquiry";
 import ServiceDetail from "./pages/ServiceDetail";
@@ -48,21 +48,27 @@ export default function App() {
     <div className={`page${isReviewRoute ? " page-review" : ""}`}>
       {isReviewRoute ? null : (
         <header className="site-header">
+          <a className="skip-link" href="#main-content">
+            Skip to content
+          </a>
           <div className="container nav">
             <Link className="brand" to="/">
               Altair
             </Link>
-            <nav className="nav-links">
-              <Link to="/services">Services</Link>
-              <Link to="/enquiry">Enquiry</Link>
-              <Link to="/contact">Contact</Link>
-              <Link to="/review">Review</Link>
+            <nav className="nav-links" aria-label="Primary">
+              <NavLink to="/services">Services</NavLink>
+              <NavLink to="/enquiry">Enquiry</NavLink>
+              <NavLink to="/contact">Contact</NavLink>
+              <NavLink to="/review">Review</NavLink>
               <AuthLinks />
             </nav>
           </div>
         </header>
       )}
-      <main className={`page-content${isReviewRoute ? " page-content-review" : ""}`}>
+      <main
+        id="main-content"
+        className={`page-content${isReviewRoute ? " page-content-review" : ""}`}
+      >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
