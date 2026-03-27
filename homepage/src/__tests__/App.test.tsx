@@ -35,5 +35,8 @@ describe("Altair homepage", () => {
     expect(
       screen.getByRole("navigation", { name: /primary/i })
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /qx@altairworld.com/i })
+    ).toHaveAttribute("href", "mailto:qx@altairworld.com");
   });
 });

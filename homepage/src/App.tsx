@@ -93,9 +93,11 @@ export default function App() {
           <div className="container footer-grid">
             <div>
               <p className="brand">Altair AI LLC</p>
-              <p className="footer-note">
-                Local services matched with clarity, compliance, and care.
-              </p>
+              <address className="footer-contact">
+                <a href="mailto:qx@altairworld.com">qx@altairworld.com</a>
+                <span>San Francisco Bay Area</span>
+                <span>Mon-Fri, 9am-6pm PST</span>
+              </address>
             </div>
             <div className="footer-links">
               <Link to="/services">Services</Link>
