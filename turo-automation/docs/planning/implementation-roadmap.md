@@ -63,7 +63,7 @@ PR slices:
 2. vehicle utilization panel (wire `GetVehicleUtilization` to dashboard sidebar) ✓
 3. incident list panel with status transitions (surface `DetectTripAnomalies` output) ✓
 
-## Phase 6 — Production Workflow Hardening (next)
+## Phase 6 — Production Workflow Hardening ✓
 Objective: tighten identity, mutation boundaries, and guest-send safety before broader rollout.
 
 PR slices:
@@ -71,15 +71,9 @@ PR slices:
 2. explicit guest-send path after approval ✓
 3. decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary ✓
 
-## Current Highest-Priority Next PR
-Web mutation helper coverage for the centralized direct-to-Supabase boundary:
-- verify the new web Supabase client helper keeps mutation and read gating aligned
-- keep the boundary easy to swap later if an API layer becomes necessary
-- preserve the explicit guest-send safety gate already landed in `main`
-
-## Why This Is Next
-- Phase 6 items 1-3 are now implemented on `main`
-- The remaining work is helper coverage and cleanup around the chosen boundary, not the boundary itself
+## Current Status
+- The direct web Supabase boundary is centralized and covered by a focused env-driven test.
+- No new implementation slice is queued right now; future work should come from the broader backlog when it is clearly ready.
 
 ## Rules for Future PRs
 - one highest-priority PR at a time

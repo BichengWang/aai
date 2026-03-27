@@ -581,3 +581,24 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 - `npm run build`
 - `npm test`
+
+### Web Supabase boundary centralization
+
+- Added `web/src/lib/supabaseClient.ts` to centralize web Supabase config parsing and client creation
+- Updated the web approval, incident, snapshot, trip timeline, utilization, and dashboard mutation paths to reuse the shared helper and explicit gating
+- Kept the direct-to-Supabase boundary intentionally narrow so it can be swapped later if an API layer becomes necessary
+
+### Verification
+
+- `npm run build`
+- `npm test`
+
+### Web Supabase helper coverage
+
+- Added env-driven helper exports in `web/src/lib/supabaseClient.ts` so the gating logic can be tested without depending on Vite runtime globals
+- Added `web/test/supabaseClient.test.ts` to cover config parsing, gating, and client creation
+- Updated the root `npm test` script to run the new TS test file through `tsx`
+
+### Verification
+
+- `npm test`
