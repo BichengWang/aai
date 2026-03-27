@@ -546,6 +546,15 @@ img {
   margin-top: 12px;
 }
 
+.coverage-note {
+  margin: 14px 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(28, 27, 25, 0.56);
+}
+
 .coverage-chip {
   padding: 8px 14px;
   border-radius: 999px;

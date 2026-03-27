@@ -12,6 +12,7 @@ export default function Coverage() {
             We are live across the San Francisco Bay Area with a growing network
             of providers.
           </p>
+          <p className="coverage-note">{coverageAreas.length} cities live today.</p>
           <div className="coverage-list">
             {coverageAreas.map((area) => (
               <span key={area} className="coverage-chip">
@@ -29,7 +30,7 @@ export default function Coverage() {
               verified requests and provider availability.
             </p>
             <Link className="text-link" to="/enquiry">
-              Request a new area
+              Request coverage in a new area
             </Link>
           </div>
         </div>
