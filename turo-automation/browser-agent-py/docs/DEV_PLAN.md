@@ -31,6 +31,7 @@ Current status:
 - trip-list parsing now emits a concise operator summary alongside the structured fields
 - trip-detail parsing now emits a concise operator summary alongside the structured fields
 - message-thread parsing now emits a concise operator summary alongside the structured fields
+- trip-card parsing now recovers a guest name from a prefixed title with trailing vehicle/context text
 - message-thread parsing now recovers a guest name from a prefixed title with trailing vehicle/context text
 
 ## Phase 3 — Hardening

@@ -138,6 +138,8 @@ def normalize_trip_item(raw: Mapping[str, str | None]) -> dict[str, str | None]:
     location = raw.get("location")
     guest = raw.get("actor")
     reservation_id = raw.get("reservationId") or extract_reservation_id(raw.get("href"), text)
+    if guest is None:
+        guest = _extract_leading_person_name(title)
     summary = _build_summary([status, title, guest, location, f"Reservation #{reservation_id}" if reservation_id else None])
     return {
         "title": title,

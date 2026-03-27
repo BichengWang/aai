@@ -33,6 +33,22 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(item["guest"], "Alex")
         self.assertEqual(item["summary"], "Upcoming · 2023 Tesla Model 3 · Alex · San Francisco, CA · Reservation #54848775")
 
+    def test_normalize_trip_item_recovers_guest_from_title_prefix(self) -> None:
+        item = normalize_trip_item(
+            {
+                "href": "/us/en/reservation/55213565",
+                "text": "Upcoming Alex Lee | 2023 Tesla Model 3 San Francisco, CA #55213565",
+                "title": "Alex Lee | 2023 Tesla Model 3",
+                "location": "San Francisco, CA",
+                "actor": None,
+                "reservationId": None,
+                "badge": "Upcoming",
+            }
+        )
+
+        self.assertEqual(item["guest"], "Alex Lee")
+        self.assertEqual(item["summary"], "Upcoming · Alex Lee | 2023 Tesla Model 3 · Alex Lee · San Francisco, CA · Reservation #55213565")
+
     def test_resolve_trip_target_accepts_id_path_and_url(self) -> None:
         url_from_id, reservation_id = resolve_trip_target("54848775", "https://turo.com")
         self.assertEqual(url_from_id, "https://turo.com/us/en/reservation/54848775")
