@@ -4,15 +4,8 @@ import {
   type ActOnApprovalData,
   type UseCaseResult,
 } from "@turo-automation/shared";
-import { createClient } from "@supabase/supabase-js";
 import { getWebOperatorIdentity } from "./operatorIdentity";
-
-const SUPABASE_URL = (import.meta as unknown as { env: Record<string, string> })
-  .env["VITE_SUPABASE_URL"];
-const SUPABASE_KEY = (import.meta as unknown as { env: Record<string, string> })
-  .env["VITE_SUPABASE_KEY"];
-
-const useSupabase = Boolean(SUPABASE_URL && SUPABASE_KEY);
+import { createWebSupabaseClient } from "./supabaseClient";
 
 // No-op notifier for web (Slack is worker-side only)
 const noopNotifier = {
@@ -32,9 +25,9 @@ export async function actOnApproval(
   decision: "approved" | "rejected",
   reviewedBy: string | null = getWebOperatorIdentity()
 ): Promise<UseCaseResult<ActOnApprovalData> | null> {
-  if (!useSupabase || !reviewedBy) return null;
+  const client = createWebSupabaseClient();
+  if (!client || !reviewedBy) return null;
 
-  const client = createClient(SUPABASE_URL, SUPABASE_KEY);
   const messageRepository = createSupabaseMessageRepository(client);
   const useCase = createActOnApprovalUseCase({
     messageRepository,

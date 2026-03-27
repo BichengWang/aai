@@ -6,14 +6,7 @@ import {
   type GetVehicleUtilizationData,
   type UseCaseResult,
 } from "@turo-automation/shared";
-import { createClient } from "@supabase/supabase-js";
-
-const SUPABASE_URL = (import.meta as unknown as { env: Record<string, string> })
-  .env["VITE_SUPABASE_URL"];
-const SUPABASE_KEY = (import.meta as unknown as { env: Record<string, string> })
-  .env["VITE_SUPABASE_KEY"];
-
-const useSupabase = Boolean(SUPABASE_URL && SUPABASE_KEY);
+import { createWebSupabaseClient } from "./supabaseClient";
 
 export async function loadVehicleUtilization(
   windowDays = 30
@@ -25,8 +18,8 @@ export async function loadVehicleUtilization(
   ).toISOString();
   const generatedAt = now.toISOString();
 
-  if (useSupabase) {
-    const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+  const client = createWebSupabaseClient();
+  if (client) {
     const vehicleRepo = createSupabaseVehicleRepository(client);
     const vehicles = await vehicleRepo.listVehicles();
     const useCase = createGetVehicleUtilizationUseCase({

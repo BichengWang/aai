@@ -11,18 +11,8 @@ import {
   type TodayOpsSnapshot,
   type Vehicle,
 } from "@turo-automation/shared";
-import { createClient } from "@supabase/supabase-js";
-
-// ---------------------------------------------------------------------------
-// In the browser Vite exposes env vars as import.meta.env.VITE_*.
-// If both are present, load from Supabase; otherwise fall back to fixtures.
-// ---------------------------------------------------------------------------
-const SUPABASE_URL = (import.meta as unknown as { env: Record<string, string> })
-  .env["VITE_SUPABASE_URL"];
-const SUPABASE_KEY = (import.meta as unknown as { env: Record<string, string> })
-  .env["VITE_SUPABASE_KEY"];
-
-const useSupabase = Boolean(SUPABASE_URL && SUPABASE_KEY);
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { createWebSupabaseClient } from "./supabaseClient";
 
 interface VehicleRow {
   id: string;
@@ -46,11 +36,11 @@ interface GuestRow {
   full_name: string;
 }
 
-async function loadSupabaseSnapshot(): Promise<
+async function loadSupabaseSnapshot(
+  client: SupabaseClient
+): Promise<
   UseCaseResult<TodayOpsSnapshot>
 > {
-  const client = createClient(SUPABASE_URL, SUPABASE_KEY);
-
   const [vehiclesRes, guestsRes] = await Promise.all([
     client.from("vehicles").select("*").eq("status", "active"),
     client.from("guests").select("id, full_name"),
@@ -102,8 +92,9 @@ async function loadSupabaseSnapshot(): Promise<
 }
 
 export async function loadSnapshot(): Promise<UseCaseResult<TodayOpsSnapshot>> {
-  if (useSupabase) {
-    return loadSupabaseSnapshot();
+  const client = createWebSupabaseClient();
+  if (client) {
+    return loadSupabaseSnapshot(client);
   }
   return getFixtureTodayOpsSnapshot();
 }
