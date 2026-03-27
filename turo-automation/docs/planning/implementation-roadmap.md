@@ -71,9 +71,21 @@ PR slices:
 2. explicit guest-send path after approval ✓
 3. decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary ✓
 
+## Phase 7 — Modular Host Systems
+Objective: reshape browser automation to match the Turo host product surface and make future page coverage easier to extend safely.
+
+PR slices:
+1. define the host-page-aligned module architecture and migrate shared core utilities
+2. refactor existing session, trips, and inbox flows into the new module structure
+3. add first `calendar-system` read-only flow
+4. add first `vehicles-system` read-only flow
+5. add first `user-profile-system` read-only flow
+6. document or lightly probe `business-system`, `more-system`, and `switch-to-guest` for the next safe increments
+
 ## Current Status
-- The direct web Supabase boundary is centralized and covered by a focused env-driven test.
-- No new implementation slice is queued right now; future work should come from the broader backlog when it is clearly ready.
+- Milestone 1 is complete through the first 10-PR browser-agent hardening batch (#83–#92 merged).
+- The first Milestone 2 structural slice has landed: `browser-agent-py` now has host-aligned module packages with compatibility shims.
+- The next implementation slices are the remaining module migrations and the first additional read-only host page beyond trips and inbox.
 
 ## Rules for Future PRs
 - one highest-priority PR at a time

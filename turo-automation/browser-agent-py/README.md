@@ -8,6 +8,15 @@ The repo already has a TypeScript `browser-agent/` package, but the actual host-
 
 This subtree captures the learned browser automation steps as executable commands and JSON contracts.
 
+The code is now grouped by host-aligned modules under `src/turo_browser_agent/modules/`:
+
+- `core/` for health checks and session bootstrap / verification
+- `trips/` for trip list and trip detail flows
+- `inbox/` for the messages list flow
+- `calendar/`, `vehicles/`, `business/`, `more/`, `user_profile/`, and `switch_to_guest/` are scaffolded for the next Milestone 2 slices
+
+Legacy `flows/` imports remain as compatibility shims during the refactor.
+
 ## Command surface
 
 - `./run health-smoke`
@@ -37,6 +46,14 @@ This is a minimal real browser runner:
 - `messages-list` opens the host messages page and returns structured thread summaries or `login_required`
 
 It stays read-first and intentionally avoids guest-facing writes.
+
+The current implementation now lives in module-specific packages instead of a single flow folder:
+- `modules/core/health.py`
+- `modules/core/session_bootstrap.py`
+- `modules/core/session_check.py`
+- `modules/trips/list.py`
+- `modules/trips/detail.py`
+- `modules/inbox/list.py`
 
 For the practical auth playbook and troubleshooting guidance, read `docs/AUTH_RUNBOOK.md`.
 

@@ -6,7 +6,7 @@ Use this file for the current working plan. Keep it short, current, and actionab
 2026-03-27
 
 ## Objective
-Move the highest-priority read-only browser-assist flows forward so live host session work can be verified on real Turo pages while the dashboard/worker stack stays stable.
+Start Milestone 2 by refactoring browser automation into host-page-aligned modules and migrating existing flows into that structure.
 
 ## Completed
 - [x] Shared domain, ports, fixtures, and use-case contracts
@@ -32,17 +32,18 @@ Move the highest-priority read-only browser-assist flows forward so live host se
 - [x] Architecture and workflow docs updated through PR #82 closeout
 - [x] Shared safe browser body-text capture helper across browser-agent live flows
 - [x] Failure artifact capture across all browser-agent read-only flows
+- [x] Browser-agent host-module skeleton: `core`, `trips`, `inbox`, plus scaffolded `calendar`, `vehicles`, `business`, `more`, `user_profile`, and `switch_to_guest` packages
 
 ## Today's Priorities
-- [ ] Start the next 10-PR batch on browser-agent hardening, not new guest-facing capability
-- [ ] Keep the next increments read-only and centered on live-session verification, parser resilience, artifact quality, and operator usability
-- [ ] Prefer the smallest complete slices that can be tested locally and merged directly into `main`
-- [ ] Keep the repo docs synchronized with the implemented browser-agent behavior after each merge
+- [x] Close the first browser-agent batch with 10 merged PRs (#83–#92)
+- [x] Create the Milestone 2 module plan aligned to the Turo host page structure
+- [x] Refactor current trips/inbox/session flows into explicit module ownership
+- [ ] Start the Milestone 2 development loop with small structural PRs before adding broader new page coverage
 
 ## Risks / Open Questions
-- Which browser-agent read model is the next highest-value addition after trips, trip detail, and messages list?
-- Are there any weak spots in live-session verification or parser robustness that should be fixed before adding more surface area?
-- When should browser-agent outputs begin feeding the dashboard/worker stack, and what proof should be required first?
+- Which module should be the first new live read-only addition after refactoring: calendar, vehicles, or profile?
+- How much command-surface compatibility should be preserved while moving flows into explicit module boundaries?
+- When should `business-system`, `more-system`, and `switch-to-guest` remain docs-only versus gaining first executable read flows?
 
 ## Next Suggested Step
-Use repo truth to select the next browser-agent batch, starting with the smallest high-signal read-only improvements around selector centralization, parser resilience, and artifact/operator ergonomics.
+Begin Milestone 2 with structural refactors: establish module boundaries, move existing session/trips/inbox flows under them, then add the first extra host-page module only after the layout is stable.

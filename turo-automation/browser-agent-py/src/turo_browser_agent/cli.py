@@ -3,12 +3,12 @@ from __future__ import annotations
 import json
 import sys
 
-from .flows.health_smoke import run_health_smoke
-from .flows.messages_list import run_messages_list
-from .flows.session_bootstrap import run_session_bootstrap
-from .flows.session_check import run_session_check
-from .flows.trip_get import run_trip_get
-from .flows.trips_list import run_trips_list
+from .modules.core.health import run_health_smoke
+from .modules.core.session_bootstrap import run_session_bootstrap
+from .modules.core.session_check import run_session_check
+from .modules.inbox.list import run_messages_list
+from .modules.trips.detail import run_trip_get
+from .modules.trips.list import run_trips_list
 
 COMMANDS = {
     "health-smoke": run_health_smoke,

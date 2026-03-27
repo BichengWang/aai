@@ -79,7 +79,11 @@ A new browser automation package should be added inside this repo rather than bu
 Current implementation status:
 - `browser-agent-py/` exists as the active Python-first browser automation subtree for live host-session work
 - config/env parsing, runtime preparation, and local storage/artifact directories are implemented
-- `health:smoke`, `session:bootstrap`, `session:check`, `trips:list`, and `trip-get` commands exist with focused Python test coverage
+- `src/turo_browser_agent/modules/` now groups the read-only commands into host-aligned packages
+- `modules/core/` owns `health:smoke`, `session:bootstrap`, and `session:check`
+- `modules/trips/` owns `trips:list` and `trip-get`
+- `modules/inbox/` owns `messages:list`
+- `modules/calendar/`, `modules/vehicles/`, `modules/business/`, `modules/more/`, `modules/user_profile/`, and `modules/switch_to_guest/` are scaffolded for the next Milestone 2 slices
 - `health:smoke` performs a live read-only browser navigation to `TURO_BASE_URL`, snapshots minimal page metadata, and classifies the page conservatively as `authenticated`, `unauthenticated`, or `unknown`
 - `session:check` performs a live read-only inspection against the protected host trips route so auth is verified on a real gated page
 - `trips:list` performs a live read-only navigation to the host trips page, reuses saved storage state when present, and extracts conservative trip link summaries

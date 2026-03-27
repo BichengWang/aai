@@ -20,6 +20,11 @@
 - `messages-list`
 
 Current status:
+- the read-only flows now live under module-specific packages instead of only the legacy `flows/` folder
+- `modules/core/` owns health and session bootstrap / check
+- `modules/trips/` owns trip list and trip detail read models
+- `modules/inbox/` owns the messages list read model
+- empty scaffold packages now exist for calendar, vehicles, business, more, user profile, and switch-to-guest
 - `trips-list` is implemented and extracts reservation cards from the real host trips page
 - `trip-get` is implemented as a conservative reservation detail fetch by reservation ID or URL
 - shared page-state helpers now centralize login-required and blocked-page detection across the read-only flows

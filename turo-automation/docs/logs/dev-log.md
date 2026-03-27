@@ -569,6 +569,29 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-03-27
 
+### Milestone 2 host-module skeleton
+
+- Created `browser-agent-py/src/turo_browser_agent/modules/` and grouped the existing browser flows by host-aligned ownership:
+  - `modules/core/` for `health:smoke`, `session:bootstrap`, and `session:check`
+  - `modules/trips/` for `trips:list` and `trip-get`
+  - `modules/inbox/` for `messages:list`
+- Added scaffold packages for the next Milestone 2 pages:
+  - `modules/calendar/`
+  - `modules/vehicles/`
+  - `modules/business/`
+  - `modules/more/`
+  - `modules/user_profile/`
+  - `modules/switch_to_guest/`
+- Updated `browser-agent-py/src/turo_browser_agent/cli.py` to import from the new module packages
+- Left `browser-agent-py/src/turo_browser_agent/flows/` as compatibility shims so the existing command surface stays stable during the migration
+- Updated browser-agent docs and repo planning docs to describe the module layout and current Milestone 2 position
+
+### Verification
+
+- Not yet run. Code is staged for focused browser-agent test verification next.
+
+## 2026-03-27
+
 ### Explicit guest-send path
 
 - Added `shared/src/application/index.ts::createSendApprovedMessageDraftsUseCase` to transition approved drafts from `ready_for_review` to `sent`

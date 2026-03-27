@@ -6,7 +6,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from turo_browser_agent.flows.trip_get import run_trip_get
+from turo_browser_agent.modules.trips.detail import run_trip_get
 
 
 class TripGetTests(unittest.TestCase):
