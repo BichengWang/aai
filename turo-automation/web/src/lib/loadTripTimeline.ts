@@ -8,22 +8,15 @@ import {
   type GetTripTimelineData,
   type UseCaseResult,
 } from "@turo-automation/shared";
-import { createClient } from "@supabase/supabase-js";
-
-const SUPABASE_URL = (import.meta as unknown as { env: Record<string, string> })
-  .env["VITE_SUPABASE_URL"];
-const SUPABASE_KEY = (import.meta as unknown as { env: Record<string, string> })
-  .env["VITE_SUPABASE_KEY"];
-
-const useSupabase = Boolean(SUPABASE_URL && SUPABASE_KEY);
+import { createWebSupabaseClient } from "./supabaseClient";
 
 export async function loadTripTimeline(
   tripId: string
 ): Promise<UseCaseResult<GetTripTimelineData>> {
   const generatedAt = new Date().toISOString();
 
-  if (useSupabase) {
-    const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+  const client = createWebSupabaseClient();
+  if (client) {
     const useCase = createGetTripTimelineUseCase({
       tripRepository: createSupabaseTripRepository(client),
       taskRepository: createSupabaseTaskRepository(client),

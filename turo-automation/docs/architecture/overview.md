@@ -21,6 +21,7 @@ Vite + React internal dashboard. Reads from the `GetTodayOpsSnapshot` use-case a
 - Selected-trip timeline via `GetTripTimeline`
 - Vehicle utilization sidebar via `GetVehicleUtilization`
 - Approval and incident state transitions via Supabase-backed action modules, with actor metadata sourced from `VITE_OPERATOR_IDENTITY`
+  - web Supabase reads/writes are centralized in `web/src/lib/supabaseClient.ts`
 
 Data source is env-gated:
 - `VITE_SUPABASE_URL` + `VITE_SUPABASE_KEY` → Supabase-backed snapshot
@@ -57,7 +58,7 @@ web/src/lib/               → web-side adapter wiring
 | Integration | Adapter | Env Var |
 |-------------|---------|---------|
 | Supabase (persistence) | `createSupabase*Repository` | `SUPABASE_URL`, `SUPABASE_KEY` |
-| Supabase (web) | `loadSnapshot` in `web/src/lib/` | `VITE_SUPABASE_URL`, `VITE_SUPABASE_KEY` |
+| Supabase (web) | `web/src/lib/supabaseClient.ts` + loaders/actions | `VITE_SUPABASE_URL`, `VITE_SUPABASE_KEY` |
 | Operator identity (web mutations) | `getWebOperatorIdentity` in `web/src/lib/` | `VITE_OPERATOR_IDENTITY` |
 | Slack (notifications) | `createEnvSlackNotifier` | `SLACK_WEBHOOK_URL` |
 

@@ -9,6 +9,7 @@ import { formatCompactDateTime, formatLabel } from "../lib/format";
 import { actOnApproval } from "../lib/approvalActions";
 import { actOnIncident } from "../lib/incidentActions";
 import { getWebOperatorIdentity } from "../lib/operatorIdentity";
+import { hasWebSupabaseConfig } from "../lib/supabaseClient";
 import { loadTripTimeline } from "../lib/loadTripTimeline";
 import { SectionCard } from "../ui/SectionCard";
 import { TripTimelinePanel } from "./TripTimelinePanel";
@@ -30,24 +31,9 @@ export function OpsDashboard(props: {
   const [timelineEntries, setTimelineEntries] = useState<TripTimelineEntry[]>([]);
   const [timelineLoading, setTimelineLoading] = useState(false);
   const operatorIdentity = getWebOperatorIdentity();
-  const canActOnApprovals = Boolean(
-    (import.meta as unknown as { env: Record<string, string> }).env[
-      "VITE_SUPABASE_URL"
-    ] &&
-      (import.meta as unknown as { env: Record<string, string> }).env[
-        "VITE_SUPABASE_KEY"
-      ] &&
-      operatorIdentity
-  );
-  const canActOnIncidents = Boolean(
-    (import.meta as unknown as { env: Record<string, string> }).env[
-      "VITE_SUPABASE_URL"
-    ] &&
-      (import.meta as unknown as { env: Record<string, string> }).env[
-        "VITE_SUPABASE_KEY"
-      ] &&
-      operatorIdentity
-  );
+  const hasMutationConfig = hasWebSupabaseConfig();
+  const canActOnApprovals = Boolean(hasMutationConfig && operatorIdentity);
+  const canActOnIncidents = Boolean(hasMutationConfig && operatorIdentity);
 
   async function handleSelectTrip(tripId: string) {
     if (selectedTripId === tripId) {

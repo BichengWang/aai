@@ -6,7 +6,7 @@ Use this file for the current working plan. Keep it short, current, and actionab
 2026-03-27
 
 ## Objective
-Harden the explicit guest-send path after approval before broader mutation-boundary work.
+Harden and verify the centralized direct-to-Supabase web boundary before any future API split.
 
 ## Completed
 - [x] Shared domain, ports, fixtures, and use-case contracts
@@ -34,12 +34,13 @@ Harden the explicit guest-send path after approval before broader mutation-bound
 ## Today's Priorities
 - [x] Replace placeholder `web.reviewer` actor strings with a defined operator identity source
 - [x] Define the explicit guest-send path after approval
-- [ ] Decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary
+- [x] Decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary
+- [ ] Add lightweight coverage for the centralized web Supabase boundary helper
 
 ## Risks / Open Questions
-- Should incident actions remain direct Supabase client calls from the web, or move behind a worker/API boundary later?
+- What shape should future API/worker boundary coverage take if the direct web Supabase client becomes a liability?
 - Should the explicit send gate stay an env flag, or move to a manual admin action in the dashboard later?
 - What should production set `WORKER_SEND_APPROVED_DRAFTS` to, and should it later come from auth context instead of build-time config?
 
 ## Next Suggested Step
-Decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary.
+Add lightweight coverage for the centralized web Supabase boundary helper.
