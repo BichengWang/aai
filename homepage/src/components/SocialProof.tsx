@@ -15,14 +15,18 @@ export default function SocialProof() {
         </div>
         <div className="quote-grid">
           {quotes.map((item, index) => (
-            <blockquote
+            <figure
               key={item.quote}
               className="quote-card"
               style={{ "--i": index } as CSSProperties}
             >
-              <p>{item.quote}</p>
-              <span className="quote-name">{item.name}</span>
-            </blockquote>
+              <blockquote>
+                <p>{item.quote}</p>
+              </blockquote>
+              <figcaption>
+                <cite className="quote-name">{item.name}</cite>
+              </figcaption>
+            </figure>
           ))}
         </div>
       </div>

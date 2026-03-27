@@ -594,22 +594,29 @@ img {
 }
 
 .quote-card {
-  margin: 0;
   background: var(--paper);
   padding: 24px;
   border-radius: 18px;
   border: 1px solid var(--stroke);
   display: grid;
   gap: 14px;
-  font-style: italic;
   animation: rise 0.7s ease both;
   animation-delay: calc(var(--i, 0) * 0.12s);
 }
 
+.quote-card blockquote {
+  margin: 0;
+  font-style: italic;
+}
+
+.quote-card figcaption {
+  margin: 0;
+}
+
 .quote-name {
-  font-style: normal;
   font-weight: 600;
   color: rgba(28, 27, 25, 0.7);
+  font-style: normal;
 }
 
 .faq-grid {
