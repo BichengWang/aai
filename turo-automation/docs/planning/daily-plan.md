@@ -6,7 +6,7 @@ Use this file for the current working plan. Keep it short, current, and actionab
 2026-03-27
 
 ## Objective
-Harden and verify the centralized direct-to-Supabase web boundary before any future API split.
+Move the highest-priority read-only browser-assist flows forward so live host session work can be verified on real Turo pages while the dashboard/worker stack stays stable.
 
 ## Completed
 - [x] Shared domain, ports, fixtures, and use-case contracts
@@ -27,20 +27,20 @@ Harden and verify the centralized direct-to-Supabase web boundary before any fut
 - [x] Scheduled worker mode with retry handling
 - [x] Trip timeline side panel in the web dashboard
 - [x] Vehicle utilization panel in the web dashboard
-- [x] 23/23 automated tests pass
-- [x] README with setup instructions and adapter mode table
-- [x] Architecture docs updated
+- [x] Centralized direct web Supabase mutation boundary with helper coverage
+- [x] Browser agent read-only flows: `health:smoke`, `session:bootstrap`, `session:check`, `trips:list`, `trip-get`, `messages-list`
+- [x] Architecture and workflow docs updated through PR #82 closeout
 
 ## Today's Priorities
-- [x] Replace placeholder `web.reviewer` actor strings with a defined operator identity source
-- [x] Define the explicit guest-send path after approval
-- [x] Decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary
-- [x] Add lightweight coverage for the centralized web Supabase boundary helper
+- [ ] Start the next 10-PR batch on browser-agent hardening, not new guest-facing capability
+- [ ] Keep the next increments read-only and centered on live-session verification, parser resilience, artifact quality, and operator usability
+- [ ] Prefer the smallest complete slices that can be tested locally and merged directly into `main`
+- [ ] Keep the repo docs synchronized with the implemented browser-agent behavior after each merge
 
 ## Risks / Open Questions
-- What shape should future API/worker boundary coverage take if the direct web Supabase client becomes a liability?
-- Should the explicit send gate stay an env flag, or move to a manual admin action in the dashboard later?
-- Is there any remaining direct web mutation work, or is the current boundary stable enough to leave alone until a future split is justified?
+- Which browser-agent read model is the next highest-value addition after trips, trip detail, and messages list?
+- Are there any weak spots in live-session verification or parser robustness that should be fixed before adding more surface area?
+- When should browser-agent outputs begin feeding the dashboard/worker stack, and what proof should be required first?
 
 ## Next Suggested Step
-Keep the current direct-to-Supabase web boundary in place and revisit only if a future API split becomes clearly justified.
+Use repo truth to select the next browser-agent batch, starting with the smallest high-signal read-only improvements around host session verification, richer reservation/message extraction, and artifact/operator ergonomics.

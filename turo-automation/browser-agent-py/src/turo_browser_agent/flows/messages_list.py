@@ -3,7 +3,7 @@ from __future__ import annotations
 from ..config import read_config
 from ..page_state import page_looks_blocked, page_looks_login_required
 from ..parsers import normalize_message_thread
-from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, prepare_runtime
+from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, prepare_runtime, read_page_body_text
 from ..types import create_result
 
 MESSAGES_URL = "https://turo.com/us/en/messages"
@@ -72,7 +72,7 @@ def run_messages_list(args: list[str] | None = None):
 
             title = page.title()
             url = page.url
-            body_text = (page.locator("body").inner_text(timeout=5000) or "")[:6000]
+            body_text, body_warnings = read_page_body_text(page, limit=6000)
 
             if page_looks_blocked(title, body_text):
                 artifacts, artifact_warnings = capture_page_artifacts(page, config, "messages-list-blocked")
@@ -117,6 +117,7 @@ def run_messages_list(args: list[str] | None = None):
             warnings: list[str] = []
             if not threads:
                 warnings.append("Messages page loaded but no thread cards were extracted with the current parser.")
+            warnings.extend(body_warnings)
             warnings.extend(artifact_warnings)
 
             return create_result(

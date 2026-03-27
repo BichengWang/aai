@@ -24,6 +24,7 @@ Current status:
 - `trip-get` is implemented as a conservative reservation detail fetch by reservation ID or URL
 - shared page-state helpers now centralize login-required and blocked-page detection across the read-only flows
 - `messages-list` is implemented as a conservative read-only inbox/thread summary flow
+- shared body-text capture now falls back cleanly when a page render is slow or the locator times out, so live flows keep returning structured output with warnings instead of hard-failing
 
 ## Phase 3 — Hardening
 

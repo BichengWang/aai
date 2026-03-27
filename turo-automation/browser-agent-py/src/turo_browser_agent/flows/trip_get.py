@@ -3,7 +3,7 @@ from __future__ import annotations
 from ..config import read_config
 from ..page_state import page_looks_login_required
 from ..parsers import normalize_trip_detail, resolve_trip_target
-from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, prepare_runtime
+from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, prepare_runtime, read_page_body_text
 from ..types import create_result
 
 JS_EXTRACT = r'''
@@ -61,7 +61,7 @@ def run_trip_get(args: list[str] | None = None):
 
             title = page.title()
             url = page.url
-            body_text = (page.locator("body").inner_text(timeout=5000) or "")[:8000]
+            body_text, body_warnings = read_page_body_text(page, limit=8000)
 
             if page_looks_login_required(title, url, body_text):
                 artifacts, artifact_warnings = capture_page_artifacts(page, config, "trip-get-login-required")
@@ -89,6 +89,7 @@ def run_trip_get(args: list[str] | None = None):
             warnings: list[str] = []
             if not trip["headline"] and not trip["keyLines"]:
                 warnings.append("Trip detail page loaded but no structured detail fields were extracted with the current parser.")
+            warnings.extend(body_warnings)
             warnings.extend(artifact_warnings)
 
             return create_result(

@@ -4,12 +4,13 @@ import time
 
 from ..config import read_config
 from ..page_state import page_looks_blocked, page_looks_login_required
-from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, prepare_runtime
+from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, prepare_runtime, read_page_body_text
 from ..types import create_result
 
 def run_session_bootstrap(args: list[str] | None = None):
     config = read_config()
     runtime = prepare_runtime(config)
+    body_warnings: list[str] = []
 
     try:
         with open_browser_page(config) as (_, context, page):
@@ -20,7 +21,8 @@ def run_session_bootstrap(args: list[str] | None = None):
             status = "awaiting_manual_login"
 
             while time.time() < deadline:
-                body_text = (page.locator("body").inner_text(timeout=3000) or "")[:2000].lower()
+                body_text, body_warnings = read_page_body_text(page, limit=2000, timeout_ms=3000)
+                body_text = body_text.lower()
                 if page_looks_blocked(page.title(), body_text):
                     status = "blocked"
                     break
@@ -36,6 +38,7 @@ def run_session_bootstrap(args: list[str] | None = None):
                 context.storage_state(path=str(config.storage_state_path))
 
             warnings: list[str] = []
+            warnings.extend(body_warnings)
             if status == "awaiting_manual_login":
                 warnings.append(
                     "Browser opened, but login was not completed before timeout. Increase BROWSER_AGENT_BOOTSTRAP_WAIT_MS and retry."

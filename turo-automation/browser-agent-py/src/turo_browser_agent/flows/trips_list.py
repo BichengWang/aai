@@ -3,7 +3,7 @@ from __future__ import annotations
 from ..config import read_config
 from ..page_state import page_looks_login_required
 from ..parsers import normalize_trip_item
-from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, prepare_runtime
+from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, prepare_runtime, read_page_body_text
 from ..types import create_result
 
 TRIPS_URL = "https://turo.com/us/en/trips"
@@ -65,7 +65,7 @@ def run_trips_list(args: list[str] | None = None):
 
             title = page.title()
             url = page.url
-            body_text = (page.locator("body").inner_text(timeout=5000) or "")[:4000]
+            body_text, body_warnings = read_page_body_text(page, limit=4000)
 
             if page_looks_login_required(title, url, body_text):
                 artifacts, artifact_warnings = capture_page_artifacts(page, config, "trips-list-login-required")
@@ -91,6 +91,7 @@ def run_trips_list(args: list[str] | None = None):
             warnings: list[str] = []
             if not trips:
                 warnings.append("Trips page loaded but no trip cards were extracted with the current parser.")
+            warnings.extend(body_warnings)
             warnings.extend(artifact_warnings)
 
             return create_result(

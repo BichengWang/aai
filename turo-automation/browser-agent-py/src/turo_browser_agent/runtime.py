@@ -81,6 +81,25 @@ def capture_page_artifacts(page, config: BrowserAgentConfig, prefix: str) -> tup
     return artifacts, warnings
 
 
+def read_page_body_text(page, *, limit: int, timeout_ms: int = 5000) -> tuple[str, list[str]]:
+    warnings: list[str] = []
+    text = ""
+
+    try:
+        text = page.evaluate("() => document.body ? document.body.innerText : ''") or ""
+    except Exception as exc:
+        warnings.append(f"Body text capture via evaluation failed: {exc}")
+
+    if not text:
+        try:
+            text = page.locator("body").inner_text(timeout=timeout_ms) or ""
+        except Exception as exc:
+            warnings.append(f"Body text capture via locator failed: {exc}")
+            text = ""
+
+    return text[:limit], warnings
+
+
 
 def browser_launch_kwargs(config: BrowserAgentConfig) -> dict[str, object]:
     kwargs: dict[str, object] = {

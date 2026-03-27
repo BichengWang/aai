@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from ..config import read_config
 from ..page_state import page_looks_blocked, page_looks_login_required
-from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page
+from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, read_page_body_text
 from ..types import create_result
 
 PROTECTED_TRIPS_URL = "https://turo.com/us/en/trips"
@@ -35,7 +35,7 @@ def run_session_check(args: list[str] | None = None):
             title = page.title()
             url = page.url
             cookies = context.cookies()
-            body_text = (page.locator("body").inner_text(timeout=5000) or "")[:2000]
+            body_text, body_warnings = read_page_body_text(page, limit=2000)
 
             blocked = page_looks_blocked(title, body_text)
             redirected_to_login = "/login" in url
@@ -50,6 +50,7 @@ def run_session_check(args: list[str] | None = None):
                 warnings.append("Browser state exists, but Turo still appears to require login.")
             elif status == "blocked":
                 warnings.append("Turo appears to be blocking this browser session.")
+            warnings.extend(body_warnings)
             warnings.extend(artifact_warnings)
 
             return create_result(
