@@ -68,18 +68,18 @@ Objective: tighten identity, mutation boundaries, and guest-send safety before b
 
 PR slices:
 1. actor identity model for approval / incident mutations ✓
-2. explicit guest-send path after approval
+2. explicit guest-send path after approval ✓
 3. decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary
 
 ## Current Highest-Priority Next PR
-Phase 6 item 2: explicit guest-send path after approval:
-- decide how approved drafts transition from approved to sent
-- keep guest-facing sends behind an explicit safety gate
-- make the send path auditable before broadening mutation boundaries
+Phase 6 item 3: decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary:
+- decide where approval and incident mutations should live
+- keep the explicit guest-send path auditable as the next safety gate
+- align the implementation boundary with the eventual production auth model
 
 ## Why This Is Next
-- Phase 6 item 1 is now implemented on `main`
-- The next gap is the explicit send boundary for guest-facing messages, not missing actor metadata
+- Phase 6 items 1 and 2 are now implemented on `main`
+- The remaining open decision is the mutation boundary, not the draft send transition
 
 ## Rules for Future PRs
 - one highest-priority PR at a time

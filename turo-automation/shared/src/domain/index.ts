@@ -66,6 +66,7 @@ export type JobName =
   | "lifecycle_tasks"
   | "late_return_scan"
   | "generate_drafts"
+  | "send_approved_message_drafts"
   | "daily_digest";
 
 export interface Vehicle {

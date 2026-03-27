@@ -566,3 +566,18 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 - `npm run build`
 - `npm test`
+
+## 2026-03-27
+
+### Explicit guest-send path
+
+- Added `shared/src/application/index.ts::createSendApprovedMessageDraftsUseCase` to transition approved drafts from `ready_for_review` to `sent`
+- Added `worker/src/jobs/runSendApprovedMessageDraftsJob.ts` and wired it into `worker/src/app/createWorkerApp.ts` behind the explicit `WORKER_SEND_APPROVED_DRAFTS` gate
+- Added migration `supabase/migrations/0003_turo_ops_send_approved_message_drafts.sql` so `job_runs.job_name` accepts the new explicit send job
+- Added a shared contract test proving approved drafts transition to sent and update their thread state
+- Updated docs and environment examples to describe the explicit send gate and the new next-priority boundary decision
+
+### Verification
+
+- `npm run build`
+- `npm test`

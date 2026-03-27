@@ -6,7 +6,7 @@ Use this file for the current working plan. Keep it short, current, and actionab
 2026-03-27
 
 ## Objective
-Harden web mutation actor identity before broader guest-send automation.
+Harden the explicit guest-send path after approval before broader mutation-boundary work.
 
 ## Completed
 - [x] Shared domain, ports, fixtures, and use-case contracts
@@ -33,13 +33,13 @@ Harden web mutation actor identity before broader guest-send automation.
 
 ## Today's Priorities
 - [x] Replace placeholder `web.reviewer` actor strings with a defined operator identity source
-- [ ] Define the explicit guest-send path after approval
+- [x] Define the explicit guest-send path after approval
 - [ ] Decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary
 
 ## Risks / Open Questions
 - Should incident actions remain direct Supabase client calls from the web, or move behind a worker/API boundary later?
-- When does an approved message draft actually get sent on the guest-facing channel?
-- What should production set `VITE_OPERATOR_IDENTITY` to, and should it later come from auth context instead of build-time config?
+- Should the explicit send gate stay an env flag, or move to a manual admin action in the dashboard later?
+- What should production set `WORKER_SEND_APPROVED_DRAFTS` to, and should it later come from auth context instead of build-time config?
 
 ## Next Suggested Step
-Define the explicit guest-send path after approval, then decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary.
+Decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary.

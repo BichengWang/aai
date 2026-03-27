@@ -237,6 +237,24 @@ export interface ActOnApprovalUseCase {
   ): Promise<UseCaseResult<ActOnApprovalData>>;
 }
 
+export interface SendApprovedMessageDraftsInput {
+  triggeredBy: string;
+  sentAt: ISODateString;
+}
+
+export interface SendApprovedMessageDraftsData {
+  triggeredBy: string;
+  sentDrafts: MessageDraft[];
+  sentThreads: MessageThread[];
+  skippedCount: number;
+}
+
+export interface SendApprovedMessageDraftsUseCase {
+  execute(
+    input: SendApprovedMessageDraftsInput,
+  ): Promise<UseCaseResult<SendApprovedMessageDraftsData>>;
+}
+
 export interface ActOnIncidentInput {
   incidentId: string;
   status: Incident["status"];
@@ -1746,6 +1764,86 @@ export function createActOnApprovalUseCase(deps: {
         { approvalRequest: savedApproval, draft: savedDraft },
         [],
         input.reviewedAt,
+      );
+    },
+  };
+}
+
+export function createSendApprovedMessageDraftsUseCase(deps: {
+  messageRepository: MessageRepository;
+}): SendApprovedMessageDraftsUseCase {
+  return {
+    async execute(input) {
+      const [drafts, threads] = await Promise.all([
+        deps.messageRepository.listDrafts(),
+        deps.messageRepository.listThreads(),
+      ]);
+
+      const eligibleDrafts = drafts.filter(
+        (draft) =>
+          draft.approvalStatus === "approved" && draft.state === "ready_for_review",
+      );
+      const threadById = new Map(threads.map((thread) => [thread.id, thread]));
+      const updatedThreadsById = new Map<string, MessageThread>();
+      const sentDrafts: MessageDraft[] = [];
+      const issues: UseCaseIssue[] = [];
+
+      for (const draft of eligibleDrafts) {
+        const thread = threadById.get(draft.threadId) ?? updatedThreadsById.get(draft.threadId);
+        if (!thread) {
+          issues.push({
+            code: "MESSAGE_THREAD_NOT_FOUND",
+            message: `Message thread ${draft.threadId} was not found for draft ${draft.id}.`,
+            severity: "error",
+            entityType: "message_thread",
+            entityId: draft.threadId,
+          });
+          continue;
+        }
+
+        sentDrafts.push({
+          ...draft,
+          state: "sent",
+          updatedAt: input.sentAt,
+        });
+
+        updatedThreadsById.set(thread.id, {
+          ...thread,
+          status: "sent",
+          lastMessageAt: input.sentAt,
+          updatedAt: input.sentAt,
+        });
+      }
+
+      if (sentDrafts.length > 0) {
+        await deps.messageRepository.saveDrafts(sentDrafts);
+      }
+
+      const sentThreads = [...updatedThreadsById.values()];
+      if (sentThreads.length > 0) {
+        await deps.messageRepository.saveThreads(sentThreads);
+      }
+
+      const summaryIssues =
+        sentDrafts.length === 0
+          ? [
+              {
+                code: "NO_APPROVED_MESSAGE_DRAFTS",
+                message: "No approved message drafts were ready to send.",
+                severity: "info" as const,
+              },
+            ]
+          : [];
+
+      return makeResult(
+        {
+          triggeredBy: input.triggeredBy,
+          sentDrafts,
+          sentThreads,
+          skippedCount: eligibleDrafts.length - sentDrafts.length,
+        },
+        issues.length > 0 ? issues : summaryIssues,
+        input.sentAt,
       );
     },
   };

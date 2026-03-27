@@ -21,6 +21,7 @@ import {
   createInMemoryTaskRepository,
   createInMemoryTripRepository,
   createInMemoryVehicleRepository,
+  createSendApprovedMessageDraftsUseCase,
   renderMessageTemplate,
 } from "../dist/index.js";
 
@@ -179,6 +180,57 @@ test("ActOnApproval transitions a pending approval to approved and updates draft
   assert.equal(result.data.approvalRequest.reviewedBy, "test.reviewer");
   assert.equal(result.data.draft.approvalStatus, "approved");
   assert.equal(result.data.draft.state, "ready_for_review");
+});
+
+test("SendApprovedMessageDrafts transitions approved drafts to sent and updates thread state", async () => {
+  const context = createFixtureContext();
+
+  const drafts = await context.messageRepository.listDrafts();
+  const draft = drafts.find((candidate) => candidate.id === "draft-tu-1001-pretrip");
+  assert.ok(draft);
+  await context.messageRepository.saveDrafts([
+    {
+      ...draft,
+      approvalStatus: "approved",
+      state: "ready_for_review",
+      updatedAt: FIXTURE_NOW,
+    },
+  ]);
+
+  const approvals = await context.messageRepository.listApprovalRequests();
+  const approval = approvals.find((candidate) => candidate.id === "approval-tu-1001-pretrip");
+  assert.ok(approval);
+  await context.messageRepository.saveApprovalRequests([
+    {
+      ...approval,
+      status: "approved",
+      reviewedBy: "test.reviewer",
+      reviewedAt: FIXTURE_NOW,
+    },
+  ]);
+
+  const useCase = createSendApprovedMessageDraftsUseCase({
+    messageRepository: context.messageRepository,
+  });
+
+  const result = await useCase.execute({
+    triggeredBy: "test-runner",
+    sentAt: FIXTURE_NOW,
+  });
+
+  assert.equal(result.ok, true);
+  assert.equal(result.data.triggeredBy, "test-runner");
+  assert.equal(result.data.sentDrafts.length, 1);
+  assert.equal(result.data.sentDrafts[0].state, "sent");
+  assert.equal(result.data.sentThreads.length, 1);
+  assert.equal(result.data.sentThreads[0].status, "sent");
+  assert.equal(result.data.sentThreads[0].lastMessageAt, FIXTURE_NOW);
+
+  const refreshedDrafts = await context.messageRepository.listDrafts();
+  assert.equal(
+    refreshedDrafts.find((candidate) => candidate.id === "draft-tu-1001-pretrip")?.state,
+    "sent",
+  );
 });
 
 test("ActOnIncident transitions an incident to resolved and stamps actor metadata", async () => {

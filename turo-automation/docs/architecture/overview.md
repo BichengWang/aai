@@ -32,11 +32,14 @@ Node.js background job runner. Executes sequentially on each invocation:
 2. `trip_import` — read new trips from the import source and upsert into the DB
 3. `lifecycle_tasks` — generate per-trip tasks based on trip status
 4. `late_return_scan` — detect overdue trips and open incidents
-5. `daily_digest` — build a summary and publish to Slack
+5. `send_approved_message_drafts` — explicit, opt-in transition from approved drafts to sent
+6. `daily_digest` — build a summary and publish to Slack
 
 Adapter mode is env-gated:
 - `SUPABASE_URL` + `SUPABASE_KEY` → Supabase-backed repositories + Slack notifier
 - absent → fixture-backed in-memory adapters (safe for CI and local dev)
+
+`WORKER_SEND_APPROVED_DRAFTS=true` enables the explicit approved-draft send step in `run()`; default off.
 
 ## Core Design Principle
 Separate user-facing operational views (`web`) from automation execution (`worker`) so manual ops and automated jobs can evolve independently. Both couple only to the shared `ports/` interfaces — never to each other's internals.

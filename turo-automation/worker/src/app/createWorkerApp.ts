@@ -6,6 +6,7 @@ import {
   createGenerateMessageDraftsUseCase,
   createGetTodayOpsSnapshotUseCase,
   createImportTripsUseCase,
+  createSendApprovedMessageDraftsUseCase,
   type JobName,
   type JobRun,
   type JobRunRepository,
@@ -17,6 +18,7 @@ import { runGenerateMessageDraftsJob } from "../jobs/runGenerateMessageDraftsJob
 import { runImportTripsJob } from "../jobs/runImportTripsJob.js";
 import { runLateReturnScanJob } from "../jobs/runLateReturnScanJob.js";
 import { runLifecycleTasksJob } from "../jobs/runLifecycleTasksJob.js";
+import { runSendApprovedMessageDraftsJob } from "../jobs/runSendApprovedMessageDraftsJob.js";
 import { runTodayOpsSnapshotJob } from "../jobs/runTodayOpsSnapshotJob.js";
 import { logUseCaseResult, logWorkerEvent } from "../lib/logger.js";
 import { getWorkerNowIso, getWorkerToday } from "../lib/time.js";
@@ -45,6 +47,10 @@ async function persistJobRun(
   jobRun: JobRun
 ) {
   await jobRunRepository.saveJobRun(jobRun);
+}
+
+function readTruthyEnvFlag(value: string | undefined): boolean {
+  return Boolean(value && ["1", "true", "yes", "on"].includes(value.toLowerCase()));
 }
 
 const useSupabase = Boolean(
@@ -101,6 +107,9 @@ export function createWorkerApp() {
         notifier: adapters.notifier,
         guests: adapters.guests,
         vehicles: adapters.vehicles,
+      });
+      const sendApprovedMessageDrafts = createSendApprovedMessageDraftsUseCase({
+        messageRepository: adapters.messageRepository,
       });
 
       const snapshotResult = await runTodayOpsSnapshotJob({
@@ -185,8 +194,27 @@ export function createWorkerApp() {
           summary: `Generated ${generateDraftsResult.data.createdDrafts.length} message drafts.`,
           issueCount: generateDraftsResult.issues.length,
           ok: generateDraftsResult.ok,
-        })
+          })
       );
+
+      if (readTruthyEnvFlag(process.env["WORKER_SEND_APPROVED_DRAFTS"])) {
+        const sendApprovedDraftsResult = await runSendApprovedMessageDraftsJob({
+          useCase: sendApprovedMessageDrafts,
+          sentAt: generatedAt,
+          triggeredBy: "worker.bootstrap",
+        });
+        logUseCaseResult("send_approved_message_drafts", sendApprovedDraftsResult);
+        await persistJobRun(
+          adapters.jobRunRepository,
+          buildJobRun({
+            jobName: "send_approved_message_drafts",
+            startedAt: generatedAt,
+            summary: `Sent ${sendApprovedDraftsResult.data.sentDrafts.length} approved message drafts.`,
+            issueCount: sendApprovedDraftsResult.issues.length,
+            ok: sendApprovedDraftsResult.ok,
+          })
+        );
+      }
 
       const dailyDigestResult = await runDailyDigestJob({
         useCase: buildDailyDigest,
