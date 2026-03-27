@@ -31,7 +31,7 @@ Move the highest-priority read-only browser-assist flows forward so live host se
 - [x] Browser agent read-only flows: `health:smoke`, `session:bootstrap`, `session:check`, `trips:list`, `trip-get`, `messages-list`
 - [x] Architecture and workflow docs updated through PR #82 closeout
 - [x] Shared safe browser body-text capture helper across browser-agent live flows
-- [x] Failure artifact capture for `health:smoke` and `session:check`
+- [x] Failure artifact capture across all browser-agent read-only flows
 
 ## Today's Priorities
 - [ ] Start the next 10-PR batch on browser-agent hardening, not new guest-facing capability

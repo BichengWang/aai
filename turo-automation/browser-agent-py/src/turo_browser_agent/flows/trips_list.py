@@ -3,7 +3,14 @@ from __future__ import annotations
 from ..config import read_config
 from ..page_state import page_looks_login_required
 from ..parsers import normalize_trip_item
-from ..runtime import BrowserDependencyError, capture_page_artifacts, open_browser_page, prepare_runtime, read_page_body_text
+from ..runtime import (
+    BrowserDependencyError,
+    capture_page_artifacts,
+    capture_page_failure_artifacts,
+    open_browser_page,
+    prepare_runtime,
+    read_page_body_text,
+)
 from ..types import create_result
 
 TRIPS_URL = "https://turo.com/us/en/trips"
@@ -57,69 +64,81 @@ def run_trips_list(args: list[str] | None = None):
 
     try:
         with open_browser_page(config) as (_, _, page):
-            response = page.goto(TRIPS_URL, wait_until="domcontentloaded")
             try:
-                page.wait_for_load_state("networkidle", timeout=min(config.default_timeout_ms, 5000))
-            except Exception:
-                pass
+                response = page.goto(TRIPS_URL, wait_until="domcontentloaded")
+                try:
+                    page.wait_for_load_state("networkidle", timeout=min(config.default_timeout_ms, 5000))
+                except Exception:
+                    pass
 
-            title = page.title()
-            url = page.url
-            body_text, body_warnings = read_page_body_text(page, limit=4000)
+                title = page.title()
+                url = page.url
+                body_text, body_warnings = read_page_body_text(page, limit=4000)
 
-            if page_looks_login_required(title, url, body_text):
-                artifacts, artifact_warnings = capture_page_artifacts(page, config, "trips-list-login-required")
+                if page_looks_login_required(title, url, body_text):
+                    artifacts, artifact_warnings = capture_page_artifacts(page, config, "trips-list-login-required")
+                    return create_result(
+                        "trips:list",
+                        {
+                            **runtime,
+                            "implemented": True,
+                            "status": "login_required",
+                            "title": title,
+                            "finalUrl": url,
+                            "httpStatus": response.status if response else None,
+                            "trips": [],
+                            "artifacts": artifacts,
+                        },
+                        warnings=["Trips page requires a logged-in host browser session.", *artifact_warnings],
+                    )
+
+                raw_items = page.evaluate(JS_EXTRACT)
+                trips = [normalize_trip_item(item) for item in raw_items]
+                artifacts, artifact_warnings = capture_page_artifacts(page, config, "trips-list")
+
+                warnings: list[str] = []
+                if not trips:
+                    warnings.append("Trips page loaded but no trip cards were extracted with the current parser.")
+                warnings.extend(body_warnings)
+                warnings.extend(artifact_warnings)
+
                 return create_result(
                     "trips:list",
                     {
                         **runtime,
                         "implemented": True,
-                        "status": "login_required",
+                        "status": "ok",
                         "title": title,
                         "finalUrl": url,
                         "httpStatus": response.status if response else None,
-                        "trips": [],
+                        "tripCount": len(trips),
+                        "trips": trips,
                         "artifacts": artifacts,
                     },
-                    warnings=["Trips page requires a logged-in host browser session.", *artifact_warnings],
+                    warnings=warnings,
                 )
-
-            raw_items = page.evaluate(JS_EXTRACT)
-            trips = [normalize_trip_item(item) for item in raw_items]
-            artifacts, artifact_warnings = capture_page_artifacts(page, config, "trips-list")
-
-            warnings: list[str] = []
-            if not trips:
-                warnings.append("Trips page loaded but no trip cards were extracted with the current parser.")
-            warnings.extend(body_warnings)
-            warnings.extend(artifact_warnings)
-
-            return create_result(
-                "trips:list",
-                {
-                    **runtime,
-                    "implemented": True,
-                    "status": "ok",
-                    "title": title,
-                    "finalUrl": url,
-                    "httpStatus": response.status if response else None,
-                    "tripCount": len(trips),
-                    "trips": trips,
-                    "artifacts": artifacts,
-                },
-                warnings=warnings,
-            )
+            except Exception as exc:
+                error_artifacts, error_warnings = capture_page_failure_artifacts(
+                    page,
+                    config,
+                    "trips-list",
+                    "Trips list flow failed.",
+                )
+                return create_result(
+                    "trips:list",
+                    {
+                        **runtime,
+                        "implemented": True,
+                        "error": str(exc),
+                        "artifacts": error_artifacts,
+                    },
+                    warnings=error_warnings,
+                    ok=False,
+                )
     except BrowserDependencyError as exc:
         return create_result(
             "trips:list",
             {**runtime, "implemented": False},
             warnings=[str(exc)],
-            ok=False,
-        )
-    except Exception as exc:
-        return create_result(
-            "trips:list",
-            {**runtime, "implemented": True, "error": str(exc)},
-            warnings=["Trips list flow failed."],
             ok=False,
         )
