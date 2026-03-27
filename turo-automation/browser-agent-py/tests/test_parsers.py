@@ -169,6 +169,23 @@ class ParserTests(unittest.TestCase):
         self.assertTrue(thread["unread"])
         self.assertEqual(thread["lastMessageAt"], "2026-03-27T10:00:00.000Z")
 
+    def test_normalize_message_thread_recovers_guest_from_title_prefix(self) -> None:
+        thread = normalize_message_thread(
+            {
+                "href": "/us/en/messages/threads/54848775",
+                "text": "Alex Lee | 2023 Tesla Model 3 Reservation #54848775 Unread 2m ago",
+                "title": "Alex Lee | 2023 Tesla Model 3",
+                "guest": None,
+                "reservationId": None,
+                "status": None,
+                "lastMessageAt": None,
+                "unread": False,
+            }
+        )
+
+        self.assertEqual(thread["guest"], "Alex Lee")
+        self.assertEqual(thread["summary"], "Alex Lee · Reservation #54848775")
+
 
 if __name__ == "__main__":
     unittest.main()

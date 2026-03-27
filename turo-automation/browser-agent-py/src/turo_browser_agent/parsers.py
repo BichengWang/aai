@@ -113,6 +113,24 @@ def _looks_like_person_name(value: str | None) -> bool:
     )
 
 
+def _extract_leading_person_name(value: str | None) -> str | None:
+    if value is None:
+        return None
+    cleaned = " ".join(value.split()).strip()
+    if not cleaned:
+        return None
+
+    candidates = [cleaned]
+    for separator in (" | ", " - ", " — ", " • "):
+        if separator in cleaned:
+            candidates.append(cleaned.split(separator, 1)[0].strip())
+
+    for candidate in candidates:
+        if _looks_like_person_name(candidate):
+            return candidate
+    return None
+
+
 def normalize_trip_item(raw: Mapping[str, str | None]) -> dict[str, str | None]:
     text = raw.get("text", "") or ""
     title = raw.get("title") or text[:120] or None
@@ -302,6 +320,8 @@ def normalize_message_thread(raw: Mapping[str, Any]) -> dict[str, Any]:
         guest = _clean_message_participant(text)
     if guest is None and _looks_like_person_name(title):
         guest = _clean_message_participant(title)
+    if guest is None:
+        guest = _extract_leading_person_name(title)
 
     summary = _build_summary(
         [
