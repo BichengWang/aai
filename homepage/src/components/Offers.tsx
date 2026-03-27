@@ -31,9 +31,10 @@ export default function Offers() {
                 <span className="offer-tag">{service.tag}</span>
               </div>
               <h3>{service.title}</h3>
+              <p className="offer-tagline">{service.tagline}</p>
               <p>{service.shortDescription}</p>
               <div className="offer-highlights">
-                {service.highlights.slice(0, 2).map((highlight) => (
+                {service.highlights.slice(0, 3).map((highlight) => (
                   <span key={highlight} className="chip">
                     {highlight}
                   </span>
