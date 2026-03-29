@@ -15,6 +15,7 @@
 
 ## Phase 2 — Read-only flows
 
+- `calendar-list`
 - `trips-list`
 - `trip-get`
 - `messages-list`
@@ -22,9 +23,11 @@
 Current status:
 - the read-only flows now live under module-specific packages instead of only the legacy `flows/` folder
 - `modules/core/` owns health and session bootstrap / check
+- `modules/calendar/` owns the calendar summary read model
 - `modules/trips/` owns trip list and trip detail read models
 - `modules/inbox/` owns the messages list read model
-- empty scaffold packages now exist for calendar, vehicles, business, more, user profile, and switch-to-guest
+- `calendar-list` is implemented as a conservative read-only calendar summary flow and returns `blocked` when the host blocks the session
+- empty scaffold packages now exist for vehicles, business, more, user profile, and switch-to-guest
 - `trips-list` is implemented and extracts reservation cards from the real host trips page
 - `trip-get` is implemented as a conservative reservation detail fetch by reservation ID or URL
 - shared page-state helpers now centralize login-required and blocked-page detection across the read-only flows
@@ -38,6 +41,7 @@ Current status:
 - message-thread parsing now emits a concise operator summary alongside the structured fields
 - trip-card parsing now recovers a guest name from a prefixed title with trailing vehicle/context text
 - message-thread parsing now recovers a guest name from a prefixed title with trailing vehicle/context text
+- calendar-entry parsing now emits a concise operator summary alongside the structured fields
 
 ## Phase 3 — Hardening
 

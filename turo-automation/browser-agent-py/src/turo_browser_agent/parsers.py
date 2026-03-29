@@ -16,6 +16,17 @@ TRIP_STATUS_CANDIDATES = [
     "Cancelled",
     "Ended",
 ]
+CALENDAR_STATUS_CANDIDATES = [
+    "Available",
+    "Unavailable",
+    "Booked",
+    "Upcoming",
+    "In progress",
+    "Completed",
+    "Canceled",
+    "Cancelled",
+    "Ended",
+]
 RESERVATION_PATH_RE = re.compile(r"/reservation/(\d+)")
 RESERVATION_TEXT_RE = re.compile(r"(?:reservation\s*#?\s*|#)(\d{6,})", re.IGNORECASE)
 DATE_TIME_LINE_RE = re.compile(r"^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s+[A-Z][a-z]{2}\s+\d{1,2}(?:\s+at)?\s+\d{1,2}:\d{2}\s+[AP]M$", re.IGNORECASE)
@@ -46,6 +57,14 @@ def _build_summary(parts: Iterable[str | None]) -> str | None:
 def extract_trip_status(*values: str | None) -> str | None:
     haystack = " ".join(value for value in values if value).lower()
     for candidate in TRIP_STATUS_CANDIDATES:
+        if candidate.lower() in haystack:
+            return candidate
+    return None
+
+
+def extract_calendar_status(*values: str | None) -> str | None:
+    haystack = " ".join(value for value in values if value).lower()
+    for candidate in CALENDAR_STATUS_CANDIDATES:
         if candidate.lower() in haystack:
             return candidate
     return None
@@ -342,5 +361,35 @@ def normalize_message_thread(raw: Mapping[str, Any]) -> dict[str, Any]:
         "href": raw.get("href"),
         "reservationId": reservation_id,
         "lastMessageAt": raw.get("lastMessageAt"),
+        "rawText": text,
+    }
+
+
+def normalize_calendar_entry(raw: Mapping[str, Any]) -> dict[str, Any]:
+    text = raw.get("text", "") or ""
+    title = raw.get("title") or raw.get("label") or text[:120] or None
+    date_line = raw.get("dateLine") or raw.get("date") or None
+    status = raw.get("status") or extract_calendar_status(text, title, date_line)
+    reservation_id = raw.get("reservationId") or extract_reservation_id(raw.get("href"), text)
+    location = raw.get("location") or None
+    summary = _build_summary(
+        [
+            status,
+            title,
+            date_line,
+            location,
+            f"Reservation #{reservation_id}" if reservation_id else None,
+        ]
+    )
+
+    return {
+        "title": title,
+        "label": raw.get("label") or title,
+        "status": status,
+        "dateLine": date_line,
+        "location": location,
+        "summary": summary,
+        "href": raw.get("href"),
+        "reservationId": reservation_id,
         "rawText": text,
     }

@@ -4,6 +4,7 @@ import json
 import sys
 
 from .modules.core.health import run_health_smoke
+from .modules.calendar.list import run_calendar_list
 from .modules.core.session_bootstrap import run_session_bootstrap
 from .modules.core.session_check import run_session_check
 from .modules.inbox.list import run_messages_list
@@ -12,6 +13,7 @@ from .modules.trips.list import run_trips_list
 
 COMMANDS = {
     "health-smoke": run_health_smoke,
+    "calendar-list": run_calendar_list,
     "messages-list": run_messages_list,
     "session-bootstrap": run_session_bootstrap,
     "session-check": run_session_check,

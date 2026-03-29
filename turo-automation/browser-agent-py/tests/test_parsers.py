@@ -7,6 +7,7 @@ import unittest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from turo_browser_agent.parsers import (
+    normalize_calendar_entry,
     normalize_message_thread,
     normalize_trip_detail,
     normalize_trip_item,
@@ -201,6 +202,25 @@ class ParserTests(unittest.TestCase):
 
         self.assertEqual(thread["guest"], "Alex Lee")
         self.assertEqual(thread["summary"], "Alex Lee · Reservation #54848775")
+
+    def test_normalize_calendar_entry_extracts_conservative_fields(self) -> None:
+        entry = normalize_calendar_entry(
+            {
+                "href": "/us/en/reservation/55213565",
+                "text": "Booked Alex Lee 2023 Tesla Model 3 Wed, Mar 25 at 10:00 AM San Francisco, CA",
+                "title": "Alex Lee | 2023 Tesla Model 3",
+                "dateLine": "Wed, Mar 25 at 10:00 AM",
+                "status": "Booked",
+                "reservationId": None,
+                "location": "San Francisco, CA",
+            }
+        )
+
+        self.assertEqual(entry["title"], "Alex Lee | 2023 Tesla Model 3")
+        self.assertEqual(entry["status"], "Booked")
+        self.assertEqual(entry["dateLine"], "Wed, Mar 25 at 10:00 AM")
+        self.assertEqual(entry["reservationId"], "55213565")
+        self.assertEqual(entry["summary"], "Booked · Alex Lee | 2023 Tesla Model 3 · Wed, Mar 25 at 10:00 AM · San Francisco, CA · Reservation #55213565")
 
 
 if __name__ == "__main__":

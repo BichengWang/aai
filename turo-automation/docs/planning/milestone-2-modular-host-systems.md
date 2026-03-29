@@ -30,6 +30,8 @@ The module set should follow the host navigation and page model:
   - `health:smoke`
   - `session:bootstrap`
   - `session:check`
+- Calendar-aligned flows
+  - `calendar:list`
 - Trips-aligned flows
   - `trips:list`
   - `trip-get`
@@ -55,7 +57,7 @@ Scope:
 
 Initial plan:
 - define calendar page URL + detection rules
-- add `calendar:list` read-only flow
+- `calendar:list` is implemented as the first read-only calendar summary flow
 - extract visible calendar entries conservatively
 - save artifacts + concise operator summary
 

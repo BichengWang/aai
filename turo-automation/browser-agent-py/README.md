@@ -11,21 +11,24 @@ This subtree captures the learned browser automation steps as executable command
 The code is now grouped by host-aligned modules under `src/turo_browser_agent/modules/`:
 
 - `core/` for health checks and session bootstrap / verification
+- `calendar/` for the first calendar-system read-only flow
 - `trips/` for trip list and trip detail flows
 - `inbox/` for the messages list flow
-- `calendar/`, `vehicles/`, `business/`, `more/`, `user_profile/`, and `switch_to_guest/` are scaffolded for the next Milestone 2 slices
+- `vehicles/`, `business/`, `more/`, `user_profile/`, and `switch_to_guest/` are scaffolded for the next Milestone 2 slices
 
 Legacy `flows/` imports remain as compatibility shims during the refactor.
 
 ## Command surface
 
 - `./run health-smoke`
+- `./run calendar-list`
 - `./run session-bootstrap`
 - `./run session-check`
 - `./run trips-list`
 - `./run trip-get <reservation-id-or-url>`
 - `./run messages-list`
 - `turo-browser-agent health-smoke`
+- `turo-browser-agent calendar-list`
 - `turo-browser-agent session-bootstrap`
 - `turo-browser-agent session-check`
 - `turo-browser-agent trips-list`
@@ -39,6 +42,7 @@ After `python3 -m pip install -e .`, the `turo-browser-agent` console script is 
 
 This is a minimal real browser runner:
 - `health-smoke` launches a browser and opens Turo
+- `calendar-list` opens the host calendar page and returns a conservative structured summary or `blocked` when Turo blocks the session
 - `session-bootstrap` opens the login flow and waits for manual auth
 - `session-check` reuses saved browser state and verifies a protected host route, not just the public homepage
 - `trips-list` opens the host trips page and returns structured JSON or `login_required`
@@ -48,6 +52,7 @@ This is a minimal real browser runner:
 It stays read-first and intentionally avoids guest-facing writes.
 
 The current implementation now lives in module-specific packages instead of a single flow folder:
+- `modules/calendar/list.py`
 - `modules/core/health.py`
 - `modules/core/session_bootstrap.py`
 - `modules/core/session_check.py`

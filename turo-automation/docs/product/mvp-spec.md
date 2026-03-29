@@ -23,7 +23,7 @@ Reduce manual operational work for the Turo host team by centralizing trip opera
 5. Slack summary reporting
 
 ## Supporting Operator Tooling
-- Read-only browser-assisted trip inspection is in scope as an internal support tool, provided it stays outside the worker critical path and avoids guest-facing writes.
+- Read-only browser-assisted host inspection is in scope as an internal support tool, provided it stays outside the worker critical path and avoids guest-facing writes.
 - Authenticated browser-assisted tooling should ship only when each new read model has been verified against a real logged-in session, not just fixture assumptions.
 
 ## Non-Goals (for MVP)

@@ -3,10 +3,10 @@
 Use this file for the current working plan. Keep it short, current, and actionable.
 
 ## Date
-2026-03-27
+2026-03-29
 
 ## Objective
-Start Milestone 2 by refactoring browser automation into host-page-aligned modules and migrating existing flows into that structure.
+Continue Milestone 2 by adding the first calendar-system read-only flow after the browser-agent module refactor.
 
 ## Completed
 - [x] Shared domain, ports, fixtures, and use-case contracts
@@ -33,17 +33,18 @@ Start Milestone 2 by refactoring browser automation into host-page-aligned modul
 - [x] Shared safe browser body-text capture helper across browser-agent live flows
 - [x] Failure artifact capture across all browser-agent read-only flows
 - [x] Browser-agent host-module skeleton: `core`, `trips`, `inbox`, plus scaffolded `calendar`, `vehicles`, `business`, `more`, `user_profile`, and `switch_to_guest` packages
+- [x] Browser-agent calendar read-only flow: `calendar:list`
 
 ## Today's Priorities
 - [x] Close the first browser-agent batch with 10 merged PRs (#83–#92)
 - [x] Create the Milestone 2 module plan aligned to the Turo host page structure
 - [x] Refactor current trips/inbox/session flows into explicit module ownership
-- [ ] Start the Milestone 2 development loop with small structural PRs before adding broader new page coverage
+- [x] Start the Milestone 2 development loop with the first new page coverage slice
 
 ## Risks / Open Questions
-- Which module should be the first new live read-only addition after refactoring: calendar, vehicles, or profile?
+- Does the live host session resolve `https://turo.com/us/en/calendar`, or should the calendar flow discover the page via navigation?
+- Which module should follow calendar: vehicles or profile?
 - How much command-surface compatibility should be preserved while moving flows into explicit module boundaries?
-- When should `business-system`, `more-system`, and `switch-to-guest` remain docs-only versus gaining first executable read flows?
 
 ## Next Suggested Step
-Begin Milestone 2 with structural refactors: establish module boundaries, move existing session/trips/inbox flows under them, then add the first extra host-page module only after the layout is stable.
+Verify the new calendar flow on a real logged-in host session, then move to the next Milestone 2 page module once the route and extraction shape are confirmed.
