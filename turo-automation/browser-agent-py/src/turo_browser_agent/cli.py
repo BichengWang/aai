@@ -10,6 +10,7 @@ from .modules.core.session_check import run_session_check
 from .modules.inbox.list import run_messages_list
 from .modules.trips.detail import run_trip_get
 from .modules.trips.list import run_trips_list
+from .modules.vehicles.list import run_vehicles_list
 
 COMMANDS = {
     "health-smoke": run_health_smoke,
@@ -19,6 +20,7 @@ COMMANDS = {
     "session-check": run_session_check,
     "trips-list": run_trips_list,
     "trip-get": run_trip_get,
+    "vehicles-list": run_vehicles_list,
 }
 
 

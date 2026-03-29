@@ -11,6 +11,7 @@ from turo_browser_agent.parsers import (
     normalize_message_thread,
     normalize_trip_detail,
     normalize_trip_item,
+    normalize_vehicle_item,
     resolve_trip_target,
 )
 
@@ -221,6 +222,24 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(entry["dateLine"], "Wed, Mar 25 at 10:00 AM")
         self.assertEqual(entry["reservationId"], "55213565")
         self.assertEqual(entry["summary"], "Booked · Alex Lee | 2023 Tesla Model 3 · Wed, Mar 25 at 10:00 AM · San Francisco, CA · Reservation #55213565")
+
+    def test_normalize_vehicle_item_extracts_conservative_fields(self) -> None:
+        vehicle = normalize_vehicle_item(
+            {
+                "href": "/us/en/vehicles/vehicle-model-y",
+                "text": "Available 2024 Tesla Model Y San Francisco, CA Vehicle #vehicle-model-y",
+                "title": "2024 Tesla Model Y",
+                "location": "San Francisco, CA",
+                "status": "Available",
+                "vehicleId": None,
+            }
+        )
+
+        self.assertEqual(vehicle["title"], "2024 Tesla Model Y")
+        self.assertEqual(vehicle["status"], "Available")
+        self.assertEqual(vehicle["location"], "San Francisco, CA")
+        self.assertEqual(vehicle["vehicleId"], "vehicle-model-y")
+        self.assertEqual(vehicle["summary"], "Available · 2024 Tesla Model Y · San Francisco, CA · Vehicle #vehicle-model-y")
 
 
 if __name__ == "__main__":

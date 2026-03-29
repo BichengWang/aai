@@ -19,6 +19,7 @@
 - `trips-list`
 - `trip-get`
 - `messages-list`
+- `vehicles-list`
 
 Current status:
 - the read-only flows now live under module-specific packages instead of only the legacy `flows/` folder
@@ -26,8 +27,10 @@ Current status:
 - `modules/calendar/` owns the calendar summary read model
 - `modules/trips/` owns trip list and trip detail read models
 - `modules/inbox/` owns the messages list read model
+- `modules/vehicles/` owns the vehicles summary read model
 - `calendar-list` is implemented as a conservative read-only calendar summary flow and returns `blocked` when the host blocks the session
-- empty scaffold packages now exist for vehicles, business, more, user profile, and switch-to-guest
+- `vehicles-list` is implemented as a conservative read-only vehicles summary flow and returns `blocked` when the host blocks the session
+- empty scaffold packages now exist for business, more, user profile, and switch-to-guest
 - `trips-list` is implemented and extracts reservation cards from the real host trips page
 - `trip-get` is implemented as a conservative reservation detail fetch by reservation ID or URL
 - shared page-state helpers now centralize login-required and blocked-page detection across the read-only flows
@@ -39,6 +42,7 @@ Current status:
 - trip-list parsing now emits a concise operator summary alongside the structured fields
 - trip-detail parsing now emits a concise operator summary alongside the structured fields
 - message-thread parsing now emits a concise operator summary alongside the structured fields
+- vehicle parsing now emits a concise operator summary alongside the structured fields
 - trip-card parsing now recovers a guest name from a prefixed title with trailing vehicle/context text
 - message-thread parsing now recovers a guest name from a prefixed title with trailing vehicle/context text
 - calendar-entry parsing now emits a concise operator summary alongside the structured fields

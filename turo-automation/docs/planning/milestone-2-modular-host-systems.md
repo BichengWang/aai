@@ -37,6 +37,8 @@ The module set should follow the host navigation and page model:
   - `trip-get`
 - Inbox-aligned flows
   - `messages:list`
+- Vehicles-aligned flows
+  - `vehicles:list`
 
 ### Proposed module ownership
 #### Shared core
@@ -100,7 +102,7 @@ Scope:
 
 Initial plan:
 - define vehicles landing page flow
-- add `vehicles:list` read-only extraction
+- `vehicles:list` is implemented as the first read-only vehicle summary flow
 - add conservative vehicle summary parser
 
 #### Business system

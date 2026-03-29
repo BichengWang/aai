@@ -221,6 +221,24 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-03-29
 
+### Vehicles read-only flow
+
+- Added `browser-agent-py/src/turo_browser_agent/modules/vehicles/list.py` as the first Milestone 2 vehicles summary flow
+- Wired `vehicles-list` into the Python CLI and kept a legacy `flows/vehicles_list.py` shim for compatibility
+- Added vehicle parser coverage and CLI dispatch tests
+- Updated browser-agent and repo planning docs to mark `vehicles:list` as implemented and to narrow the remaining scaffold packages to business/more/profile/switch-to-guest
+
+### Verification
+
+- `turo-automation/browser-agent-py/.venv/bin/python -m unittest discover -s turo-automation/browser-agent-py/tests -p 'test_*.py'`
+- `BROWSER_AGENT_HEADLESS=true turo-automation/browser-agent-py/.venv/bin/python -m turo_browser_agent vehicles-list`
+
+### Result
+
+- The command booted successfully and resolved `https://turo.com/us/en/vehicles`
+- Live host response returned `blocked` with HTTP 403 and captured screenshot/HTML artifacts
+- Assumption: the host vehicles URL is correct, but full read-only extraction still needs a logged-in session that can get past Turo's blocking layer
+
 ### Calendar read-only flow
 
 - Added `browser-agent-py/src/turo_browser_agent/modules/calendar/list.py` as the first Milestone 2 read-only calendar summary flow

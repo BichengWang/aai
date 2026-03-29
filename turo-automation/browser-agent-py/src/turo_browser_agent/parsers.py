@@ -16,6 +16,17 @@ TRIP_STATUS_CANDIDATES = [
     "Cancelled",
     "Ended",
 ]
+VEHICLE_STATUS_CANDIDATES = [
+    "Available",
+    "Unavailable",
+    "Booked",
+    "In progress",
+    "Completed",
+    "Paused",
+    "Archived",
+    "Maintenance",
+    "Ready",
+]
 CALENDAR_STATUS_CANDIDATES = [
     "Available",
     "Unavailable",
@@ -29,6 +40,8 @@ CALENDAR_STATUS_CANDIDATES = [
 ]
 RESERVATION_PATH_RE = re.compile(r"/reservation/(\d+)")
 RESERVATION_TEXT_RE = re.compile(r"(?:reservation\s*#?\s*|#)(\d{6,})", re.IGNORECASE)
+VEHICLE_PATH_RE = re.compile(r"/(?:vehicles?|cars?|listings?)/([^/?#]+)", re.IGNORECASE)
+VEHICLE_TEXT_RE = re.compile(r"(?:vehicle|car|listing)\s*#?\s*([A-Za-z0-9-]+)", re.IGNORECASE)
 DATE_TIME_LINE_RE = re.compile(r"^(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s+[A-Z][a-z]{2}\s+\d{1,2}(?:\s+at)?\s+\d{1,2}:\d{2}\s+[AP]M$", re.IGNORECASE)
 TRIP_HEADING_RE = re.compile(r"^(.+?)[\u2019']S TRIP$", re.IGNORECASE)
 INLINE_DATE_TIME_RE = re.compile(r"(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s+[A-Z][a-z]{2}\s+\d{1,2}(?:\s+at)?\s+\d{1,2}:\d{2}\s+[AP]M", re.IGNORECASE)
@@ -62,6 +75,14 @@ def extract_trip_status(*values: str | None) -> str | None:
     return None
 
 
+def extract_vehicle_status(*values: str | None) -> str | None:
+    haystack = " ".join(value for value in values if value).lower()
+    for candidate in VEHICLE_STATUS_CANDIDATES:
+        if candidate.lower() in haystack:
+            return candidate
+    return None
+
+
 def extract_calendar_status(*values: str | None) -> str | None:
     haystack = " ".join(value for value in values if value).lower()
     for candidate in CALENDAR_STATUS_CANDIDATES:
@@ -78,6 +99,19 @@ def extract_reservation_id(*values: str | None) -> str | None:
         if path_match:
             return path_match.group(1)
         text_match = RESERVATION_TEXT_RE.search(value)
+        if text_match:
+            return text_match.group(1)
+    return None
+
+
+def extract_vehicle_id(*values: str | None) -> str | None:
+    for value in values:
+        if not value:
+            continue
+        path_match = VEHICLE_PATH_RE.search(value)
+        if path_match:
+            return path_match.group(1)
+        text_match = VEHICLE_TEXT_RE.search(value)
         if text_match:
             return text_match.group(1)
     return None
@@ -167,6 +201,24 @@ def normalize_trip_item(raw: Mapping[str, str | None]) -> dict[str, str | None]:
         "location": location,
         "guest": guest,
         "reservationId": reservation_id,
+        "summary": summary,
+        "rawText": text,
+    }
+
+
+def normalize_vehicle_item(raw: Mapping[str, str | None]) -> dict[str, str | None]:
+    text = raw.get("text", "") or ""
+    title = raw.get("title") or text[:120] or None
+    status = extract_vehicle_status(text, raw.get("status"), raw.get("badge"))
+    location = raw.get("location")
+    vehicle_id = raw.get("vehicleId") or extract_vehicle_id(raw.get("href"), text)
+    summary = _build_summary([status, title, location, f"Vehicle #{vehicle_id}" if vehicle_id else None])
+    return {
+        "title": title,
+        "status": status,
+        "href": raw.get("href"),
+        "location": location,
+        "vehicleId": vehicle_id,
         "summary": summary,
         "rawText": text,
     }
