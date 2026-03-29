@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from turo_browser_agent.parsers import (
     normalize_calendar_entry,
+    normalize_profile_snapshot,
     normalize_message_thread,
     normalize_trip_detail,
     normalize_trip_item,
@@ -240,6 +241,20 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(vehicle["location"], "San Francisco, CA")
         self.assertEqual(vehicle["vehicleId"], "vehicle-model-y")
         self.assertEqual(vehicle["summary"], "Available · 2024 Tesla Model Y · San Francisco, CA · Vehicle #vehicle-model-y")
+
+    def test_normalize_profile_snapshot_extracts_signals(self) -> None:
+        profile = normalize_profile_snapshot(
+            {
+                "headings": ["Account", "Host profile"],
+                "linkTexts": ["Switch to guest", "Trips", "Vehicles"],
+            },
+            "https://turo.com/us/en/account",
+            "Account Host profile Switch to guest Trips Vehicles",
+        )
+
+        self.assertEqual(profile["headline"], "Account")
+        self.assertEqual(profile["signals"], ["Account", "Host profile", "Switch to guest", "Trips", "Vehicles"])
+        self.assertEqual(profile["summary"], "Account · Profile check")
 
 
 if __name__ == "__main__":

@@ -89,6 +89,23 @@ class CliTests(unittest.TestCase):
         self.assertEqual(observed, [[]])
         self.assertIn('"args": []', stdout.getvalue())
 
+    def test_main_supports_profile_check_without_args(self) -> None:
+        observed: list[list[str]] = []
+
+        def handler(args: list[str] | None = None) -> _FakeResult:
+            observed.append(args or [])
+            return _FakeResult({"ok": True, "args": args or []})
+
+        stdout = io.StringIO()
+        with mock.patch.object(sys, "argv", ["turo-browser-agent", "profile-check"]):
+            with mock.patch.dict(cli.COMMANDS, {"profile-check": handler}):
+                with redirect_stdout(stdout):
+                    exit_code = cli.main()
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(observed, [[]])
+        self.assertIn('"args": []', stdout.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()

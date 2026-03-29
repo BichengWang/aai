@@ -39,6 +39,8 @@ The module set should follow the host navigation and page model:
   - `messages:list`
 - Vehicles-aligned flows
   - `vehicles:list`
+- User-profile-aligned flows
+  - `profile-check`
 
 ### Proposed module ownership
 #### Shared core
@@ -130,6 +132,7 @@ Scope:
 
 Initial plan:
 - add lightweight `profile:check` read-only flow
+- `profile-check` is implemented as the first read-only profile/account check flow
 - extract account/header identity signals conservatively
 
 #### Switch to guest

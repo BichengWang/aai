@@ -27,6 +27,16 @@ VEHICLE_STATUS_CANDIDATES = [
     "Maintenance",
     "Ready",
 ]
+PROFILE_SIGNAL_DISPLAY = {
+    "account": "Account",
+    "vehicles": "Vehicles",
+    "trips": "Trips",
+    "inbox": "Inbox",
+    "settings": "Settings",
+    "switch to guest": "Switch to guest",
+    "sign out": "Sign out",
+    "log out": "Log out",
+}
 CALENDAR_STATUS_CANDIDATES = [
     "Available",
     "Unavailable",
@@ -221,6 +231,40 @@ def normalize_vehicle_item(raw: Mapping[str, str | None]) -> dict[str, str | Non
         "vehicleId": vehicle_id,
         "summary": summary,
         "rawText": text,
+    }
+
+
+def normalize_profile_snapshot(raw: Mapping[str, Any], final_url: str, body_text: str) -> dict[str, Any]:
+    headings = _dedupe_texts(raw.get("headings", []))
+    link_texts = _dedupe_texts(raw.get("linkTexts", []))
+    body_lines = _dedupe_texts(body_text.splitlines())
+    collapsed_text = " ".join(body_text.split()).strip()
+
+    body_haystack = " ".join(body_lines).lower()
+    body_signals = [
+        PROFILE_SIGNAL_DISPLAY[keyword]
+        for keyword in [
+            "account",
+            "vehicles",
+            "trips",
+            "inbox",
+            "settings",
+            "switch to guest",
+            "sign out",
+            "log out",
+        ]
+        if keyword in body_haystack
+    ]
+    signals = _dedupe_texts([*headings, *link_texts, *body_signals])
+    headline = headings[0] if headings else (signals[0] if signals else None)
+    summary = _build_summary([headline, signals[0] if signals else None, "Profile check"])
+
+    return {
+        "headline": headline,
+        "signals": signals,
+        "href": final_url,
+        "summary": summary,
+        "rawText": collapsed_text,
     }
 
 

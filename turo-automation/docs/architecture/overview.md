@@ -85,7 +85,8 @@ Current implementation status:
 - `modules/trips/` owns `trips:list` and `trip-get`
 - `modules/inbox/` owns `messages:list`
 - `modules/vehicles/` owns `vehicles:list`
-- `modules/business/`, `modules/more/`, `modules/user_profile/`, and `modules/switch_to_guest/` are scaffolded for the next Milestone 2 slices
+- `modules/user_profile/` owns `profile-check`
+- `modules/business/`, `modules/more/`, and `modules/switch_to_guest/` are scaffolded for the next Milestone 2 slices
 - `health:smoke` performs a live read-only browser navigation to `TURO_BASE_URL`, snapshots minimal page metadata, and classifies the page conservatively as `authenticated`, `unauthenticated`, or `unknown`
 - `calendar:list` performs a live read-only navigation to the host calendar page and returns a conservative structured summary, or `blocked` when the host blocks the session, with saved page artifacts
 - `session:check` performs a live read-only inspection against the protected host trips route so auth is verified on a real gated page
@@ -93,3 +94,4 @@ Current implementation status:
 - `trip-get` performs a live read-only reservation detail fetch by reservation ID or URL and returns a conservative structured summary with saved page artifacts
 - `messages-list` performs a live read-only navigation to the host messages page and returns conservative structured thread summaries with saved page artifacts
 - `vehicles-list` performs a live read-only navigation to the host vehicles page and returns conservative structured vehicle summaries with saved page artifacts
+- `profile-check` performs a live read-only navigation to the host account page and returns conservative structured profile signals with saved page artifacts

@@ -15,7 +15,8 @@ The code is now grouped by host-aligned modules under `src/turo_browser_agent/mo
 - `trips/` for trip list and trip detail flows
 - `inbox/` for the messages list flow
 - `vehicles/` for the first vehicles-system read-only flow
-- `business/`, `more/`, `user_profile/`, and `switch_to_guest/` are scaffolded for the next Milestone 2 slices
+- `user_profile/` for the first profile/account read-only flow
+- `business/`, `more/`, and `switch_to_guest/` are scaffolded for the next Milestone 2 slices
 
 Legacy `flows/` imports remain as compatibility shims during the refactor.
 
@@ -29,6 +30,7 @@ Legacy `flows/` imports remain as compatibility shims during the refactor.
 - `./run trip-get <reservation-id-or-url>`
 - `./run messages-list`
 - `./run vehicles-list`
+- `./run profile-check`
 - `turo-browser-agent health-smoke`
 - `turo-browser-agent calendar-list`
 - `turo-browser-agent session-bootstrap`
@@ -37,6 +39,7 @@ Legacy `flows/` imports remain as compatibility shims during the refactor.
 - `turo-browser-agent trip-get <reservation-id-or-url>`
 - `turo-browser-agent messages-list`
 - `turo-browser-agent vehicles-list`
+- `turo-browser-agent profile-check`
 
 The checked-in `./run` wrapper works without installing the package first.
 After `python3 -m pip install -e .`, the `turo-browser-agent` console script is also available.
@@ -52,6 +55,7 @@ This is a minimal real browser runner:
 - `trip-get` opens one reservation detail page by ID or URL and returns a conservative structured summary
 - `messages-list` opens the host messages page and returns structured thread summaries or `login_required`
 - `vehicles-list` opens the host vehicles page and returns structured vehicle summaries or `blocked`
+- `profile-check` opens the host account page and returns structured profile signals or `blocked`
 
 It stays read-first and intentionally avoids guest-facing writes.
 
@@ -64,6 +68,7 @@ The current implementation now lives in module-specific packages instead of a si
 - `modules/trips/detail.py`
 - `modules/inbox/list.py`
 - `modules/vehicles/list.py`
+- `modules/user_profile/check.py`
 
 For the practical auth playbook and troubleshooting guidance, read `docs/AUTH_RUNBOOK.md`.
 
