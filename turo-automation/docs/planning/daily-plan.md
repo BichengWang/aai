@@ -6,7 +6,7 @@ Use this file for the current working plan. Keep it short, current, and actionab
 2026-03-29
 
 ## Objective
-Continue Milestone 2 by adding the first profile/account read-only flow after the browser-agent vehicles module.
+Continue Milestone 2 by documenting the blocked business, more, and switch-to-guest surfaces after the browser-agent profile module.
 
 ## Completed
 - [x] Shared domain, ports, fixtures, and use-case contracts
@@ -36,6 +36,7 @@ Continue Milestone 2 by adding the first profile/account read-only flow after th
 - [x] Browser-agent calendar read-only flow: `calendar:list`
 - [x] Browser-agent vehicles read-only flow: `vehicles:list`
 - [x] Browser-agent profile read-only flow: `profile-check`
+- [x] Business, more, and switch-to-guest route probes are blocked in the current saved session
 
 ## Today's Priorities
 - [x] Close the first browser-agent batch with 10 merged PRs (#83–#92)
@@ -44,11 +45,12 @@ Continue Milestone 2 by adding the first profile/account read-only flow after th
 - [x] Start the Milestone 2 development loop with the first new page coverage slice
 - [x] Add the first vehicles-system read-only slice
 - [x] Add the first user-profile-system read-only slice
+- [x] Inventory the blocked business, more, and switch-to-guest surfaces
 
 ## Risks / Open Questions
 - Does the live host session resolve `https://turo.com/us/en/calendar`, or should the calendar flow discover the page via navigation?
-- Which module should follow profile: business or more?
+- Which module should follow the blocked profile/business/more surfaces once a reachable page appears?
 - How much command-surface compatibility should be preserved while moving flows into explicit module boundaries?
 
 ## Next Suggested Step
-Verify the new profile flow on a real logged-in host session, then move to the next Milestone 2 page module once the route and extraction shape are confirmed.
+Document the blocked business, more, and switch-to-guest surfaces in the Milestone 2 plan, then wait for a reachable page before adding another browser flow.

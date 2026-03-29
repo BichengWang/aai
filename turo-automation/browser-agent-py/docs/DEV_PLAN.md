@@ -34,6 +34,7 @@ Current status:
 - `vehicles-list` is implemented as a conservative read-only vehicles summary flow and returns `blocked` when the host blocks the session
 - `profile-check` is implemented as a conservative read-only profile/account check flow and returns `blocked` when the host blocks the session
 - empty scaffold packages now exist for business, more, and switch-to-guest
+- the obvious business, more, and switch-to-guest routes are currently blocked in the saved browser session, so those modules remain docs-only for now
 - `trips-list` is implemented and extracts reservation cards from the real host trips page
 - `trip-get` is implemented as a conservative reservation detail fetch by reservation ID or URL
 - shared page-state helpers now centralize login-required and blocked-page detection across the read-only flows

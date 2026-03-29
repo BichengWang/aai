@@ -113,8 +113,8 @@ Scope:
 - earnings / metrics / utilization views where accessible
 
 Initial plan:
-- map reachable business pages first
-- add read-only business summary flow only after page shape is validated
+- probes of `/us/en/earnings`, `/us/en/host/earnings`, `/us/en/business`, `/us/en/host/business`, `/us/en/insights`, and `/us/en/host/insights` all return blocked in the current saved browser session
+- keep business as docs-only until a host-authenticated session exposes a reachable page
 
 #### More system
 Scope:
@@ -122,8 +122,8 @@ Scope:
 - support/help/tools pages if useful for operator workflows
 
 Initial plan:
-- inventory links and reachable sub-pages
-- create docs-only map before code unless a high-value flow emerges
+- probes of `/us/en/more`, `/us/en/host/more`, `/us/en/settings`, and `/us/en/host/settings` all return blocked in the current saved browser session
+- keep more as docs-only until a reachable page emerges
 
 #### User profile system
 Scope:
@@ -131,7 +131,6 @@ Scope:
 - host identity and account status checks
 
 Initial plan:
-- add lightweight `profile:check` read-only flow
 - `profile-check` is implemented as the first read-only profile/account check flow
 - extract account/header identity signals conservatively
 
@@ -141,8 +140,8 @@ Scope:
 - navigation/state verification around host→guest transition
 
 Initial plan:
-- document exact UI entry points first
-- keep this read-only until navigation and safety implications are understood
+- probes of `/us/en/switch-to-guest` and `/us/en/host/switch-to-guest` return blocked in the current saved browser session
+- keep this read-only and docs-first until navigation and safety implications are understood
 
 ## Milestone 2 PR Strategy
 Prefer small PR slices that establish the module skeleton first, then migrate existing flows, then add one new read-only flow at a time.

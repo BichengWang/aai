@@ -221,6 +221,13 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-03-29
 
+### Business / more / switch-to-guest inventory
+
+- Probed the obvious business routes (`/us/en/earnings`, `/us/en/host/earnings`, `/us/en/business`, `/us/en/host/business`, `/us/en/insights`, `/us/en/host/insights`) with the saved browser state and each returned `blocked`
+- Probed the obvious more/settings routes (`/us/en/more`, `/us/en/host/more`, `/us/en/settings`, `/us/en/host/settings`) with the saved browser state and each returned `blocked`
+- Probed the obvious switch-to-guest routes (`/us/en/switch-to-guest`, `/us/en/host/switch-to-guest`) with the saved browser state and each returned `blocked`
+- Updated the Milestone 2 plan and daily plan to keep business, more, and switch-to-guest as docs-only until a reachable page appears
+
 ### Profile read-only flow
 
 - Added `browser-agent-py/src/turo_browser_agent/modules/user_profile/check.py` as the first Milestone 2 profile/account check flow
