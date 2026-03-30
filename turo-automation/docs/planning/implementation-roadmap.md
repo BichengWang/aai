@@ -82,8 +82,17 @@ PR slices:
 5. add first `user-profile-system` read-only flow ✓
 6. document or lightly probe `business-system`, `more-system`, and `switch-to-guest` for the next safe increments ✓
 
+## Phase 8 — Production Deployment Readiness
+Objective: make the TypeScript worker stack operable in a containerised production environment.
+
+PR slices:
+1. `Dockerfile.worker` — multi-stage build for the worker ✓
+2. `.dockerignore` for the worker image (excludes `node_modules`, `dist`, `data`, etc.)
+3. `docker-compose.yml` for local end-to-end development (worker + optional Supabase proxy)
+
 ## Current Status
 - All Phases 0–7 are complete.
+- Phase 8 slice 1 (`Dockerfile.worker`) is complete.
 - `browser-agent-py/` has host-aligned module packages (`core`, `trips`, `inbox`, `calendar`, `vehicles`, `user_profile`) with read-only flows verified.
 - `business`, `more`, and `switch-to-guest` modules are scaffolded but remain docs-only; each probed URL returns blocked/403 with the current saved session.
 - The next browser-agent implementation step requires a real authenticated host session before adding new read-only extraction flows.

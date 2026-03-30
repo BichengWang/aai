@@ -1,0 +1,67 @@
+# syntax=docker/dockerfile:1
+#
+# Dockerfile.worker — containerised turo-automation worker
+#
+# Build from the turo-automation/ directory:
+#   docker build -f Dockerfile.worker -t turo-worker .
+#
+# Run once (default):
+#   docker run --env-file .env turo-worker
+#
+# Run in scheduled mode (keeps the process alive):
+#   docker run --env-file .env -e WORKER_MODE=scheduled turo-worker
+
+# ---------------------------------------------------------------------------
+# Stage 1: build
+# Install all workspace deps and compile shared + worker packages.
+# ---------------------------------------------------------------------------
+FROM node:22-alpine AS builder
+
+WORKDIR /app
+
+# Copy workspace manifests so npm ci can resolve the lockfile precisely.
+COPY package.json package-lock.json tsconfig.base.json ./
+COPY shared/package.json    ./shared/
+COPY worker/package.json    ./worker/
+COPY browser-agent/package.json ./browser-agent/
+COPY web/package.json       ./web/
+
+# --ignore-scripts prevents Playwright from downloading browser binaries
+# during npm ci (they are not needed for the worker image).
+RUN npm ci --ignore-scripts
+
+# Copy source and compile.
+COPY shared/src         ./shared/src
+COPY shared/tsconfig.json ./shared/tsconfig.json
+COPY worker/src         ./worker/src
+COPY worker/tsconfig.json ./worker/tsconfig.json
+
+RUN npm run build --workspace @turo-automation/shared \
+ && npm run build --workspace @turo-automation/worker
+
+# ---------------------------------------------------------------------------
+# Stage 2: runtime
+# Lean image with only compiled output and runtime node_modules.
+# ---------------------------------------------------------------------------
+FROM node:22-alpine AS runtime
+
+WORKDIR /app
+
+# node_modules is copied from builder so workspace symlinks are intact.
+COPY --from=builder /app/node_modules  ./node_modules
+
+# Root workspace manifest (needed for ESM workspace resolution).
+COPY --from=builder /app/package.json  ./
+
+# Shared package: symlink target + compiled output.
+COPY --from=builder /app/shared/package.json ./shared/
+COPY --from=builder /app/shared/dist         ./shared/dist
+
+# Worker compiled output and manifest.
+COPY --from=builder /app/worker/package.json ./worker/
+COPY --from=builder /app/worker/dist         ./worker/dist
+
+ENV NODE_ENV=production
+
+# Run in run-once mode by default; set WORKER_MODE=scheduled to keep alive.
+CMD ["node", "worker/dist/index.js"]

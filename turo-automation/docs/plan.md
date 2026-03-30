@@ -25,9 +25,15 @@ All Phases 0–7 are complete. The TypeScript web/worker/shared stack is product
 - `modules/user_profile/` — `profile-check`
 - `modules/business/`, `modules/more/`, `modules/switch_to_guest/` — scaffolded, docs-only (blocked in saved session)
 
+## Phase 8 (in progress)
+Production deployment readiness:
+- `Dockerfile.worker` — multi-stage container build for the worker ✓
+- `.dockerignore` — keep build context lean (next)
+- `docker-compose.yml` — local end-to-end development wiring (planned)
+
 ## Next Steps
 - Browser agent: wait for a real authenticated host session that can get past Turo's blocking layer before adding further read-only extraction flows.
-- TypeScript stack: identify Phase 8 priorities (e.g., richer trip-import source, API layer, or production deployment hardening) once operational usage reveals new gaps.
+- TypeScript stack: continue Phase 8 (`.dockerignore`, then `docker-compose.yml`).
 
 ## Constraints
 

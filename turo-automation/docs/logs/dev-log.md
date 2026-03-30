@@ -4,6 +4,31 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ---
 
+## 2026-03-30
+
+### Phase 8 kickoff — production deployment readiness
+
+- All Phases 0–7 merged through PR #114 (Phase 7 roadmap closeout).
+- Started Phase 8: production deployment readiness.
+
+### Phase 8 slice 1: `Dockerfile.worker`
+
+- Added `turo-automation/Dockerfile.worker` — a two-stage Docker build for the worker package.
+  - **Builder stage**: installs all workspace deps with `--ignore-scripts` (prevents Playwright browser download), then compiles `@turo-automation/shared` and `@turo-automation/worker`.
+  - **Runtime stage**: copies only `node_modules` (workspace symlinks intact), compiled `shared/dist`, and `worker/dist`. No source, no dev tools.
+- Default `CMD` runs the worker once (`run-once` mode); set `WORKER_MODE=scheduled` for the keep-alive mode.
+- Updated `docs/planning/implementation-roadmap.md` to define Phase 8 (slices 1–3) and mark slice 1 complete.
+- Updated `docs/planning/daily-plan.md` for 2026-03-30.
+
+### Blockers
+- Browser-agent new flows remain blocked: `business`, `more`, `switch-to-guest` modules probe URLs that return blocked/403 with the current saved session. No new browser-agent read-only flows until a real authenticated session is available.
+
+### Next
+- Phase 8 slice 2: add `.dockerignore` to keep the build context lean.
+- Phase 8 slice 3: `docker-compose.yml` for local end-to-end development (worker + env wiring).
+
+---
+
 ## 2026-03-19
 
 ### Repo bootstrap

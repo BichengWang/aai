@@ -3,58 +3,23 @@
 Use this file for the current working plan. Keep it short, current, and actionable.
 
 ## Date
-2026-03-29
+2026-03-30
 
 ## Objective
-Keep Milestone 2 browser-agent planning aligned with the current saved-session blockers and wait for a reachable host page before adding another read-only flow.
+Advance Phase 8 (production deployment readiness) one slice at a time while the browser-agent remains blocked on a live Turo session.
 
-## Completed
-- [x] Shared domain, ports, fixtures, and use-case contracts
-- [x] Fixture-backed ops dashboard shell (web)
-- [x] Fixture-backed worker job runner
-- [x] Supabase migration 0001: vehicles, guests, trips, tasks
-- [x] Supabase migration 0002: incidents, trip_events, message_threads, message_drafts, approval_requests, job_runs
-- [x] Supabase-backed repository adapters for all entities (in `shared/src/adapters/supabase/`)
-- [x] VehicleRepository + GuestRepository ports + Supabase adapters
-- [x] Import use-case upserts guests/vehicles when repos provided (fixes FK constraint gap)
-- [x] Worker env-gated: `SUPABASE_URL` → Supabase mode; absent → fixture mode
-- [x] Web env-gated: `VITE_SUPABASE_URL` → Supabase snapshot; absent → fixture snapshot
-- [x] Slack notifier adapter (`SLACK_WEBHOOK_URL`)
-- [x] CSV trip import adapter (`TRIP_IMPORT_CSV_PATH`)
-- [x] `.env.example` with all required env vars
-- [x] Approval action in the web dashboard (approve/reject pending draft)
-- [x] Message template rendering for draft bodies
-- [x] Scheduled worker mode with retry handling
-- [x] Trip timeline side panel in the web dashboard
-- [x] Vehicle utilization panel in the web dashboard
-- [x] Centralized direct web Supabase mutation boundary with helper coverage
-- [x] Browser agent read-only flows: `health:smoke`, `session:bootstrap`, `session:check`, `trips:list`, `trip-get`, `messages-list`
-- [x] Architecture and workflow docs updated through PR #82 closeout
-- [x] Shared safe browser body-text capture helper across browser-agent live flows
-- [x] Failure artifact capture across all browser-agent read-only flows
-- [x] Browser-agent host-module skeleton: `core`, `trips`, `inbox`, plus scaffolded `calendar`, `business`, `more`, and `switch_to_guest` packages
-- [x] Browser-agent calendar read-only flow: `calendar:list`
-- [x] Browser-agent vehicles read-only flow: `vehicles:list`
-- [x] Browser-agent profile read-only flow: `profile-check`
-- [x] Business, more, and switch-to-guest route probes are blocked in the current saved session
+## Completed (all phases through Phase 7)
+- [x] All Phases 0–7 merged — full TypeScript web/worker/shared stack + browser-agent read-only flows
+- [x] Phase 8 slice 1: `Dockerfile.worker` — multi-stage container build for the worker (PR #115)
 
 ## Today's Priorities
-- [x] Close the first browser-agent batch with 10 merged PRs (#83–#92)
-- [x] Create the Milestone 2 module plan aligned to the Turo host page structure
-- [x] Refactor current trips/inbox/session flows into explicit module ownership
-- [x] Start the Milestone 2 development loop with the first new page coverage slice
-- [x] Add the first vehicles-system read-only slice
-- [x] Add the first user-profile-system read-only slice
-- [x] Inventory the blocked business, more, and switch-to-guest surfaces
+- [x] Add `Dockerfile.worker` for containerised worker deployment (Phase 8 slice 1)
+- [ ] Add `.dockerignore` to keep the build context lean (Phase 8 slice 2)
+- [ ] Add `docker-compose.yml` for local end-to-end development (Phase 8 slice 3)
 
 ## Risks / Open Questions
-- Does the live host session resolve `https://turo.com/us/en/calendar`, or should the calendar flow discover the page via navigation?
-- Which module should follow the blocked profile/business/more surfaces once a reachable page appears?
-- How much command-surface compatibility should be preserved while moving flows into explicit module boundaries?
-
-## Completed (Phase 7 closeout)
-- [x] Marked Phase 7 slices 1–5 complete in `docs/planning/implementation-roadmap.md`
-- [x] Updated `docs/plan.md` to reflect implemented reality across all phases
+- Browser-agent flows remain blocked until a real authenticated Turo session is available.
+- Phase 8 slice 2 (`.dockerignore`) is low-risk; slice 3 (`docker-compose`) depends on how the team wants to wire local Supabase.
 
 ## Next Suggested Step
-Wait for a real authenticated host session that can pass Turo's blocking layer before adding further browser-agent read-only extraction flows. For the TypeScript stack, identify Phase 8 priorities from operational usage before starting new code work.
+Land `.dockerignore` as Phase 8 slice 2, then evaluate whether `docker-compose.yml` is the right next increment or if operational feedback reveals a higher-priority gap.
