@@ -36,7 +36,7 @@ turo-automation/
 - `worker/` — background job runner; dispatches six core jobs on each invocation or runs them on intervals in scheduled mode
 - `web/` — internal React dashboard showing today's ops snapshot, trip timeline drill-down, vehicle utilization, approval actions, and incident actions
 - `browser-agent/` — existing TypeScript browser automation package for session bootstrap/check and future Turo web extraction flows
-- `browser-agent-py/` — Python-first executable browser automation subtree for the current host-browser/CDP workflow
+- `browser-agent-py/` — Python-first executable browser automation subtree for the current host-browser/CDP workflow; current read-only coverage includes calendar, vehicles, and profile, while business/more/switch-to-guest remain blocked and docs-only
 
 ## Getting Started
 
