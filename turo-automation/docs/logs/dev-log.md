@@ -713,3 +713,15 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 ### Verification
 
 - `npm test`
+
+## 2026-03-29
+
+### Phase 7 roadmap closeout
+
+- Updated `docs/planning/implementation-roadmap.md` to mark Phase 7 slices 1–5 complete — all browser-agent module work was already landed in PRs #103–#106; only the ✓ markers were missing
+- Updated `docs/plan.md` to replace the stale "Next Implementation Plan" (Supabase adapters were done in 2026-03-21) with current-state documentation across all phases and accurate next-step guidance
+- Updated `docs/planning/daily-plan.md` to record the Phase 7 closeout and sharpen the next suggested step
+
+**Verification**: docs-only sync against current `main` implementation; no code changes
+
+**Blockers**: browser-agent further read-only extraction requires a real authenticated host session past Turo's blocking layer

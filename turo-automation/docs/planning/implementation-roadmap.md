@@ -71,21 +71,23 @@ PR slices:
 2. explicit guest-send path after approval ✓
 3. decide whether web mutations stay direct-to-Supabase or move behind an API/worker boundary ✓
 
-## Phase 7 — Modular Host Systems
+## Phase 7 — Modular Host Systems ✓
 Objective: reshape browser automation to match the Turo host product surface and make future page coverage easier to extend safely.
 
 PR slices:
-1. define the host-page-aligned module architecture and migrate shared core utilities
-2. refactor existing session, trips, and inbox flows into the new module structure
-3. add first `calendar-system` read-only flow
-4. add first `vehicles-system` read-only flow
-5. add first `user-profile-system` read-only flow
+1. define the host-page-aligned module architecture and migrate shared core utilities ✓
+2. refactor existing session, trips, and inbox flows into the new module structure ✓
+3. add first `calendar-system` read-only flow ✓
+4. add first `vehicles-system` read-only flow ✓
+5. add first `user-profile-system` read-only flow ✓
 6. document or lightly probe `business-system`, `more-system`, and `switch-to-guest` for the next safe increments ✓
 
 ## Current Status
-- Milestone 1 is complete through the first 10-PR browser-agent hardening batch (#83–#92 merged).
-- The first Milestone 2 structural slice has landed: `browser-agent-py` now has host-aligned module packages with compatibility shims.
-- The blocked business, more, and switch-to-guest surfaces are documented in the Milestone 2 plan; the next safe browser-agent step is docs-only until a reachable page appears.
+- All Phases 0–7 are complete.
+- `browser-agent-py/` has host-aligned module packages (`core`, `trips`, `inbox`, `calendar`, `vehicles`, `user_profile`) with read-only flows verified.
+- `business`, `more`, and `switch-to-guest` modules are scaffolded but remain docs-only; each probed URL returns blocked/403 with the current saved session.
+- The next browser-agent implementation step requires a real authenticated host session before adding new read-only extraction flows.
+- The TypeScript web/worker stack is functionally complete through Phase 6.
 
 ## Rules for Future PRs
 - one highest-priority PR at a time

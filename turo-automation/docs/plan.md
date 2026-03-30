@@ -6,36 +6,30 @@
 - `worker` runs fixture-backed jobs through the shared interfaces
 - build and contract tests pass locally
 
-## Next Objective
-Replace fixture-backed reads and jobs with real adapters while preserving the shared interfaces introduced in the first architecture PR.
+## Current State
+All Phases 0–7 are complete. The TypeScript web/worker/shared stack is production-ready with Supabase-backed persistence, and `browser-agent-py/` covers read-only host flows through Phase 7.
 
-In parallel, the repo now has a Python-first browser automation subtree at `browser-agent-py/` for executable Turo host web-flow work that should stay decoupled from the dashboard and worker runtime until the browser flows stabilize.
-It currently covers read-only `calendar:list`, `vehicles:list`, and `profile-check` flows, while the obvious business, more, and switch-to-guest routes remain blocked in the saved session.
+### TypeScript stack (complete)
+- Supabase-backed repositories for all entities (trips, tasks, incidents, messages, approvals, job runs)
+- Env-gated worker (Supabase mode / fixture fallback) with six scheduled jobs
+- Env-gated web dashboard with timeline, utilization, approval, and incident actions
+- Explicit guest-send path with `WORKER_SEND_APPROVED_DRAFTS` gate
+- Operator identity sourced from `VITE_OPERATOR_IDENTITY`
 
-## Next Implementation Plan
-1. Add the missing persistence schema slices for:
-   - incidents
-   - message threads and message drafts
-   - approval requests
-   - job runs / audit trail
-2. Implement Supabase-backed repository adapters for:
-   - trips
-   - tasks
-   - incidents
-   - messages and approvals
-   - job runs
-3. Replace the web fixture loader with repository-backed reads that still return `TodayOpsSnapshot`
-4. Replace worker fixture adapters with:
-   - persistence adapters
-   - notifier adapter
-   - import-source adapter
-5. Keep Playwright out of the critical path until the persistence-backed operator workflow is stable
+### Browser agent (`browser-agent-py/`, complete through Phase 7)
+- `modules/core/` — `health:smoke`, `session:bootstrap`, `session:check`
+- `modules/trips/` — `trips:list`, `trip-get`
+- `modules/inbox/` — `messages-list`
+- `modules/calendar/` — `calendar:list`
+- `modules/vehicles/` — `vehicles:list`
+- `modules/user_profile/` — `profile-check`
+- `modules/business/`, `modules/more/`, `modules/switch_to_guest/` — scaffolded, docs-only (blocked in saved session)
 
-## Acceptance Criteria
-- the dashboard reads from real stored data instead of fixtures
-- the worker persists job outputs and incidents through repository adapters
-- shared contracts do not need to change during adapter wiring
-- `npm run build` and `npm test` continue to pass
+## Next Steps
+- Browser agent: wait for a real authenticated host session that can get past Turo's blocking layer before adding further read-only extraction flows.
+- TypeScript stack: identify Phase 8 priorities (e.g., richer trip-import source, API layer, or production deployment hardening) once operational usage reveals new gaps.
+
+## Constraints
 
 ## Constraints
 - keep the existing `web` / `worker` / `shared` package topology

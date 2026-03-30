@@ -52,5 +52,9 @@ Keep Milestone 2 browser-agent planning aligned with the current saved-session b
 - Which module should follow the blocked profile/business/more surfaces once a reachable page appears?
 - How much command-surface compatibility should be preserved while moving flows into explicit module boundaries?
 
+## Completed (Phase 7 closeout)
+- [x] Marked Phase 7 slices 1–5 complete in `docs/planning/implementation-roadmap.md`
+- [x] Updated `docs/plan.md` to reflect implemented reality across all phases
+
 ## Next Suggested Step
-Wait for a reachable business, more, or switch-to-guest page before adding another browser flow.
+Wait for a real authenticated host session that can pass Turo's blocking layer before adding further browser-agent read-only extraction flows. For the TypeScript stack, identify Phase 8 priorities from operational usage before starting new code work.
