@@ -28,8 +28,8 @@ All Phases 0–7 are complete. The TypeScript web/worker/shared stack is product
 ## Phase 8 (in progress)
 Production deployment readiness:
 - `Dockerfile.worker` — multi-stage container build for the worker ✓
-- `.dockerignore` — keep build context lean (next)
-- `docker-compose.yml` — local end-to-end development wiring (planned)
+- `.dockerignore` — keep build context lean ✓
+- `docker-compose.yml` — local end-to-end development wiring (next)
 
 ## Next Steps
 - Browser agent: wait for a real authenticated host session that can get past Turo's blocking layer before adding further read-only extraction flows.

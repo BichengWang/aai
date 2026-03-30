@@ -1,0 +1,50 @@
+# ---------------------------------------------------------------------------
+# .dockerignore — turo-automation worker image
+#
+# Applied when building from the turo-automation/ directory.
+# Keeps the build context lean by excluding files that are not needed
+# to compile and run the worker.
+# ---------------------------------------------------------------------------
+
+# Local dependency installs (Docker re-installs from package-lock.json)
+node_modules
+*/node_modules
+**/node_modules
+
+# Compiled output (rebuilt inside the Docker build stages)
+dist
+*/dist
+**/dist
+
+# Test files
+*/test
+**/test
+
+# Local development data
+data
+
+# Playwright browser binaries and browser-agent runtime artifacts
+browser-agent/storage
+browser-agent/artifacts
+browser-agent-py
+browser-agent-py/**
+
+# Web build artifacts and Vite cache
+web/dist
+.vite
+
+# Supabase local dev state
+supabase/.branches
+supabase/.temp
+
+# Environment secrets — never bake these into the image
+.env
+.env.*
+!.env.example
+
+# Editor and OS noise
+.DS_Store
+*.swp
+*.swo
+.idea
+.vscode
