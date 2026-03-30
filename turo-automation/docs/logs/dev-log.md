@@ -281,6 +281,10 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 - Updated `turo-automation/README.md` so the package overview reflects the current browser-agent read-only coverage and the blocked docs-only routes
 
+### Legacy browser-agent README alignment
+
+- Updated `browser-agent/README.md` so the TypeScript package is clearly identified as the legacy runner while `browser-agent-py/` holds the current host-browser workflow
+
 ### Calendar read-only flow
 
 - Added `browser-agent-py/src/turo_browser_agent/modules/calendar/list.py` as the first Milestone 2 read-only calendar summary flow

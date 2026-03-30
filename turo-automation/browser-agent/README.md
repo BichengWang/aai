@@ -2,6 +2,8 @@
 
 Playwright-first browser automation package for `turo-automation`.
 
+The current host-browser workflow now lives in `browser-agent-py/`; this package remains the smaller TypeScript runner for the legacy bootstrap/check path and the narrow trips read-only flow.
+
 ## Initial command surface
 
 - `health:smoke`
