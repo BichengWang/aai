@@ -162,7 +162,7 @@ Prefer small PR slices that establish the module skeleton first, then migrate ex
 9. add first `calendar-system` read-only flow
 10. add first `vehicles-system` read-only flow
 11. add first `user-profile-system` read-only flow
-12. inventory/document `business`, `more`, and `switch-to-guest` before code or add one small verified read flow if clearly ready
+12. inventory/document `business`, `more`, and `switch-to-guest` before code or add one small verified read flow if clearly ready ✓
 
 ## Verification Standard
 For this project, prefer:

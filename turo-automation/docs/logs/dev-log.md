@@ -264,6 +264,11 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 - Live host response returned `blocked` with HTTP 403 and captured screenshot/HTML artifacts
 - Assumption: the host vehicles URL is correct, but full read-only extraction still needs a logged-in session that can get past Turo's blocking layer
 
+### Milestone 2 tracking closeout
+
+- Marked the blocked business, more, and switch-to-guest inventory slice complete in `docs/planning/implementation-roadmap.md` and `docs/planning/milestone-2-modular-host-systems.md`
+- Kept `docs/planning/daily-plan.md` aligned with the current blocker state so the next browser-agent step stays docs-only until a reachable page appears
+
 ### Calendar read-only flow
 
 - Added `browser-agent-py/src/turo_browser_agent/modules/calendar/list.py` as the first Milestone 2 read-only calendar summary flow

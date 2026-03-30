@@ -80,12 +80,12 @@ PR slices:
 3. add first `calendar-system` read-only flow
 4. add first `vehicles-system` read-only flow
 5. add first `user-profile-system` read-only flow
-6. document or lightly probe `business-system`, `more-system`, and `switch-to-guest` for the next safe increments
+6. document or lightly probe `business-system`, `more-system`, and `switch-to-guest` for the next safe increments ✓
 
 ## Current Status
 - Milestone 1 is complete through the first 10-PR browser-agent hardening batch (#83–#92 merged).
 - The first Milestone 2 structural slice has landed: `browser-agent-py` now has host-aligned module packages with compatibility shims.
-- The next implementation slices are the remaining module migrations and the first additional read-only host page beyond trips and inbox.
+- The blocked business, more, and switch-to-guest surfaces are documented in the Milestone 2 plan; the next safe browser-agent step is docs-only until a reachable page appears.
 
 ## Rules for Future PRs
 - one highest-priority PR at a time

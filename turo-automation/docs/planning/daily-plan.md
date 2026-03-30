@@ -6,7 +6,7 @@ Use this file for the current working plan. Keep it short, current, and actionab
 2026-03-29
 
 ## Objective
-Continue Milestone 2 by documenting the blocked business, more, and switch-to-guest surfaces after the browser-agent profile module.
+Keep Milestone 2 browser-agent planning aligned with the current saved-session blockers and wait for a reachable host page before adding another read-only flow.
 
 ## Completed
 - [x] Shared domain, ports, fixtures, and use-case contracts
@@ -53,4 +53,4 @@ Continue Milestone 2 by documenting the blocked business, more, and switch-to-gu
 - How much command-surface compatibility should be preserved while moving flows into explicit module boundaries?
 
 ## Next Suggested Step
-Document the blocked business, more, and switch-to-guest surfaces in the Milestone 2 plan, then wait for a reachable page before adding another browser flow.
+Wait for a reachable business, more, or switch-to-guest page before adding another browser flow.
