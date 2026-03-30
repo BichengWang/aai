@@ -11,6 +11,12 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 - All Phases 0–7 merged through PR #114 (Phase 7 roadmap closeout).
 - Started Phase 8: production deployment readiness.
 
+### Phase 8 slices 2–3: `.dockerignore` and `docker-compose.yml`
+
+- Added `turo-automation/.dockerignore` — excludes `node_modules`, `dist`, `test`, `data`, `browser-agent-py`, Playwright artifacts, `.env` secrets, Supabase local state, and editor noise from the build context.
+- Added `turo-automation/docker-compose.yml` — starts the worker with `env_file: .env`, mounts `./data:/data:ro` for CSV trip import, and defaults `restart: "no"` for run-once mode. `WORKER_MODE=scheduled` and `WORKER_SEND_APPROVED_DRAFTS` are forwarded from the host environment.
+- Phase 8 (production deployment readiness) is now complete.
+
 ### Phase 8 slice 1: `Dockerfile.worker`
 
 - Added `turo-automation/Dockerfile.worker` — a two-stage Docker build for the worker package.

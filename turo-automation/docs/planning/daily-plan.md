@@ -15,7 +15,7 @@ Advance Phase 8 (production deployment readiness) one slice at a time while the 
 ## Today's Priorities
 - [x] Add `Dockerfile.worker` for containerised worker deployment (Phase 8 slice 1)
 - [x] Add `.dockerignore` to keep the build context lean (Phase 8 slice 2)
-- [ ] Add `docker-compose.yml` for local end-to-end development (Phase 8 slice 3)
+- [x] Add `docker-compose.yml` for local end-to-end development (Phase 8 slice 3)
 
 ## Risks / Open Questions
 - Browser-agent flows remain blocked until a real authenticated Turo session is available.
