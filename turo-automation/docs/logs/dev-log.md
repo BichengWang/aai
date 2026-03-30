@@ -269,6 +269,10 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 - Marked the blocked business, more, and switch-to-guest inventory slice complete in `docs/planning/implementation-roadmap.md` and `docs/planning/milestone-2-modular-host-systems.md`
 - Kept `docs/planning/daily-plan.md` aligned with the current blocker state so the next browser-agent step stays docs-only until a reachable page appears
 
+### Top-level plan alignment
+
+- Updated `docs/plan.md` to describe the current browser-agent read-only coverage and keep the blocked route inventory visible in the high-level plan
+
 ### Calendar read-only flow
 
 - Added `browser-agent-py/src/turo_browser_agent/modules/calendar/list.py` as the first Milestone 2 read-only calendar summary flow

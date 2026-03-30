@@ -10,6 +10,7 @@
 Replace fixture-backed reads and jobs with real adapters while preserving the shared interfaces introduced in the first architecture PR.
 
 In parallel, the repo now has a Python-first browser automation subtree at `browser-agent-py/` for executable Turo host web-flow work that should stay decoupled from the dashboard and worker runtime until the browser flows stabilize.
+It currently covers read-only `calendar:list`, `vehicles:list`, and `profile-check` flows, while the obvious business, more, and switch-to-guest routes remain blocked in the saved session.
 
 ## Next Implementation Plan
 1. Add the missing persistence schema slices for:
