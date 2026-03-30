@@ -285,6 +285,10 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 - Updated `browser-agent/README.md` so the TypeScript package is clearly identified as the legacy runner while `browser-agent-py/` holds the current host-browser workflow
 
+### Browser-agent package cross-link
+
+- Added a direct cross-link in `browser-agent/README.md` to the current `browser-agent-py/README.md` coverage so the package split is visible in both package docs
+
 ### Calendar read-only flow
 
 - Added `browser-agent-py/src/turo_browser_agent/modules/calendar/list.py` as the first Milestone 2 read-only calendar summary flow

@@ -16,6 +16,7 @@ The current host-browser workflow now lives in `browser-agent-py/`; this package
 - `health:smoke` performs a live read-only navigation and classifies the resulting page
 - `session:check` now performs a live read-only session check and reports `authenticated`, `stale_state`, `unknown`, or `missing_state`
 - `trips:list` performs a live read-only navigation to the host trips page and extracts conservative trip link summaries when available
+- broader read-only host coverage now lives in `browser-agent-py/README.md`, including calendar, vehicles, and profile flows
 - all live commands reuse the local storage-state file when it exists
 
 ## MVP rules
