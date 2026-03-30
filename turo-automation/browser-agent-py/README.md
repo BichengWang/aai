@@ -16,7 +16,7 @@ The code is now grouped by host-aligned modules under `src/turo_browser_agent/mo
 - `inbox/` for the messages list flow
 - `vehicles/` for the first vehicles-system read-only flow
 - `user_profile/` for the first profile/account read-only flow
-- `business/`, `more/`, and `switch_to_guest/` are scaffolded for the next Milestone 2 slices
+- `business/`, `more/`, and `switch_to_guest/` are scaffolded for the next Milestone 2 slices and stay docs-only while the obvious routes are blocked in the saved session
 
 Legacy `flows/` imports remain as compatibility shims during the refactor.
 
@@ -56,6 +56,7 @@ This is a minimal real browser runner:
 - `messages-list` opens the host messages page and returns structured thread summaries or `login_required`
 - `vehicles-list` opens the host vehicles page and returns structured vehicle summaries or `blocked`
 - `profile-check` opens the host account page and returns structured profile signals or `blocked`
+- the obvious business, more, and switch-to-guest routes remain blocked in the saved session, so those modules stay docs-only for now
 
 It stays read-first and intentionally avoids guest-facing writes.
 

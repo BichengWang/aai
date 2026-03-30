@@ -41,7 +41,7 @@ The Python package is organized around the host navigation surface:
 - `modules/inbox/` - inbox thread summaries
 - `modules/vehicles/` - vehicles-system read-only summary flow
 - `modules/user_profile/` - profile/account read-only summary flow
-- `modules/business/`, `modules/more/`, and `modules/switch_to_guest/` - scaffolded for future Milestone 2 slices
+- `modules/business/`, `modules/more/`, and `modules/switch_to_guest/` - scaffolded for future Milestone 2 slices and kept docs-only while the obvious routes are blocked in the saved session
 
 The legacy `flows/` package remains as a compatibility layer while the new module paths settle.
 

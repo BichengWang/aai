@@ -273,6 +273,10 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 - Updated `docs/plan.md` to describe the current browser-agent read-only coverage and keep the blocked route inventory visible in the high-level plan
 
+### Browser-agent subtree docs alignment
+
+- Updated `browser-agent-py/README.md` and `browser-agent-py/docs/ARCHITECTURE.md` so the package-level docs state that business, more, and switch-to-guest remain docs-only while the saved session is blocked
+
 ### Calendar read-only flow
 
 - Added `browser-agent-py/src/turo_browser_agent/modules/calendar/list.py` as the first Milestone 2 read-only calendar summary flow
