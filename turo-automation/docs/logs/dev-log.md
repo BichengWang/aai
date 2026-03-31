@@ -6,6 +6,13 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-03-30
 
+### Worker WORKER_MODE validation
+
+- Added unrecognised `WORKER_MODE` warning in `worker/src/index.ts`: if `WORKER_MODE` is set to any value other than `"scheduled"` or unset / `""`, emits `boot.config.warning` and falls back to run-once instead of silently ignoring a typo
+- Also imports `logWorkerEvent` into `index.ts` so all startup warnings use the same structured logger
+
+**Verification**: `npm run build --workspace @turo-automation/worker` — clean compile; `npm test` — 47 pass
+
 ### Worker startup hardening and Dockerfile EXPOSE
 
 - Added `EXPOSE 3001` to `Dockerfile.worker` runtime stage so orchestrators and `docker run -P` know the health check port
