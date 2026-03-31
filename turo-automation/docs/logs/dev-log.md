@@ -6,6 +6,14 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-03-30
 
+### Dockerfile.worker HEALTHCHECK instruction
+
+- Added `HEALTHCHECK` to `Dockerfile.worker` runtime stage: `wget -q --spider http://localhost:${HEALTHZ_PORT:-3001}/healthz`, interval 30s, timeout 5s, 3 retries, 10s start period
+- Updated the Dockerfile header comment to note that `-p 3001:3001` is needed when running in scheduled mode with `docker run`
+- Enables health probing for bare `docker run`, ECS task definitions, and k8s liveness probes
+
+**Verification**: Dockerfile syntax validated; no code changes
+
 ### docker-compose healthcheck and scheduled-mode default
 
 - Updated `docker-compose.yml` to default `WORKER_MODE` to `scheduled` (matches the file comment; was incorrectly defaulting to run-once)

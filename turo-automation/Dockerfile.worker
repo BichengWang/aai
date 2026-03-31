@@ -8,8 +8,8 @@
 # Run once (default):
 #   docker run --env-file .env turo-worker
 #
-# Run in scheduled mode (keeps the process alive):
-#   docker run --env-file .env -e WORKER_MODE=scheduled turo-worker
+# Run in scheduled mode (keeps the process alive + activates /healthz on port 3001):
+#   docker run --env-file .env -e WORKER_MODE=scheduled -p 3001:3001 turo-worker
 
 # ---------------------------------------------------------------------------
 # Stage 1: build
@@ -62,6 +62,11 @@ COPY --from=builder /app/worker/package.json ./worker/
 COPY --from=builder /app/worker/dist         ./worker/dist
 
 ENV NODE_ENV=production
+
+# Health check — probes GET /healthz served by the worker when WORKER_MODE=scheduled.
+# HEALTHZ_PORT defaults to 3001. wget is available in node:alpine.
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10s \
+  CMD wget -q --spider http://localhost:${HEALTHZ_PORT:-3001}/healthz
 
 # Run in run-once mode by default; set WORKER_MODE=scheduled to keep alive.
 CMD ["node", "worker/dist/index.js"]
