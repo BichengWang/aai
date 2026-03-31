@@ -6,6 +6,14 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-03-30
 
+### Phase 9 slice 3 — structured JSON logging for production
+
+- Updated `worker/src/lib/logger.ts`: when `NODE_ENV=production`, `logWorkerEvent` emits a single JSON line per event — `{"level":"info","ts":"<ISO>","event":"<label>",...payload}` — suitable for log aggregators (CloudWatch, Datadog, etc.)
+- When `NODE_ENV` is unset or not `production`, behaviour is unchanged (human-readable two-line output)
+- Updated `worker/src/lib/createHealthServer.ts` to use `logWorkerEvent` instead of a bare `console.log`
+
+**Verification**: `npm run build --workspace @turo-automation/worker` — clean compile
+
 ### Phase 9 slice 2 — worker health check HTTP endpoint
 
 - Added `worker/src/lib/createHealthServer.ts` — minimal `node:http` server that responds to `GET /healthz` with `200 {"status":"ok"}`

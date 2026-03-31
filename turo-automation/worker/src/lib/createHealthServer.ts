@@ -1,4 +1,5 @@
 import { createServer, type Server } from "node:http";
+import { logWorkerEvent } from "./logger.js";
 
 /**
  * createHealthServer
@@ -27,7 +28,7 @@ export function createHealthServer(): Server {
   });
 
   server.listen(port, () => {
-    console.log(`[worker] healthz listening on port ${port}`);
+    logWorkerEvent("healthz.listening", { port });
   });
 
   return server;
