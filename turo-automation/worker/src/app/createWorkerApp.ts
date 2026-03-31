@@ -53,9 +53,18 @@ function readTruthyEnvFlag(value: string | undefined): boolean {
   return Boolean(value && ["1", "true", "yes", "on"].includes(value.toLowerCase()));
 }
 
-const useSupabase = Boolean(
-  process.env["SUPABASE_URL"] && process.env["SUPABASE_KEY"]
-);
+const hasSupabaseUrl = Boolean(process.env["SUPABASE_URL"]);
+const hasSupabaseKey = Boolean(process.env["SUPABASE_KEY"]);
+const useSupabase = hasSupabaseUrl && hasSupabaseKey;
+
+// Warn when partial Supabase config is detected so operators can catch
+// misconfiguration early rather than debugging a silent fixture fallback.
+if (hasSupabaseUrl !== hasSupabaseKey) {
+  const missing = hasSupabaseUrl ? "SUPABASE_KEY" : "SUPABASE_URL";
+  logWorkerEvent("boot.config.warning", {
+    message: `${missing} is not set — falling back to fixture adapters. Set both SUPABASE_URL and SUPABASE_KEY to enable Supabase persistence.`,
+  });
+}
 
 export function createWorkerApp() {
   const generatedAt = getWorkerNowIso();

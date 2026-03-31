@@ -63,6 +63,9 @@ COPY --from=builder /app/worker/dist         ./worker/dist
 
 ENV NODE_ENV=production
 
+# Inform orchestrators and `docker run -P` which port the health check server listens on.
+EXPOSE 3001
+
 # Health check — probes GET /healthz served by the worker when WORKER_MODE=scheduled.
 # HEALTHZ_PORT defaults to 3001. wget is available in node:alpine.
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10s \

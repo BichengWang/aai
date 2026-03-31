@@ -6,6 +6,13 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-03-30
 
+### Worker startup hardening and Dockerfile EXPOSE
+
+- Added `EXPOSE 3001` to `Dockerfile.worker` runtime stage so orchestrators and `docker run -P` know the health check port
+- Added partial Supabase config detection in `worker/src/app/createWorkerApp.ts`: emits `boot.config.warning` via `logWorkerEvent` when only one of `SUPABASE_URL` / `SUPABASE_KEY` is set, instead of silently falling back to fixtures
+
+**Verification**: `npm run build --workspace @turo-automation/worker` — clean compile
+
 ### README.md deployment documentation
 
 - Added "Docker Deployment" section: docker-compose usage, bare docker run with GHCR image, local build, health check, and JSON logging format
