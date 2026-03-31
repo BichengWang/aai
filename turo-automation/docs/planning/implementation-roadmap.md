@@ -96,13 +96,13 @@ Objective: protect the main branch with automated CI and add the observability n
 PR slices:
 1. GitHub Actions CI workflow — build and test the TypeScript stack on every PR and push to main ✓
 2. Worker health check HTTP endpoint — `GET /healthz` for container orchestrator liveness probes ✓
-3. Structured JSON logging — replace `console.*` with JSON-structured output when `NODE_ENV=production`
-4. Docker image publish — GitHub Actions workflow to build and push the worker image to a registry on merge to main
+3. Structured JSON logging — replace `console.*` with JSON-structured output when `NODE_ENV=production` ✓
+4. Docker image publish — GitHub Actions workflow to build and push the worker image to GHCR on merge to main
 
 ## Current Status
 - All Phases 0–8 are complete.
-- Phase 9 slices 1–2 are complete (PR #119, #120).
-- Phase 9 slice 3 (structured JSON logging) is in progress.
+- Phase 9 slices 1–3 are complete (PRs #119, #120, #121).
+- Phase 9 slice 4 (Docker image publish to GHCR) is in progress.
 - The TypeScript worker is containerised and deployable.
 - `browser-agent-py/` has host-aligned module packages (`core`, `trips`, `inbox`, `calendar`, `vehicles`, `user_profile`) with read-only flows verified.
 - `business`, `more`, and `switch-to-guest` modules are scaffolded but remain docs-only; each probed URL returns blocked/403 with the current saved session.

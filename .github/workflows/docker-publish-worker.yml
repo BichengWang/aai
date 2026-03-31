@@ -1,0 +1,62 @@
+# Build and publish the turo-automation worker Docker image to GHCR.
+# Triggers on every push to main that touches the worker source or Dockerfile.
+# Image: ghcr.io/bichengwang/altair-ai-llc/turo-worker
+
+name: Publish – turo-worker Docker image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'turo-automation/Dockerfile.worker'
+      - 'turo-automation/shared/**'
+      - 'turo-automation/worker/**'
+      - 'turo-automation/browser-agent/**'
+      - 'turo-automation/package.json'
+      - 'turo-automation/package-lock.json'
+      - 'turo-automation/tsconfig.base.json'
+      - '.github/workflows/docker-publish-worker.yml'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: bichengwang/altair-ai-llc/turo-worker
+
+jobs:
+  build-and-push:
+    name: Build & Push
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=sha-
+            type=raw,value=latest
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: turo-automation
+          file: turo-automation/Dockerfile.worker
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

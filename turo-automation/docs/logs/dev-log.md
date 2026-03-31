@@ -6,6 +6,15 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-03-30
 
+### Phase 9 slice 4 — Docker image publish to GHCR
+
+- Added `.github/workflows/docker-publish-worker.yml` — builds and pushes the worker Docker image to `ghcr.io/bichengwang/altair-ai-llc/turo-worker` on every push to `main` that touches worker source or `Dockerfile.worker`
+- Tags: `sha-<commit-sha>` (immutable) and `latest` (mutable); GHA cache enabled for faster rebuilds
+- Uses `GITHUB_TOKEN` with `packages: write` — no external secrets required
+- Assumption: GHCR is the target registry; a different registry can be wired later by changing `REGISTRY`/`IMAGE_NAME` env vars and adding a login secret
+
+**Verification**: YAML linted by eye; will execute on first qualifying push to main
+
 ### Phase 9 slice 3 — structured JSON logging for production
 
 - Updated `worker/src/lib/logger.ts`: when `NODE_ENV=production`, `logWorkerEvent` emits a single JSON line per event — `{"level":"info","ts":"<ISO>","event":"<label>",...payload}` — suitable for log aggregators (CloudWatch, Datadog, etc.)

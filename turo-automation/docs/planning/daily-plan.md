@@ -16,12 +16,14 @@ Advance Phase 9 (CI/CD and production observability) one slice at a time while t
 - [x] Phase 8 complete (PR #118 docs closeout)
 - [x] Phase 9 slice 1: GitHub Actions CI workflow — build and test on every PR / push to main (PR #119)
 - [x] Phase 9 slice 2: worker health check endpoint (`GET /healthz`) — (PR #120)
-- [ ] Phase 9 slice 3: structured JSON logging for `NODE_ENV=production` — in progress
+- [x] Phase 9 slice 3: structured JSON logging for `NODE_ENV=production` — (PR #121)
+- [ ] Phase 9 slice 4: Docker image publish to GHCR on push to main — in progress
 
 ## Today's Priorities
 - [x] Add CI workflow (`.github/workflows/ci-turo-automation.yml`) — Phase 9 slice 1
 - [x] Add worker health check endpoint (`GET /healthz`) — Phase 9 slice 2
-- [ ] Add structured JSON logging for `NODE_ENV=production` — Phase 9 slice 3 (in progress)
+- [x] Add structured JSON logging for `NODE_ENV=production` — Phase 9 slice 3
+- [ ] Add Docker image publish workflow (GHCR) — Phase 9 slice 4 (in progress)
 
 ## Risks / Open Questions
 - Browser-agent flows remain blocked until a real authenticated Turo session is available.
