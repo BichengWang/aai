@@ -1,0 +1,45 @@
+# CI for the turo-automation TypeScript stack (shared, worker, browser-agent, web).
+# Runs on every push to main and on every PR that touches turo-automation code.
+
+name: CI – turo-automation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'turo-automation/**'
+      - '.github/workflows/ci-turo-automation.yml'
+  pull_request:
+    paths:
+      - 'turo-automation/**'
+      - '.github/workflows/ci-turo-automation.yml'
+
+defaults:
+  run:
+    working-directory: turo-automation
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: turo-automation/package-lock.json
+
+      - name: Install dependencies
+        # --ignore-scripts prevents Playwright from downloading browser binaries
+        run: npm ci --ignore-scripts
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test

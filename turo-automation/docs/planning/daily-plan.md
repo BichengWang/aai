@@ -6,23 +6,24 @@ Use this file for the current working plan. Keep it short, current, and actionab
 2026-03-30
 
 ## Objective
-Advance Phase 8 (production deployment readiness) one slice at a time while the browser-agent remains blocked on a live Turo session.
+Advance Phase 9 (CI/CD and production observability) one slice at a time while the browser-agent remains blocked on a live Turo session.
 
-## Completed (all phases through Phase 7)
+## Completed (all phases through Phase 8)
 - [x] All Phases 0–7 merged — full TypeScript web/worker/shared stack + browser-agent read-only flows
 - [x] Phase 8 slice 1: `Dockerfile.worker` — multi-stage container build for the worker (PR #115)
 - [x] Phase 8 slice 2: `.dockerignore` — lean build context (PR #116)
 - [x] Phase 8 slice 3: `docker-compose.yml` — local end-to-end dev wiring (PR #117)
-- [x] Phase 8 complete
+- [x] Phase 8 complete (PR #118 docs closeout)
+- [ ] Phase 9 slice 1: GitHub Actions CI workflow — build and test on every PR / push to main (in progress)
 
 ## Today's Priorities
-- [x] Add `Dockerfile.worker` for containerised worker deployment (Phase 8 slice 1)
-- [x] Add `.dockerignore` to keep the build context lean (Phase 8 slice 2)
-- [x] Add `docker-compose.yml` for local end-to-end development (Phase 8 slice 3)
+- [ ] Add CI workflow (`.github/workflows/ci-turo-automation.yml`) — Phase 9 slice 1
+- [ ] Add worker health check endpoint (`GET /healthz`) — Phase 9 slice 2
+- [ ] Add structured JSON logging for `NODE_ENV=production` — Phase 9 slice 3
 
 ## Risks / Open Questions
 - Browser-agent flows remain blocked until a real authenticated Turo session is available.
-- Phase 9 scope is not yet defined; wait for operational usage to reveal the next gap before writing code.
+- Phase 9 slice 4 (Docker image publish) depends on a target registry being configured.
 
 ## Next Suggested Step
-Deploy the worker container and run it against real Supabase credentials. Observe what breaks or is inconvenient — that friction reveals Phase 9 priorities (e.g., worker health endpoint, structured logging, API layer, or production CI/CD pipeline).
+After Phase 9 slice 1 lands, add the worker health check HTTP endpoint (Phase 9 slice 2) so container orchestrators can probe liveness.

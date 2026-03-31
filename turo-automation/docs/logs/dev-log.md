@@ -6,6 +6,15 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-03-30
 
+### Phase 9 slice 1 — GitHub Actions CI workflow
+
+- Added `.github/workflows/ci-turo-automation.yml` to build and test the TypeScript stack on every PR and push to `main` that touches `turo-automation/` code
+- Workflow runs `npm ci --ignore-scripts` (skips Playwright browser download), `npm run build`, and `npm test` in the `turo-automation/` working directory on Node 22
+- Updated `docs/planning/implementation-roadmap.md` to define Phase 9 and mark Phase 8 complete
+- Updated `docs/planning/daily-plan.md` to reflect Phase 9 start
+
+**Verification**: workflow YAML linted by eye; will execute on first PR that touches turo-automation code
+
 ### Phase 8 kickoff — production deployment readiness
 
 - All Phases 0–7 merged through PR #114 (Phase 7 roadmap closeout).
