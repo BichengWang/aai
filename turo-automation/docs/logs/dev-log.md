@@ -6,6 +6,14 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-03-30
 
+### Phase 9 slice 2 — worker health check HTTP endpoint
+
+- Added `worker/src/lib/createHealthServer.ts` — minimal `node:http` server that responds to `GET /healthz` with `200 {"status":"ok"}`
+- Updated `worker/src/index.ts` to start the health server before `runScheduled()` when `WORKER_MODE=scheduled`; run-once mode is unchanged
+- Documented `HEALTHZ_PORT` (default 3001) in `.env.example`
+
+**Verification**: `npm run build --workspace @turo-automation/worker` — clean compile
+
 ### Phase 9 slice 1 — GitHub Actions CI workflow
 
 - Added `.github/workflows/ci-turo-automation.yml` to build and test the TypeScript stack on every PR and push to `main` that touches `turo-automation/` code

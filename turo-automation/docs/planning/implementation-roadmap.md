@@ -94,14 +94,15 @@ PR slices:
 Objective: protect the main branch with automated CI and add the observability needed to operate the containerised worker in production.
 
 PR slices:
-1. GitHub Actions CI workflow — build and test the TypeScript stack on every PR and push to main
+1. GitHub Actions CI workflow — build and test the TypeScript stack on every PR and push to main ✓
 2. Worker health check HTTP endpoint — `GET /healthz` for container orchestrator liveness probes
 3. Structured JSON logging — replace `console.*` with JSON-structured output when `NODE_ENV=production`
 4. Docker image publish — GitHub Actions workflow to build and push the worker image to a registry on merge to main
 
 ## Current Status
 - All Phases 0–8 are complete.
-- Phase 9 slice 1 (CI workflow) is in progress.
+- Phase 9 slice 1 (CI workflow) is complete (PR #119).
+- Phase 9 slice 2 (worker health check) is in progress.
 - The TypeScript worker is containerised and deployable.
 - `browser-agent-py/` has host-aligned module packages (`core`, `trips`, `inbox`, `calendar`, `vehicles`, `user_profile`) with read-only flows verified.
 - `business`, `more`, and `switch-to-guest` modules are scaffolded but remain docs-only; each probed URL returns blocked/403 with the current saved session.
