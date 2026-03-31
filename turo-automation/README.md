@@ -98,6 +98,71 @@ Optional interval env vars:
 - `INTERVAL_GENERATE_DRAFTS_MS`
 - `INTERVAL_DAILY_DIGEST_MS`
 
+## Docker Deployment
+
+The worker is fully containerised. The published image is at:
+
+```
+ghcr.io/bichengwang/altair-ai-llc/turo-worker:latest
+```
+
+### Run with docker-compose (recommended for local + staging)
+
+```sh
+cp .env.example .env
+# Fill in SUPABASE_URL, SUPABASE_KEY, SLACK_WEBHOOK_URL, etc.
+docker compose up
+```
+
+- Starts in `WORKER_MODE=scheduled` by default (keeps the process alive)
+- Probes `GET /healthz` every 30 s; port 3001 is exposed for external tooling
+- Override mode: `WORKER_MODE=run-once docker compose up`
+
+### Run bare with docker
+
+```sh
+# Pull the latest image
+docker pull ghcr.io/bichengwang/altair-ai-llc/turo-worker:latest
+
+# Scheduled mode with health probe exposed
+docker run \
+  --env-file .env \
+  -e WORKER_MODE=scheduled \
+  -p 3001:3001 \
+  ghcr.io/bichengwang/altair-ai-llc/turo-worker:latest
+```
+
+### Build the image locally
+
+```sh
+docker build -f Dockerfile.worker -t turo-worker .
+```
+
+### Health check
+
+When `WORKER_MODE=scheduled`, the worker starts an HTTP server on `HEALTHZ_PORT` (default 3001):
+
+```
+GET /healthz  →  200 {"status":"ok"}
+```
+
+Used by Docker, ECS task definitions, and k8s liveness probes. The `HEALTHCHECK` instruction is baked into the image.
+
+### Logging
+
+`NODE_ENV=production` (set in the image) switches the worker from human-readable to single-line JSON output per event:
+
+```json
+{"level":"info","ts":"2026-03-30T00:00:00.000Z","event":"boot","appName":"turo-automation","mode":"supabase"}
+```
+
+Ingest into CloudWatch Logs Insights, Datadog, or any JSON-aware log aggregator.
+
+## CI/CD
+
+- **CI** (`.github/workflows/ci-turo-automation.yml`) — runs `npm run build && npm test` on every PR and push to `main` that touches `turo-automation/` code. Uses Node 22 and fixture-backed adapters (no live credentials needed).
+- **Docker publish** (`.github/workflows/docker-publish-worker.yml`) — builds and pushes the worker image to GHCR on every push to `main` that changes worker source or `Dockerfile.worker`. Requires no external secrets (`GITHUB_TOKEN` with `packages: write`).
+
 ## Working Principles
 
 1. Automate repetitive work first.
@@ -115,5 +180,8 @@ The worker and web fall back to fixture data when Supabase env vars are absent �
 | Web data | `VITE_SUPABASE_URL` + `VITE_SUPABASE_KEY` | fixture snapshot |
 | Notifications | `SLACK_WEBHOOK_URL` | no-op (silent) |
 | Trip import | `TRIP_IMPORT_CSV_PATH` | empty (no imports) |
+| Health check port | `HEALTHZ_PORT` | 3001 |
+| Explicit draft send | `WORKER_SEND_APPROVED_DRAFTS=true` | off (safe default) |
+| Operator identity (web) | `VITE_OPERATOR_IDENTITY` | empty |
 
 Approval and incident actions in the dashboard require the `VITE_SUPABASE_*` web env vars so the UI can persist state transitions.

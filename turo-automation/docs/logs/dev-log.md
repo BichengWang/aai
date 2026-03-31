@@ -6,6 +6,14 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-03-30
 
+### README.md deployment documentation
+
+- Added "Docker Deployment" section: docker-compose usage, bare docker run with GHCR image, local build, health check, and JSON logging format
+- Added "CI/CD" section documenting both GitHub Actions workflows
+- Updated Adapter Mode table to include `HEALTHZ_PORT`, `WORKER_SEND_APPROVED_DRAFTS`, and `VITE_OPERATOR_IDENTITY`
+
+**Verification**: docs-only update; no code changes
+
 ### Dockerfile.worker HEALTHCHECK instruction
 
 - Added `HEALTHCHECK` to `Dockerfile.worker` runtime stage: `wget -q --spider http://localhost:${HEALTHZ_PORT:-3001}/healthz`, interval 30s, timeout 5s, 3 retries, 10s start period
