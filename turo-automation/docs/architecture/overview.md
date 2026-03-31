@@ -42,6 +42,13 @@ Adapter mode is env-gated:
 
 `WORKER_SEND_APPROVED_DRAFTS=true` enables the explicit approved-draft send step in `run()`; default off.
 
+Observability and deployment:
+- `WORKER_MODE=scheduled` starts the scheduler and activates a `GET /healthz` HTTP server on `HEALTHZ_PORT` (default 3001) for container orchestrator liveness probes
+- `NODE_ENV=production` switches logging from human-readable two-line output to single-line JSON (`{"level","ts","event",...payload}`) for log aggregators
+- `Dockerfile.worker` builds a lean multi-stage image; `docker-compose.yml` wires it for local dev
+- `.github/workflows/ci-turo-automation.yml` runs build + tests on every PR and push to main
+- `.github/workflows/docker-publish-worker.yml` publishes the image to `ghcr.io/bichengwang/altair-ai-llc/turo-worker` on push to main
+
 ## Core Design Principle
 Separate user-facing operational views (`web`) from automation execution (`worker`) so manual ops and automated jobs can evolve independently. Both couple only to the shared `ports/` interfaces — never to each other's internals.
 

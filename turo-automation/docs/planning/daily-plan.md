@@ -17,17 +17,18 @@ Advance Phase 9 (CI/CD and production observability) one slice at a time while t
 - [x] Phase 9 slice 1: GitHub Actions CI workflow — build and test on every PR / push to main (PR #119)
 - [x] Phase 9 slice 2: worker health check endpoint (`GET /healthz`) — (PR #120)
 - [x] Phase 9 slice 3: structured JSON logging for `NODE_ENV=production` — (PR #121)
-- [ ] Phase 9 slice 4: Docker image publish to GHCR on push to main — in progress
+- [x] Phase 9 slice 4: Docker image publish to GHCR on push to main — (PR #122)
+- [x] Phase 9 complete
 
 ## Today's Priorities
 - [x] Add CI workflow (`.github/workflows/ci-turo-automation.yml`) — Phase 9 slice 1
 - [x] Add worker health check endpoint (`GET /healthz`) — Phase 9 slice 2
 - [x] Add structured JSON logging for `NODE_ENV=production` — Phase 9 slice 3
-- [ ] Add Docker image publish workflow (GHCR) — Phase 9 slice 4 (in progress)
+- [x] Add Docker image publish workflow (GHCR) — Phase 9 slice 4
 
 ## Risks / Open Questions
 - Browser-agent flows remain blocked until a real authenticated Turo session is available.
-- Phase 9 slice 4 (Docker image publish) depends on a target registry being configured.
+- Phase 10 scope is not yet defined; it should be driven by operational usage of the deployed stack.
 
 ## Next Suggested Step
-After Phase 9 slice 3 lands, add the Docker image publish GitHub Actions workflow (Phase 9 slice 4) — requires a registry URL and credentials configured in repo secrets.
+Deploy the worker container using the GHCR image (`ghcr.io/bichengwang/altair-ai-llc/turo-worker:latest`) against real Supabase credentials. Observe what breaks or is inconvenient — that friction reveals Phase 10 priorities.

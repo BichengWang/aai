@@ -6,6 +6,14 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-03-30
 
+### Phase 9 closeout
+
+- Updated `docs/planning/implementation-roadmap.md` to mark Phase 9 complete and all 4 slices ✓
+- Updated `docs/planning/daily-plan.md` to reflect Phase 9 complete and next suggested step (deploy and observe)
+- Updated `docs/architecture/overview.md` to document health check, JSON logging, CI/CD workflows, and Docker image path
+
+**Verification**: docs-only sync against current `main` implementation; no code changes
+
 ### Phase 9 slice 4 — Docker image publish to GHCR
 
 - Added `.github/workflows/docker-publish-worker.yml` — builds and pushes the worker Docker image to `ghcr.io/bichengwang/altair-ai-llc/turo-worker` on every push to `main` that touches worker source or `Dockerfile.worker`
