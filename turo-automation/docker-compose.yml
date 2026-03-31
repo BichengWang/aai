@@ -4,9 +4,9 @@
 # Copy .env.example to .env and fill in values before running.
 #
 # Usage:
-#   docker compose up            # start worker (run-once mode)
+#   docker compose up            # start worker in scheduled mode (default)
 #   docker compose up worker     # same, explicitly
-#   WORKER_MODE=scheduled docker compose up worker   # keep-alive mode
+#   WORKER_MODE=run-once docker compose up worker   # run all jobs once then exit
 #
 # The worker falls back to fixture data when SUPABASE_URL is absent,
 # so the compose file works for smoke-testing without live credentials.
@@ -19,13 +19,22 @@ services:
     env_file:
       - .env
     environment:
-      # Override to keep the worker alive across job cycles.
-      # Default (unset) runs all jobs once then exits.
-      WORKER_MODE: ${WORKER_MODE:-}
+      # Default to scheduled mode so the health check endpoint stays alive.
+      WORKER_MODE: ${WORKER_MODE:-scheduled}
       # Explicit safety gate — defaults to off.
       WORKER_SEND_APPROVED_DRAFTS: ${WORKER_SEND_APPROVED_DRAFTS:-false}
+    ports:
+      # Expose the health check port so orchestrators and local tooling can probe it.
+      # Override with HEALTHZ_PORT in .env if needed.
+      - "${HEALTHZ_PORT:-3001}:${HEALTHZ_PORT:-3001}"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:${HEALTHZ_PORT:-3001}/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     volumes:
       # Mount a local CSV export into the container for trip import.
       # Set TRIP_IMPORT_CSV_PATH=/data/trips.csv in .env to activate.
       - ./data:/data:ro
-    restart: "no"
+    restart: unless-stopped

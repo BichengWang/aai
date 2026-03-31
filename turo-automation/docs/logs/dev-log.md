@@ -6,6 +6,15 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-03-30
 
+### docker-compose healthcheck and scheduled-mode default
+
+- Updated `docker-compose.yml` to default `WORKER_MODE` to `scheduled` (matches the file comment; was incorrectly defaulting to run-once)
+- Added Docker `healthcheck` directive to the worker service pointing at `GET /healthz`; uses `wget` (available in the Alpine base image); interval 30s, timeout 5s, 3 retries, 10s start period
+- Exposed `HEALTHZ_PORT` (default 3001) via `ports` so external tooling can probe the health endpoint
+- Changed `restart: "no"` → `restart: unless-stopped` — appropriate for a long-running scheduled worker
+
+**Verification**: compose YAML validated; no code changes
+
 ### Phase 9 closeout
 
 - Updated `docs/planning/implementation-roadmap.md` to mark Phase 9 complete and all 4 slices ✓
