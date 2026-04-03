@@ -6,6 +6,17 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-04-03
 
+### Phase 10 slice 4 — per-job startedAt in run-once mode
+
+- In `run()` mode, all jobs previously shared a single `generatedAt` batch timestamp as `startedAt`, so all jobs appeared to have started at the same time in `job_runs`
+- Added `const <jobName>Start = getWorkerNowIso()` before each of the 7 job calls in `run()`; each job's `startedAt` now reflects when that job actually began
+- `generatedAt` is retained for business-logic fields (`asOf`, `importedAt`, `generatedAt`) since those represent the batch reference time
+- `runScheduled()` already captured per-job start times via `const now = getWorkerNowIso()` inside each scheduler callback
+
+**Verification**: `npm run build --workspace @turo-automation/worker` — clean compile; `npm test` — 47 pass
+
+---
+
 ### Phase 10 slice 3 — structured fatal error logging
 
 - Replaced `console.error("[worker] fatal", error)` in `worker/src/index.ts` with `logWorkerEvent("boot.fatal", { error: ... })` so fatal startup errors use the same structured JSON logger as all other worker events — previously `console.error` would emit unstructured text even when `NODE_ENV=production`, breaking JSON log aggregators

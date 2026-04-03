@@ -122,6 +122,7 @@ export function createWorkerApp() {
         messageRepository: adapters.messageRepository,
       });
 
+      const snapshotStart = getWorkerNowIso();
       const snapshotResult = await runTodayOpsSnapshotJob({
         useCase: getTodayOpsSnapshot,
         today,
@@ -132,7 +133,7 @@ export function createWorkerApp() {
         adapters.jobRunRepository,
         buildJobRun({
           jobName: "today_ops_snapshot",
-          startedAt: generatedAt,
+          startedAt: snapshotStart,
           finishedAt: getWorkerNowIso(),
           summary: `Snapshot contains ${snapshotResult.data.summary.pickupCount} pickups.`,
           issueCount: snapshotResult.issues.length,
@@ -140,6 +141,7 @@ export function createWorkerApp() {
         })
       );
 
+      const importStart = getWorkerNowIso();
       const importResult = await runImportTripsJob({
         useCase: importTrips,
         triggeredBy: "worker.bootstrap",
@@ -150,7 +152,7 @@ export function createWorkerApp() {
         adapters.jobRunRepository,
         buildJobRun({
           jobName: "trip_import",
-          startedAt: generatedAt,
+          startedAt: importStart,
           finishedAt: getWorkerNowIso(),
           summary: `Imported ${importResult.data.importedTrips.length} trips.`,
           issueCount: importResult.issues.length,
@@ -158,6 +160,7 @@ export function createWorkerApp() {
         })
       );
 
+      const lifecycleStart = getWorkerNowIso();
       const lifecycleResult = await runLifecycleTasksJob({
         useCase: generateLifecycleTasks,
         asOf: generatedAt,
@@ -168,7 +171,7 @@ export function createWorkerApp() {
         adapters.jobRunRepository,
         buildJobRun({
           jobName: "lifecycle_tasks",
-          startedAt: generatedAt,
+          startedAt: lifecycleStart,
           finishedAt: getWorkerNowIso(),
           summary: `Created ${lifecycleResult.data.createdTasks.length} lifecycle tasks.`,
           issueCount: lifecycleResult.issues.length,
@@ -176,6 +179,7 @@ export function createWorkerApp() {
         })
       );
 
+      const lateReturnStart = getWorkerNowIso();
       const lateReturnResult = await runLateReturnScanJob({
         useCase: detectLateReturns,
         asOf: generatedAt,
@@ -186,7 +190,7 @@ export function createWorkerApp() {
         adapters.jobRunRepository,
         buildJobRun({
           jobName: "late_return_scan",
-          startedAt: generatedAt,
+          startedAt: lateReturnStart,
           finishedAt: getWorkerNowIso(),
           summary: `Created ${lateReturnResult.data.incidentsCreated.length} late return incidents.`,
           issueCount: lateReturnResult.issues.length,
@@ -194,6 +198,7 @@ export function createWorkerApp() {
         })
       );
 
+      const generateDraftsStart = getWorkerNowIso();
       const generateDraftsResult = await runGenerateMessageDraftsJob({
         useCase: generateMessageDrafts,
         asOf: generatedAt,
@@ -204,7 +209,7 @@ export function createWorkerApp() {
         adapters.jobRunRepository,
         buildJobRun({
           jobName: "generate_drafts",
-          startedAt: generatedAt,
+          startedAt: generateDraftsStart,
           finishedAt: getWorkerNowIso(),
           summary: `Generated ${generateDraftsResult.data.createdDrafts.length} message drafts.`,
           issueCount: generateDraftsResult.issues.length,
@@ -213,6 +218,7 @@ export function createWorkerApp() {
       );
 
       if (readTruthyEnvFlag(process.env["WORKER_SEND_APPROVED_DRAFTS"])) {
+        const sendApprovedStart = getWorkerNowIso();
         const sendApprovedDraftsResult = await runSendApprovedMessageDraftsJob({
           useCase: sendApprovedMessageDrafts,
           sentAt: generatedAt,
@@ -223,7 +229,7 @@ export function createWorkerApp() {
           adapters.jobRunRepository,
           buildJobRun({
             jobName: "send_approved_message_drafts",
-            startedAt: generatedAt,
+            startedAt: sendApprovedStart,
             finishedAt: getWorkerNowIso(),
             summary: `Sent ${sendApprovedDraftsResult.data.sentDrafts.length} approved message drafts.`,
             issueCount: sendApprovedDraftsResult.issues.length,
@@ -232,6 +238,7 @@ export function createWorkerApp() {
         );
       }
 
+      const dailyDigestStart = getWorkerNowIso();
       const dailyDigestResult = await runDailyDigestJob({
         useCase: buildDailyDigest,
         today,
@@ -243,7 +250,7 @@ export function createWorkerApp() {
         adapters.jobRunRepository,
         buildJobRun({
           jobName: "daily_digest",
-          startedAt: generatedAt,
+          startedAt: dailyDigestStart,
           finishedAt: getWorkerNowIso(),
           summary: "Daily digest dispatched.",
           issueCount: dailyDigestResult.issues.length,
