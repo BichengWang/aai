@@ -17,7 +17,8 @@ Advance Phase 10 (operational readiness) one slice at a time.
 - [x] Phase 10 slice 3: structured fatal error logging — replace `console.error` with `logWorkerEvent("boot.fatal", ...)` in `worker/src/index.ts` (PR #131)
 - [x] Phase 10 slice 4: per-job `startedAt` in run-once mode — capture per-job timestamps in `run()` (PR #132)
 - [x] Phase 10 slice 5: sample CSV consolidation — remove duplicate `docs/samples/trips.csv`, point `.env.example` to `data/trips.sample.csv` (PR #133)
-- [ ] Phase 10 slice 6: extract shared use-case setup helper to eliminate duplicated adapter wiring in `run()` and `runScheduled()`
+- [x] Phase 10 slice 6: extract shared use-case setup helper to eliminate duplicated adapter wiring in `run()` and `runScheduled()` (PR #134)
+- [x] Phase 10 closeout: refresh sample CSV dates; mark Phase 10 complete in roadmap
 
 ## Risks / Open Questions
 - Browser-agent flows remain blocked until a real authenticated Turo session is available.

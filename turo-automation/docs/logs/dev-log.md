@@ -6,6 +6,16 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-04-03
 
+### Phase 10 closeout
+
+- Refreshed `data/trips.sample.csv` dates from March 2026 to April 2026 so new operators testing the worker see near-current/upcoming trips rather than all-past data
+- Marked all 6 Phase 10 slices complete in `docs/planning/implementation-roadmap.md`; added Phase 11 placeholder driven by operational usage
+- Updated `docs/planning/daily-plan.md` to reflect Phase 10 complete
+
+**Verification**: `npm test` — 47 pass; data and docs changes only
+
+---
+
 ### Phase 10 slice 6 — extract shared use-case setup helper
 
 - Both `run()` and `runScheduled()` in `worker/src/app/createWorkerApp.ts` had identical ~40-line use-case construction blocks; a new job added to one would need to be added to the other to avoid divergence

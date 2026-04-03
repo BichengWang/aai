@@ -1,5 +1,5 @@
 external_trip_id,guest_full_name,guest_email,guest_phone,vehicle_nickname,pickup_at,return_at,pickup_location,return_location,trip_status,delivery_required,trip_total_amount,source
-TU-1001,Alex Lee,alex.lee@example.com,+13105550101,Polestar 2,2026-03-20T20:00:00.000Z,2026-03-22T17:00:00.000Z,LAX Remote Lot,LAX Remote Lot,upcoming,true,312.00,turo_export
-TU-1002,Maya Patel,maya.patel@example.com,+13105550102,Model Y,2026-03-18T17:00:00.000Z,2026-03-20T16:30:00.000Z,Santa Monica,Santa Monica,active,false,198.50,turo_export
-TU-1003,Jordan Kim,jordan.kim@example.com,+13105550103,Polestar 2,2026-03-19T16:00:00.000Z,2026-03-20T12:00:00.000Z,LAX Remote Lot,LAX Remote Lot,issue,false,156.00,turo_export
-TU-1004,Taylor Brooks,taylor.brooks@example.com,+13105550104,Model Y,2026-03-21T18:00:00.000Z,2026-03-23T18:00:00.000Z,Santa Monica,Santa Monica,upcoming,false,211.00,turo_export
+TU-1001,Alex Lee,alex.lee@example.com,+13105550101,Polestar 2,2026-04-05T20:00:00.000Z,2026-04-07T17:00:00.000Z,LAX Remote Lot,LAX Remote Lot,upcoming,true,312.00,turo_export
+TU-1002,Maya Patel,maya.patel@example.com,+13105550102,Model Y,2026-04-03T17:00:00.000Z,2026-04-05T16:30:00.000Z,Santa Monica,Santa Monica,active,false,198.50,turo_export
+TU-1003,Jordan Kim,jordan.kim@example.com,+13105550103,Polestar 2,2026-04-02T16:00:00.000Z,2026-04-03T12:00:00.000Z,LAX Remote Lot,LAX Remote Lot,issue,false,156.00,turo_export
+TU-1004,Taylor Brooks,taylor.brooks@example.com,+13105550104,Model Y,2026-04-08T18:00:00.000Z,2026-04-10T18:00:00.000Z,Santa Monica,Santa Monica,upcoming,false,211.00,turo_export
