@@ -12,7 +12,8 @@ Advance Phase 10 (operational readiness) one slice at a time.
 - [x] All Phases 0–9 merged — containerised worker, CI, health check, JSON logging, GHCR publish
 
 ## Today's Priorities
-- [ ] Phase 10 slice 1: config completeness — add missing `INTERVAL_GENERATE_DRAFTS_MS` to `.env.example`, add `docs/samples/trips.csv` reference template
+- [x] Phase 10 slice 1: config completeness — add missing `INTERVAL_GENERATE_DRAFTS_MS` to `.env.example`, add `docs/samples/trips.csv` reference template (PR #129)
+- [ ] Phase 10 slice 2: job run duration tracking — record actual `finishedAt` in `buildJobRun`
 
 ## Risks / Open Questions
 - Browser-agent flows remain blocked until a real authenticated Turo session is available.

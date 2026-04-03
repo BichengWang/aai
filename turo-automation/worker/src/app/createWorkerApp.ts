@@ -27,6 +27,7 @@ import { createJobScheduler } from "../scheduler/createJobScheduler.js";
 function buildJobRun(params: {
   jobName: JobName;
   startedAt: string;
+  finishedAt: string;
   summary: string;
   issueCount: number;
   ok: boolean;
@@ -36,7 +37,7 @@ function buildJobRun(params: {
     jobName: params.jobName,
     status: params.ok ? "completed" : "failed",
     startedAt: params.startedAt,
-    finishedAt: params.startedAt,
+    finishedAt: params.finishedAt,
     summary: params.summary,
     issueCount: params.issueCount,
   };
@@ -132,6 +133,7 @@ export function createWorkerApp() {
         buildJobRun({
           jobName: "today_ops_snapshot",
           startedAt: generatedAt,
+          finishedAt: getWorkerNowIso(),
           summary: `Snapshot contains ${snapshotResult.data.summary.pickupCount} pickups.`,
           issueCount: snapshotResult.issues.length,
           ok: snapshotResult.ok,
@@ -149,6 +151,7 @@ export function createWorkerApp() {
         buildJobRun({
           jobName: "trip_import",
           startedAt: generatedAt,
+          finishedAt: getWorkerNowIso(),
           summary: `Imported ${importResult.data.importedTrips.length} trips.`,
           issueCount: importResult.issues.length,
           ok: importResult.ok,
@@ -166,6 +169,7 @@ export function createWorkerApp() {
         buildJobRun({
           jobName: "lifecycle_tasks",
           startedAt: generatedAt,
+          finishedAt: getWorkerNowIso(),
           summary: `Created ${lifecycleResult.data.createdTasks.length} lifecycle tasks.`,
           issueCount: lifecycleResult.issues.length,
           ok: lifecycleResult.ok,
@@ -183,6 +187,7 @@ export function createWorkerApp() {
         buildJobRun({
           jobName: "late_return_scan",
           startedAt: generatedAt,
+          finishedAt: getWorkerNowIso(),
           summary: `Created ${lateReturnResult.data.incidentsCreated.length} late return incidents.`,
           issueCount: lateReturnResult.issues.length,
           ok: lateReturnResult.ok,
@@ -200,10 +205,11 @@ export function createWorkerApp() {
         buildJobRun({
           jobName: "generate_drafts",
           startedAt: generatedAt,
+          finishedAt: getWorkerNowIso(),
           summary: `Generated ${generateDraftsResult.data.createdDrafts.length} message drafts.`,
           issueCount: generateDraftsResult.issues.length,
           ok: generateDraftsResult.ok,
-          })
+        })
       );
 
       if (readTruthyEnvFlag(process.env["WORKER_SEND_APPROVED_DRAFTS"])) {
@@ -218,6 +224,7 @@ export function createWorkerApp() {
           buildJobRun({
             jobName: "send_approved_message_drafts",
             startedAt: generatedAt,
+            finishedAt: getWorkerNowIso(),
             summary: `Sent ${sendApprovedDraftsResult.data.sentDrafts.length} approved message drafts.`,
             issueCount: sendApprovedDraftsResult.issues.length,
             ok: sendApprovedDraftsResult.ok,
@@ -237,6 +244,7 @@ export function createWorkerApp() {
         buildJobRun({
           jobName: "daily_digest",
           startedAt: generatedAt,
+          finishedAt: getWorkerNowIso(),
           summary: "Daily digest dispatched.",
           issueCount: dailyDigestResult.issues.length,
           ok: dailyDigestResult.ok,
@@ -326,6 +334,7 @@ export function createWorkerApp() {
               buildJobRun({
                 jobName: "trip_import",
                 startedAt: now,
+                finishedAt: getWorkerNowIso(),
                 summary: `Imported ${result.data.importedTrips.length} trips.`,
                 issueCount: result.issues.length,
                 ok: result.ok,
@@ -349,6 +358,7 @@ export function createWorkerApp() {
               buildJobRun({
                 jobName: "lifecycle_tasks",
                 startedAt: now,
+                finishedAt: getWorkerNowIso(),
                 summary: `Created ${result.data.createdTasks.length} lifecycle tasks.`,
                 issueCount: result.issues.length,
                 ok: result.ok,
@@ -372,6 +382,7 @@ export function createWorkerApp() {
               buildJobRun({
                 jobName: "late_return_scan",
                 startedAt: now,
+                finishedAt: getWorkerNowIso(),
                 summary: `Created ${result.data.incidentsCreated.length} late return incidents.`,
                 issueCount: result.issues.length,
                 ok: result.ok,
@@ -395,6 +406,7 @@ export function createWorkerApp() {
               buildJobRun({
                 jobName: "generate_drafts",
                 startedAt: now,
+                finishedAt: getWorkerNowIso(),
                 summary: `Generated ${result.data.createdDrafts.length} message drafts.`,
                 issueCount: result.issues.length,
                 ok: result.ok,
@@ -420,6 +432,7 @@ export function createWorkerApp() {
               buildJobRun({
                 jobName: "daily_digest",
                 startedAt: now,
+                finishedAt: getWorkerNowIso(),
                 summary: "Daily digest dispatched.",
                 issueCount: result.issues.length,
                 ok: result.ok,

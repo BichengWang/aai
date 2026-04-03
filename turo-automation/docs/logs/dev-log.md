@@ -6,6 +6,16 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-04-03
 
+### Phase 10 slice 2 — job run duration tracking
+
+- Added `finishedAt` as a required parameter to `buildJobRun` in `worker/src/app/createWorkerApp.ts`; previously `finishedAt` was always set to `startedAt`, so job duration was always 0
+- Updated all 12 `buildJobRun` call sites (7 in `run()`, 5 in `runScheduled()`) to pass `finishedAt: getWorkerNowIso()` immediately after the job result is obtained, recording actual wall-clock completion time
+- `finishedAt` now reflects when each job actually finished, enabling operators to see real job durations in the `job_runs` table
+
+**Verification**: `npm run build --workspace @turo-automation/worker` — clean compile; `npm test` — 47 pass
+
+---
+
 ### Phase 10 slice 1 — operational config completeness
 
 - Added missing `INTERVAL_GENERATE_DRAFTS_MS=1800000` (30 min default) to `.env.example`; the variable was already used in `worker/src/app/createWorkerApp.ts` but was absent from the example config operators copy at setup time
