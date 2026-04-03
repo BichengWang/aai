@@ -104,11 +104,12 @@ Objective: fill the gaps between a working containerised stack and a smoothly op
 
 PR slices:
 1. Config completeness — add missing `INTERVAL_GENERATE_DRAFTS_MS` to `.env.example`, add `docs/samples/trips.csv` as a reference CSV template for operators ✓
-2. Job run duration tracking — record actual `finishedAt` timestamps in `buildJobRun` so operators can see real job durations in `job_runs`
+2. Job run duration tracking — record actual `finishedAt` timestamps in `buildJobRun` so operators can see real job durations in `job_runs` ✓
+3. Structured fatal error logging — replace `console.error` in `worker/src/index.ts` with `logWorkerEvent("boot.fatal", ...)` for consistent JSON output in production
 
 ## Current Status
 - All Phases 0–9 are complete.
-- Phase 10 slice 2 in progress: job run duration tracking.
+- Phase 10 slice 3 in progress: structured fatal error logging.
 - The TypeScript worker stack is containerised, CI-protected, observable, and publishable to GHCR.
 - `browser-agent-py/` has host-aligned module packages (`core`, `trips`, `inbox`, `calendar`, `vehicles`, `user_profile`) with read-only flows verified.
 - `business`, `more`, and `switch-to-guest` modules are scaffolded but remain docs-only; each probed URL returns blocked/403 with the current saved session.

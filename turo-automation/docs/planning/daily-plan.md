@@ -13,7 +13,8 @@ Advance Phase 10 (operational readiness) one slice at a time.
 
 ## Today's Priorities
 - [x] Phase 10 slice 1: config completeness — add missing `INTERVAL_GENERATE_DRAFTS_MS` to `.env.example`, add `docs/samples/trips.csv` reference template (PR #129)
-- [ ] Phase 10 slice 2: job run duration tracking — record actual `finishedAt` in `buildJobRun`
+- [x] Phase 10 slice 2: job run duration tracking — record actual `finishedAt` in `buildJobRun` (PR #130)
+- [ ] Phase 10 slice 3: structured fatal error logging — replace `console.error` with `logWorkerEvent("boot.fatal", ...)` in `worker/src/index.ts`
 
 ## Risks / Open Questions
 - Browser-agent flows remain blocked until a real authenticated Turo session is available.

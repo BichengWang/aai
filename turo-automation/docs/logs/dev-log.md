@@ -6,6 +6,14 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-04-03
 
+### Phase 10 slice 3 — structured fatal error logging
+
+- Replaced `console.error("[worker] fatal", error)` in `worker/src/index.ts` with `logWorkerEvent("boot.fatal", { error: ... })` so fatal startup errors use the same structured JSON logger as all other worker events — previously `console.error` would emit unstructured text even when `NODE_ENV=production`, breaking JSON log aggregators
+
+**Verification**: `npm run build --workspace @turo-automation/worker` — clean compile; `npm test` — 47 pass
+
+---
+
 ### Phase 10 slice 2 — job run duration tracking
 
 - Added `finishedAt` as a required parameter to `buildJobRun` in `worker/src/app/createWorkerApp.ts`; previously `finishedAt` was always set to `startedAt`, so job duration was always 0

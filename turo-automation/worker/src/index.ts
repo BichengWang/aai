@@ -23,6 +23,8 @@ async function main() {
 }
 
 void main().catch((error: unknown) => {
-  console.error("[worker] fatal", error);
+  logWorkerEvent("boot.fatal", {
+    error: error instanceof Error ? error.message : String(error),
+  });
   process.exitCode = 1;
 });
