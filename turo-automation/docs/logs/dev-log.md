@@ -6,6 +6,16 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-04-03
 
+### Phase 10 slice 5 — consolidate sample CSV location
+
+- Phase 10 slice 1 added `docs/samples/trips.csv` but the README and the project structure already reference `data/trips.sample.csv` (which pre-existed)
+- Removed the duplicate `docs/samples/trips.csv`
+- Updated `.env.example` `TRIP_IMPORT_CSV_PATH` default from `/path/to/trips.csv` to `data/trips.sample.csv` so operators get a working example value on first setup
+
+**Verification**: `npm test` — 47 pass; docs and config changes only, no code changes
+
+---
+
 ### Phase 10 slice 4 — per-job startedAt in run-once mode
 
 - In `run()` mode, all jobs previously shared a single `generatedAt` batch timestamp as `startedAt`, so all jobs appeared to have started at the same time in `job_runs`

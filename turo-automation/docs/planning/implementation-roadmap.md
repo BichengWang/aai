@@ -103,14 +103,15 @@ PR slices:
 Objective: fill the gaps between a working containerised stack and a smoothly operable production deployment — configuration completeness, operator-facing documentation, and runtime quality-of-life improvements.
 
 PR slices:
-1. Config completeness — add missing `INTERVAL_GENERATE_DRAFTS_MS` to `.env.example`, add `docs/samples/trips.csv` as a reference CSV template for operators ✓
+1. Config completeness — add missing `INTERVAL_GENERATE_DRAFTS_MS` to `.env.example`; note: also incorrectly added `docs/samples/trips.csv` (corrected in slice 5) ✓
 2. Job run duration tracking — record actual `finishedAt` timestamps in `buildJobRun` so operators can see real job durations in `job_runs` ✓
 3. Structured fatal error logging — replace `console.error` in `worker/src/index.ts` with `logWorkerEvent("boot.fatal", ...)` for consistent JSON output in production ✓
-4. Per-job `startedAt` in run-once mode — capture individual start timestamps for each job in `run()` so `job_runs` shows accurate per-job timing
+4. Per-job `startedAt` in run-once mode — capture individual start timestamps for each job in `run()` so `job_runs` shows accurate per-job timing ✓
+5. Sample CSV consolidation — remove duplicate `docs/samples/trips.csv`; point `.env.example` default to `data/trips.sample.csv`
 
 ## Current Status
 - All Phases 0–9 are complete.
-- Phase 10 slice 4 in progress: per-job startedAt tracking in run-once mode.
+- Phase 10 slice 5 in progress: sample CSV consolidation.
 - The TypeScript worker stack is containerised, CI-protected, observable, and publishable to GHCR.
 - `browser-agent-py/` has host-aligned module packages (`core`, `trips`, `inbox`, `calendar`, `vehicles`, `user_profile`) with read-only flows verified.
 - `business`, `more`, and `switch-to-guest` modules are scaffolded but remain docs-only; each probed URL returns blocked/403 with the current saved session.

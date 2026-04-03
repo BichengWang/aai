@@ -15,7 +15,8 @@ Advance Phase 10 (operational readiness) one slice at a time.
 - [x] Phase 10 slice 1: config completeness — add missing `INTERVAL_GENERATE_DRAFTS_MS` to `.env.example`, add `docs/samples/trips.csv` reference template (PR #129)
 - [x] Phase 10 slice 2: job run duration tracking — record actual `finishedAt` in `buildJobRun` (PR #130)
 - [x] Phase 10 slice 3: structured fatal error logging — replace `console.error` with `logWorkerEvent("boot.fatal", ...)` in `worker/src/index.ts` (PR #131)
-- [ ] Phase 10 slice 4: per-job `startedAt` in run-once mode — capture per-job timestamps in `run()`
+- [x] Phase 10 slice 4: per-job `startedAt` in run-once mode — capture per-job timestamps in `run()` (PR #132)
+- [ ] Phase 10 slice 5: sample CSV consolidation — remove duplicate `docs/samples/trips.csv`, point `.env.example` to `data/trips.sample.csv`
 
 ## Risks / Open Questions
 - Browser-agent flows remain blocked until a real authenticated Turo session is available.
