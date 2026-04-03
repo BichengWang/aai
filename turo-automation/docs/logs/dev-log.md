@@ -4,6 +4,18 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ---
 
+## 2026-04-03
+
+### Phase 10 slice 1 — operational config completeness
+
+- Added missing `INTERVAL_GENERATE_DRAFTS_MS=1800000` (30 min default) to `.env.example`; the variable was already used in `worker/src/app/createWorkerApp.ts` but was absent from the example config operators copy at setup time
+- Simplified the `TRIP_IMPORT_CSV_PATH` comment in `.env.example` to reference the new sample file instead of listing all column names inline
+- Added `docs/samples/trips.csv` — a reference CSV template with four representative rows covering `upcoming`, `active`, and `completed` trip statuses, and optional nullable fields (`guest_email`, `guest_phone`) left blank to show accepted formats
+
+**Verification**: `npm test` — 47 pass; docs and config changes only, no code changes
+
+---
+
 ## 2026-03-30
 
 ### Worker WORKER_MODE validation

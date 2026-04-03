@@ -99,14 +99,16 @@ PR slices:
 3. Structured JSON logging — replace `console.*` with JSON-structured output when `NODE_ENV=production` ✓
 4. Docker image publish — GitHub Actions workflow to build and push the worker image to GHCR on merge to main ✓
 
+## Phase 10 — Operational Readiness
+Objective: fill the gaps between a working containerised stack and a smoothly operable production deployment — configuration completeness, operator-facing documentation, and runtime quality-of-life improvements.
+
+PR slices:
+1. Config completeness — add missing `INTERVAL_GENERATE_DRAFTS_MS` to `.env.example`, add `docs/samples/trips.csv` as a reference CSV template for operators
+
 ## Current Status
 - All Phases 0–9 are complete.
+- Phase 10 slice 1 in progress: operational config completeness.
 - The TypeScript worker stack is containerised, CI-protected, observable, and publishable to GHCR.
-- `browser-agent-py/` has host-aligned module packages (`core`, `trips`, `inbox`, `calendar`, `vehicles`, `user_profile`) with read-only flows verified.
-- `business`, `more`, and `switch-to-guest` modules are scaffolded but remain docs-only; each probed URL returns blocked/403 with the current saved session.
-- The next browser-agent implementation step requires a real authenticated host session before adding new read-only extraction flows.
-- Phase 10 scope should be driven by operational usage of the deployed worker stack; no pre-defined scope yet.
-- The TypeScript worker is containerised and deployable.
 - `browser-agent-py/` has host-aligned module packages (`core`, `trips`, `inbox`, `calendar`, `vehicles`, `user_profile`) with read-only flows verified.
 - `business`, `more`, and `switch-to-guest` modules are scaffolded but remain docs-only; each probed URL returns blocked/403 with the current saved session.
 - The next browser-agent implementation step requires a real authenticated host session before adding new read-only extraction flows.

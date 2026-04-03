@@ -1,0 +1,5 @@
+external_trip_id,guest_full_name,guest_email,guest_phone,vehicle_nickname,pickup_at,return_at,pickup_location,return_location,trip_status,delivery_required,trip_total_amount,source
+TRO-10001,Alice Johnson,alice@example.com,+14155550101,Blue Prius,2026-04-05T10:00:00Z,2026-04-07T10:00:00Z,San Francisco Airport,San Francisco Airport,upcoming,false,320.00,csv_import
+TRO-10002,Bob Martinez,bob@example.com,+14155550102,Silver Camry,2026-04-05T14:00:00Z,2026-04-06T14:00:00Z,Downtown SF,Downtown SF,active,true,115.00,csv_import
+TRO-10003,Carol Lee,,+14155550103,Red Model 3,2026-04-03T09:00:00Z,2026-04-04T09:00:00Z,Oakland Airport,Oakland Airport,completed,false,98.50,csv_import
+TRO-10004,David Kim,dkim@example.com,,White Corolla,2026-04-06T08:00:00Z,2026-04-08T08:00:00Z,Mission District,Mission District,upcoming,false,210.00,csv_import
