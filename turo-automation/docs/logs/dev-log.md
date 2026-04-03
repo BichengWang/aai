@@ -6,6 +6,17 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ## 2026-04-03
 
+### Phase 10 slice 6 — extract shared use-case setup helper
+
+- Both `run()` and `runScheduled()` in `worker/src/app/createWorkerApp.ts` had identical ~40-line use-case construction blocks; a new job added to one would need to be added to the other to avoid divergence
+- Extracted a `buildUseCases(adapters: AnyAdapters)` helper function that constructs all use cases from a given adapter set and returns them
+- Both `run()` and `runScheduled()` now destructure what they need from `buildUseCases(adapters)`; `run()` also destructures `sendApprovedMessageDrafts`, `runScheduled()` does not (it has no scheduled send-approved step)
+- `AnyAdapters` type alias holds the union of `Awaited<ReturnType<typeof createSupabaseAdapters>>` and `ReturnType<typeof createFixtureAdapters>`
+
+**Verification**: `npm run build --workspace @turo-automation/worker` — clean compile; `npm test` — 47 pass
+
+---
+
 ### Phase 10 slice 5 — consolidate sample CSV location
 
 - Phase 10 slice 1 added `docs/samples/trips.csv` but the README and the project structure already reference `data/trips.sample.csv` (which pre-existed)

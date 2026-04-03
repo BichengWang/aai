@@ -54,6 +54,62 @@ function readTruthyEnvFlag(value: string | undefined): boolean {
   return Boolean(value && ["1", "true", "yes", "on"].includes(value.toLowerCase()));
 }
 
+type AnyAdapters =
+  | Awaited<ReturnType<typeof createSupabaseAdapters>>
+  | ReturnType<typeof createFixtureAdapters>;
+
+function buildUseCases(adapters: AnyAdapters) {
+  const getTodayOpsSnapshot = createGetTodayOpsSnapshotUseCase({
+    tripRepository: adapters.tripRepository,
+    taskRepository: adapters.taskRepository,
+    incidentRepository: adapters.incidentRepository,
+    messageRepository: adapters.messageRepository,
+    jobRunRepository: adapters.jobRunRepository,
+    guests: adapters.guests,
+    vehicles: adapters.vehicles,
+  });
+  const importTrips = createImportTripsUseCase({
+    tripImportSource: adapters.tripImportSource,
+    tripRepository: adapters.tripRepository,
+    ...("guestRepository" in adapters && { guestRepository: adapters.guestRepository }),
+    ...("vehicleRepository" in adapters && { vehicleRepository: adapters.vehicleRepository }),
+  });
+  const generateLifecycleTasks = createGenerateLifecycleTasksUseCase({
+    tripRepository: adapters.tripRepository,
+    taskRepository: adapters.taskRepository,
+    vehicles: adapters.vehicles,
+  });
+  const detectLateReturns = createDetectLateReturnsUseCase({
+    tripRepository: adapters.tripRepository,
+    incidentRepository: adapters.incidentRepository,
+    notifier: adapters.notifier,
+    vehicles: adapters.vehicles,
+  });
+  const buildDailyDigest = createBuildDailyDigestUseCase({
+    getTodayOpsSnapshot,
+    notifier: adapters.notifier,
+  });
+  const generateMessageDrafts = createGenerateMessageDraftsUseCase({
+    tripRepository: adapters.tripRepository,
+    messageRepository: adapters.messageRepository,
+    notifier: adapters.notifier,
+    guests: adapters.guests,
+    vehicles: adapters.vehicles,
+  });
+  const sendApprovedMessageDrafts = createSendApprovedMessageDraftsUseCase({
+    messageRepository: adapters.messageRepository,
+  });
+  return {
+    getTodayOpsSnapshot,
+    importTrips,
+    generateLifecycleTasks,
+    detectLateReturns,
+    buildDailyDigest,
+    generateMessageDrafts,
+    sendApprovedMessageDrafts,
+  };
+}
+
 const hasSupabaseUrl = Boolean(process.env["SUPABASE_URL"]);
 const hasSupabaseKey = Boolean(process.env["SUPABASE_KEY"]);
 const useSupabase = hasSupabaseUrl && hasSupabaseKey;
@@ -80,47 +136,15 @@ export function createWorkerApp() {
         ? await createSupabaseAdapters()
         : createFixtureAdapters();
 
-      const getTodayOpsSnapshot = createGetTodayOpsSnapshotUseCase({
-        tripRepository: adapters.tripRepository,
-        taskRepository: adapters.taskRepository,
-        incidentRepository: adapters.incidentRepository,
-        messageRepository: adapters.messageRepository,
-        jobRunRepository: adapters.jobRunRepository,
-        guests: adapters.guests,
-        vehicles: adapters.vehicles,
-      });
-      const importTrips = createImportTripsUseCase({
-        tripImportSource: adapters.tripImportSource,
-        tripRepository: adapters.tripRepository,
-        // Optional: upsert guests/vehicles before trips to satisfy FK constraints
-        ...("guestRepository" in adapters && { guestRepository: adapters.guestRepository }),
-        ...("vehicleRepository" in adapters && { vehicleRepository: adapters.vehicleRepository }),
-      });
-      const generateLifecycleTasks = createGenerateLifecycleTasksUseCase({
-        tripRepository: adapters.tripRepository,
-        taskRepository: adapters.taskRepository,
-        vehicles: adapters.vehicles,
-      });
-      const detectLateReturns = createDetectLateReturnsUseCase({
-        tripRepository: adapters.tripRepository,
-        incidentRepository: adapters.incidentRepository,
-        notifier: adapters.notifier,
-        vehicles: adapters.vehicles,
-      });
-      const buildDailyDigest = createBuildDailyDigestUseCase({
+      const {
         getTodayOpsSnapshot,
-        notifier: adapters.notifier,
-      });
-      const generateMessageDrafts = createGenerateMessageDraftsUseCase({
-        tripRepository: adapters.tripRepository,
-        messageRepository: adapters.messageRepository,
-        notifier: adapters.notifier,
-        guests: adapters.guests,
-        vehicles: adapters.vehicles,
-      });
-      const sendApprovedMessageDrafts = createSendApprovedMessageDraftsUseCase({
-        messageRepository: adapters.messageRepository,
-      });
+        importTrips,
+        generateLifecycleTasks,
+        detectLateReturns,
+        buildDailyDigest,
+        generateMessageDrafts,
+        sendApprovedMessageDrafts,
+      } = buildUseCases(adapters);
 
       const snapshotStart = getWorkerNowIso();
       const snapshotResult = await runTodayOpsSnapshotJob({
@@ -279,43 +303,13 @@ export function createWorkerApp() {
         ? await createSupabaseAdapters()
         : createFixtureAdapters();
 
-      const getTodayOpsSnapshot = createGetTodayOpsSnapshotUseCase({
-        tripRepository: adapters.tripRepository,
-        taskRepository: adapters.taskRepository,
-        incidentRepository: adapters.incidentRepository,
-        messageRepository: adapters.messageRepository,
-        jobRunRepository: adapters.jobRunRepository,
-        guests: adapters.guests,
-        vehicles: adapters.vehicles,
-      });
-      const importTrips = createImportTripsUseCase({
-        tripImportSource: adapters.tripImportSource,
-        tripRepository: adapters.tripRepository,
-        ...("guestRepository" in adapters && { guestRepository: adapters.guestRepository }),
-        ...("vehicleRepository" in adapters && { vehicleRepository: adapters.vehicleRepository }),
-      });
-      const generateLifecycleTasks = createGenerateLifecycleTasksUseCase({
-        tripRepository: adapters.tripRepository,
-        taskRepository: adapters.taskRepository,
-        vehicles: adapters.vehicles,
-      });
-      const detectLateReturns = createDetectLateReturnsUseCase({
-        tripRepository: adapters.tripRepository,
-        incidentRepository: adapters.incidentRepository,
-        notifier: adapters.notifier,
-        vehicles: adapters.vehicles,
-      });
-      const buildDailyDigest = createBuildDailyDigestUseCase({
-        getTodayOpsSnapshot,
-        notifier: adapters.notifier,
-      });
-      const generateMessageDrafts = createGenerateMessageDraftsUseCase({
-        tripRepository: adapters.tripRepository,
-        messageRepository: adapters.messageRepository,
-        notifier: adapters.notifier,
-        guests: adapters.guests,
-        vehicles: adapters.vehicles,
-      });
+      const {
+        importTrips,
+        generateLifecycleTasks,
+        detectLateReturns,
+        buildDailyDigest,
+        generateMessageDrafts,
+      } = buildUseCases(adapters);
 
       const env = process.env;
       const intervalImport = Number(env["INTERVAL_IMPORT_MS"] ?? 5 * 60_000);
