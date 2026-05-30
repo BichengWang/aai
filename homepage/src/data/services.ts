@@ -30,6 +30,8 @@ export type Service = {
   faqs: ServiceFaq[];
 };
 
+const publicAsset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\/+/, "")}`;
+
 export const services: Service[] = [
   {
     slug: "legal-services",
@@ -39,7 +41,7 @@ export const services: Service[] = [
       "We collect the right details, confirm availability, and connect you with vetted attorneys who can take action quickly.",
     shortDescription:
       "Structured intake and rapid matching with licensed attorneys for everyday legal needs.",
-    image: "/images/legal-services.jpg",
+    image: publicAsset("images/legal-services.jpg"),
     tag: "LS",
     highlights: [
       "Attorney matching within 24 hours",
@@ -109,7 +111,7 @@ export const services: Service[] = [
       "From weekday walks to extended travel coverage, we confirm availability and connect you with trusted sitters.",
     shortDescription:
       "Trusted pet sitters matched to your schedule with clear availability checks.",
-    image: "/images/pet-sitting.webp",
+    image: publicAsset("images/pet-sitting.webp"),
     tag: "PS",
     highlights: [
       "Availability confirmed in hours",
@@ -179,7 +181,7 @@ export const services: Service[] = [
       "We verify inventory, confirm pricing ranges, and connect you with local rental providers you can trust.",
     shortDescription:
       "Confirm availability quickly and connect with local rental providers with confidence.",
-    image: "/images/financial-planning.jpg",
+    image: publicAsset("images/financial-planning.jpg"),
     tag: "CR",
     highlights: [
       "Same-day availability checks",
@@ -248,7 +250,7 @@ export const services: Service[] = [
       "We capture your goals, organize key documents, and connect you with licensed advisors for compliant guidance.",
     shortDescription:
       "Organize goals and access regulated financial guidance with a clear, guided intake.",
-    image: "/images/local-car-rental.png",
+    image: publicAsset("images/local-car-rental.png"),
     tag: "FP",
     highlights: [
       "Goal-focused planning intake",
