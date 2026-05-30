@@ -2,6 +2,7 @@ export type ActiveApp = "marketing" | "workspace";
 
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 const WORKSPACE_QUERY_VALUE = "workspace";
+const GITHUB_PAGES_REPOSITORY_PATH = "/altair-ai-llc";
 
 type LocationLike = {
   hostname: string;
@@ -42,6 +43,24 @@ export function detectActiveApp(locationLike: LocationLike): ActiveApp {
 
 export function getActiveApp() {
   return detectActiveApp(window.location);
+}
+
+export function getRouterBasename(locationLike: LocationLike = window.location) {
+  const configuredBasename = import.meta.env.VITE_ROUTER_BASENAME?.trim();
+
+  if (configuredBasename) {
+    return `/${configuredBasename.replace(/^\/+|\/+$/g, "")}`;
+  }
+
+  if (
+    locationLike.hostname.toLowerCase() === "bichengwang.github.io" &&
+    (locationLike.pathname === GITHUB_PAGES_REPOSITORY_PATH ||
+      locationLike.pathname.startsWith(`${GITHUB_PAGES_REPOSITORY_PATH}/`))
+  ) {
+    return GITHUB_PAGES_REPOSITORY_PATH;
+  }
+
+  return undefined;
 }
 
 export function isLocalWorkspacePreview(locationLike: LocationLike = window.location) {

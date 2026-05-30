@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import AppRoot from "./AppRoot";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import { getAuthCallbackPathFromHash } from "./lib/runtime";
+import { getAuthCallbackPathFromHash, getRouterBasename } from "./lib/runtime";
 import "./index.css";
 import "./workspace.css";
 
@@ -21,7 +21,7 @@ if (callbackPathFromHash) {
 
 createRoot(root).render(
   <StrictMode>
-      <BrowserRouter>
+      <BrowserRouter basename={getRouterBasename()}>
         <AuthProvider>
           <AppRoot />
         </AuthProvider>

@@ -7,6 +7,7 @@ import {
   detectActiveApp,
   getAuthCallbackPathFromHash,
   getDefaultSignedInPath,
+  getRouterBasename,
   getSafeRedirectPath,
   resolveRedirectPath,
 } from "../lib/runtime";
@@ -54,6 +55,36 @@ describe("runtime host detection", () => {
         search: "?app=workspace",
       })
     ).toBe("workspace");
+  });
+
+  it("sets a router basename only for the GitHub Pages project fallback", () => {
+    expect(
+      getRouterBasename({
+        hostname: "bichengwang.github.io",
+        origin: "https://bichengwang.github.io",
+        pathname: "/altair-ai-llc/",
+      })
+    ).toBe("/altair-ai-llc");
+
+    expect(
+      getRouterBasename({
+        hostname: "altairworld.com",
+        origin: "https://altairworld.com",
+        pathname: "/",
+      })
+    ).toBeUndefined();
+  });
+
+  it("honors an explicit router basename override", () => {
+    vi.stubEnv("VITE_ROUTER_BASENAME", "/preview/");
+
+    expect(
+      getRouterBasename({
+        hostname: "altairworld.com",
+        origin: "https://altairworld.com",
+        pathname: "/",
+      })
+    ).toBe("/preview");
   });
 
   it("builds handoff URLs against the current origin by default", () => {
