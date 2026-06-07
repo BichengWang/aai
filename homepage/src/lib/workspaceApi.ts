@@ -1,5 +1,5 @@
 import type { Session } from "@supabase/supabase-js";
-import { getAuthErrorMessage } from "./supabase";
+import { getConfiguredSupabasePublishableKey, getConfiguredSupabaseUrl, getAuthErrorMessage } from "./supabase";
 import type {
   ChatCompletionResponse,
   ConversationMessagesResponse,
@@ -13,7 +13,7 @@ const WORKSPACE_NOT_DEPLOYED_MESSAGE =
   "The workspace service is not deployed for this Supabase project. Deploy the `workspace-api` Edge Function, then try again.";
 
 function getWorkspaceApiBaseUrl() {
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const supabaseUrl = getConfiguredSupabaseUrl();
 
   if (!supabaseUrl) {
     throw new Error("Supabase is not configured.");
@@ -23,7 +23,7 @@ function getWorkspaceApiBaseUrl() {
 }
 
 function getSupabasePublishableKey() {
-  const supabasePublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  const supabasePublishableKey = getConfiguredSupabasePublishableKey();
 
   if (!supabasePublishableKey) {
     throw new Error("Supabase publishable key is not configured.");

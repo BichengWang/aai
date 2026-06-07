@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { getMissingConfigMessage, resolveAuthCallbackUrl } from "../lib/supabase";
+import {
+  getConfiguredSupabasePublishableKey,
+  getConfiguredSupabaseUrl,
+  getMissingConfigMessage,
+  resolveAuthCallbackUrl,
+} from "../lib/supabase";
 
 describe("resolveAuthCallbackUrl", () => {
   it("rewrites a configured localhost callback to the current local origin", () => {
@@ -62,5 +67,27 @@ describe("resolveAuthCallbackUrl", () => {
 
   it("explains how to fix missing or placeholder Supabase values", () => {
     expect(getMissingConfigMessage()).toMatch(/replace the placeholder/i);
+  });
+
+  it("falls back to Next.js-style public Supabase env vars", () => {
+    const env = {
+      NEXT_PUBLIC_SUPABASE_URL: "https://josejutfsgvlqrlmrqgl.supabase.co",
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_test_key",
+    };
+
+    expect(getConfiguredSupabaseUrl(env)).toBe("https://josejutfsgvlqrlmrqgl.supabase.co");
+    expect(getConfiguredSupabasePublishableKey(env)).toBe("sb_publishable_test_key");
+  });
+
+  it("uses Next.js-style public Supabase env vars when Vite values are placeholders", () => {
+    const env = {
+      VITE_SUPABASE_URL: "https://your-project-ref.supabase.co",
+      VITE_SUPABASE_PUBLISHABLE_KEY: "your-publishable-key",
+      NEXT_PUBLIC_SUPABASE_URL: "https://josejutfsgvlqrlmrqgl.supabase.co",
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_test_key",
+    };
+
+    expect(getConfiguredSupabaseUrl(env)).toBe("https://josejutfsgvlqrlmrqgl.supabase.co");
+    expect(getConfiguredSupabasePublishableKey(env)).toBe("sb_publishable_test_key");
   });
 });

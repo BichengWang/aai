@@ -42,8 +42,36 @@ function isPlaceholderPublishableKey(value: string | undefined) {
   return value.trim() === "your-publishable-key";
 }
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabasePublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+type SupabasePublicEnv = Pick<
+  ImportMetaEnv,
+  | "VITE_SUPABASE_URL"
+  | "VITE_SUPABASE_PUBLISHABLE_KEY"
+  | "NEXT_PUBLIC_SUPABASE_URL"
+  | "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"
+>;
+
+export function getConfiguredSupabaseUrl(env: SupabasePublicEnv = import.meta.env) {
+  const viteUrl = env.VITE_SUPABASE_URL?.trim();
+
+  if (viteUrl && !isPlaceholderSupabaseUrl(viteUrl)) {
+    return viteUrl;
+  }
+
+  return env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+}
+
+export function getConfiguredSupabasePublishableKey(env: SupabasePublicEnv = import.meta.env) {
+  const viteKey = env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim();
+
+  if (viteKey && !isPlaceholderPublishableKey(viteKey)) {
+    return viteKey;
+  }
+
+  return env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
+}
+
+const supabaseUrl = getConfiguredSupabaseUrl();
+const supabasePublishableKey = getConfiguredSupabasePublishableKey();
 const hasValidSupabaseConfig =
   isValidUrl(supabaseUrl) &&
   !isPlaceholderSupabaseUrl(supabaseUrl) &&
@@ -62,7 +90,7 @@ export const supabase = hasValidSupabaseConfig
 export const isSupabaseConfigured = Boolean(supabase);
 
 export function getMissingConfigMessage() {
-  return "Supabase authentication is not configured. Replace the placeholder VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY values with a real Supabase project.";
+  return "Supabase authentication is not configured. Replace the placeholder VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY values, or provide NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.";
 }
 
 export function getGoogleRedirectUrl(nextPath?: string) {
