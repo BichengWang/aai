@@ -8,16 +8,16 @@ on:
     branches:
       - main
     paths:
-      - 'turo-automation/**'
+      - 'workflow/turo-automation/**'
       - '.github/workflows/ci-turo-automation.yml'
   pull_request:
     paths:
-      - 'turo-automation/**'
+      - 'workflow/turo-automation/**'
       - '.github/workflows/ci-turo-automation.yml'
 
 defaults:
   run:
-    working-directory: turo-automation
+    working-directory: workflow/turo-automation
 
 jobs:
   build-and-test:
@@ -32,7 +32,7 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: turo-automation/package-lock.json
+          cache-dependency-path: workflow/turo-automation/package-lock.json
 
       - name: Install dependencies
         # --ignore-scripts prevents Playwright from downloading browser binaries

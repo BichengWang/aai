@@ -9,13 +9,13 @@ on:
     branches:
       - main
     paths:
-      - 'turo-automation/Dockerfile.worker'
-      - 'turo-automation/shared/**'
-      - 'turo-automation/worker/**'
-      - 'turo-automation/browser-agent/**'
-      - 'turo-automation/package.json'
-      - 'turo-automation/package-lock.json'
-      - 'turo-automation/tsconfig.base.json'
+      - 'workflow/turo-automation/Dockerfile.worker'
+      - 'workflow/turo-automation/shared/**'
+      - 'workflow/turo-automation/worker/**'
+      - 'workflow/turo-automation/browser-agent/**'
+      - 'workflow/turo-automation/package.json'
+      - 'workflow/turo-automation/package-lock.json'
+      - 'workflow/turo-automation/tsconfig.base.json'
       - '.github/workflows/docker-publish-worker.yml'
 
 env:
@@ -53,8 +53,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: turo-automation
-          file: turo-automation/Dockerfile.worker
+          context: workflow/turo-automation
+          file: workflow/turo-automation/Dockerfile.worker
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
