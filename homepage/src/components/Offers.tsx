@@ -40,9 +40,16 @@ export default function Offers() {
                   </span>
                 ))}
               </div>
-              <Link className="text-link" to={`/services/${service.slug}`}>
-                Learn more
-              </Link>
+              <div className="offer-actions">
+                <Link className="text-link" to={`/services/${service.slug}`}>
+                  Learn more
+                </Link>
+                {service.websiteUrl && (
+                  <a className="text-link" href={service.websiteUrl} target="_blank" rel="noopener noreferrer">
+                    Visit website
+                  </a>
+                )}
+              </div>
             </article>
           ))}
         </div>
