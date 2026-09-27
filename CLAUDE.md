@@ -4,7 +4,7 @@ Project-specific operating notes for `altair-ai-llc`, especially the Turo automa
 
 ## Turo Automation Loop Rules
 
-- The runbook source of truth is `turo-automation/docs/runbooks/ai-workflow-loop.md`.
+- The runbook source of truth is `workflow/turo-automation/docs/runbooks/ai-workflow-loop.md`.
 - For this project, the loop should **never stop silently**. If it stops before the requested batch finishes, restart it unless KW explicitly says to stop.
 - Use GitHub merged PR state as the source of truth for progress, not only local process state.
 - `Done` means merged into `main`, not local changes and not an open PR.
