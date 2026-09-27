@@ -1,0 +1,39 @@
+name: Homepage checks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - "homepage/**"
+      - ".github/workflows/homepage-checks.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: homepage
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: homepage/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Verify production build
+        run: npm run build
