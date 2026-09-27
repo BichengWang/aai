@@ -44,7 +44,7 @@ Elegant, single-page marketing site for Altair's local services platform.
    VITE_WORKSPACE_ORIGIN=https://llm.your-domain.example
    ```
    `VITE_AUTH_CALLBACK_URL` is optional but recommended when your frontend is served through a reverse proxy or a non-default local port (for example `http://localhost:3000`) so OAuth always returns to a reachable callback URL.
-   These `VITE_*` values are public client-side build variables. In GitHub Actions, store them as Environment variables rather than secrets because Vite includes them in the browser bundle.
+   These `VITE_*` values are public client-side build variables. Set them in Netlify's environment variables; Vite includes them in the browser bundle. Production Netlify builds fail when the Supabase URL or publishable key is missing.
 
 ## Workspace edge function setup
 
