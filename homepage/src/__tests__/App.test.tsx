@@ -38,5 +38,9 @@ describe("Altair homepage", () => {
     expect(
       screen.getByRole("link", { name: /qx@altairworld.com/i })
     ).toHaveAttribute("href", "mailto:qx@altairworld.com");
+    expect(screen.getByRole("link", { name: "Visit website" })).toHaveAttribute(
+      "href",
+      "https://bichengwang.github.io/TradingAgents/"
+    );
   });
 });

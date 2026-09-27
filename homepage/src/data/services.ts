@@ -20,6 +20,7 @@ export type Service = {
   description: string;
   shortDescription: string;
   image: string;
+  websiteUrl?: string;
   tag: string;
   highlights: string[];
   suitedFor: string[];
@@ -33,6 +34,77 @@ export type Service = {
 const publicAsset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\/+/, "")}`;
 
 export const services: Service[] = [
+  {
+    slug: "financial-planning",
+    title: "Everyday Financial Planning",
+    tagline: "Organize goals and connect with regulated advisors.",
+    description:
+      "We capture your goals, organize key documents, and connect you with licensed advisors for compliant guidance.",
+    shortDescription:
+      "Organize goals and access regulated financial guidance with a clear, guided intake.",
+    image: publicAsset("images/financial-planning.jpg"),
+    websiteUrl: "https://bichengwang.github.io/TradingAgents/",
+    tag: "FP",
+    highlights: [
+      "Goal-focused planning intake",
+      "Advisor availability checks",
+      "Compliance-ready documentation",
+    ],
+    suitedFor: [
+      "Budget planning and savings goals",
+      "Retirement readiness",
+      "College savings plans",
+      "Investment advisor discovery",
+    ],
+    timeline: [
+      {
+        title: "Share your goals",
+        description: "Tell us your priorities, timelines, and current situation.",
+      },
+      {
+        title: "We organize the intake",
+        description:
+          "Altair structures the intake for regulated advisor review.",
+      },
+      {
+        title: "Match with advisors",
+        description:
+          "Receive vetted options and schedule a compliant discovery call.",
+      },
+    ],
+    outcomes: [
+      { label: "Average response", value: "8-16 hours" },
+      { label: "Advisor match rate", value: "88%" },
+      { label: "Client satisfaction", value: "4.8/5" },
+    ],
+    deliverables: [
+      "Structured intake summary",
+      "Advisor shortlist and meeting options",
+      "Clear next steps and documents checklist",
+    ],
+    compliance: [
+      "Only regulated advisors onboarded",
+      "No investment advice from Altair",
+      "Secure handling of sensitive data",
+    ],
+    faqs: [
+      {
+        question: "Do you provide investment advice?",
+        answer:
+          "No. We connect you with regulated advisors who provide compliant guidance.",
+      },
+      {
+        question: "What documents should I prepare?",
+        answer:
+          "We will share a tailored checklist once we review your goals.",
+      },
+      {
+        question: "Can I request a specific advisor?",
+        answer:
+          "Yes. Share preferences and we will confirm availability if possible.",
+      },
+    ],
+  },
   {
     slug: "legal-services",
     title: "Legal Services Discovery",
@@ -181,7 +253,7 @@ export const services: Service[] = [
       "We verify inventory, confirm pricing ranges, and connect you with local rental providers you can trust.",
     shortDescription:
       "Confirm availability quickly and connect with local rental providers with confidence.",
-    image: publicAsset("images/financial-planning.jpg"),
+    image: publicAsset("images/local-car-rental.png"),
     tag: "CR",
     highlights: [
       "Same-day availability checks",
@@ -239,76 +311,6 @@ export const services: Service[] = [
         question: "Is there a booking fee?",
         answer:
           "Altair does not charge a booking fee. You pay the provider directly.",
-      },
-    ],
-  },
-  {
-    slug: "financial-planning",
-    title: "Everyday Financial Planning",
-    tagline: "Organize goals and connect with regulated advisors.",
-    description:
-      "We capture your goals, organize key documents, and connect you with licensed advisors for compliant guidance.",
-    shortDescription:
-      "Organize goals and access regulated financial guidance with a clear, guided intake.",
-    image: publicAsset("images/local-car-rental.png"),
-    tag: "FP",
-    highlights: [
-      "Goal-focused planning intake",
-      "Advisor availability checks",
-      "Compliance-ready documentation",
-    ],
-    suitedFor: [
-      "Budget planning and savings goals",
-      "Retirement readiness",
-      "College savings plans",
-      "Investment advisor discovery",
-    ],
-    timeline: [
-      {
-        title: "Share your goals",
-        description: "Tell us your priorities, timelines, and current situation.",
-      },
-      {
-        title: "We organize the intake",
-        description:
-          "Altair structures the intake for regulated advisor review.",
-      },
-      {
-        title: "Match with advisors",
-        description:
-          "Receive vetted options and schedule a compliant discovery call.",
-      },
-    ],
-    outcomes: [
-      { label: "Average response", value: "8-16 hours" },
-      { label: "Advisor match rate", value: "88%" },
-      { label: "Client satisfaction", value: "4.8/5" },
-    ],
-    deliverables: [
-      "Structured intake summary",
-      "Advisor shortlist and meeting options",
-      "Clear next steps and documents checklist",
-    ],
-    compliance: [
-      "Only regulated advisors onboarded",
-      "No investment advice from Altair",
-      "Secure handling of sensitive data",
-    ],
-    faqs: [
-      {
-        question: "Do you provide investment advice?",
-        answer:
-          "No. We connect you with regulated advisors who provide compliant guidance.",
-      },
-      {
-        question: "What documents should I prepare?",
-        answer:
-          "We will share a tailored checklist once we review your goals.",
-      },
-      {
-        question: "Can I request a specific advisor?",
-        answer:
-          "Yes. Share preferences and we will confirm availability if possible.",
       },
     ],
   },

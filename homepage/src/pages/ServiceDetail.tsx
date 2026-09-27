@@ -46,6 +46,11 @@ export default function ServiceDetail() {
               <Link className="button ghost" to="/services">
                 Back to services
               </Link>
+              {service.websiteUrl && (
+                <a className="button ghost" href={service.websiteUrl} target="_blank" rel="noopener noreferrer">
+                  Visit website
+                </a>
+              )}
             </div>
           </div>
           <div className="card-panel service-media">

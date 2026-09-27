@@ -500,6 +500,13 @@ img {
   gap: 8px;
 }
 
+.offer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
 .chip {
   padding: 6px 12px;
   border-radius: 999px;
