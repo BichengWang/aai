@@ -18,10 +18,10 @@
     "jszip": "^3.10.1",
     "react": "19.1.1",
     "react-dom": "19.1.1",
-    "react-router-dom": "7.2.0"
+    "react-router-dom": "7.18.4"
   },
   "devDependencies": {
-    "@playwright/test": "1.55.0",
+    "@playwright/test": "1.63.0",
     "@testing-library/jest-dom": "6.8.0",
     "@testing-library/react": "16.3.1",
     "@testing-library/user-event": "14.6.1",
@@ -31,7 +31,7 @@
     "@vitejs/plugin-react": "5.0.2",
     "jsdom": "26.1.0",
     "typescript": "5.8.3",
-    "vite": "7.1.4",
-    "vitest": "4.0.16"
+    "vite": "7.3.6",
+    "vitest": "4.1.0"
   }
 }
