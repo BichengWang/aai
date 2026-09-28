@@ -15,7 +15,7 @@ function buildDigestBlocks(summary: string): unknown[] {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: summary.replace(/\n/g, "\n"),
+        text: summary,
       },
     },
   ];
