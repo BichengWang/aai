@@ -383,11 +383,14 @@ function minutesAfter(iso: ISODateString, minutes: number): ISODateString {
 }
 
 function stableId(parts: string[]): string {
-  return parts
+  const normalized = parts
     .join("-")
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+    .replace(/[^a-z0-9]+/g, "-");
+
+  const start = normalized.startsWith("-") ? 1 : 0;
+  const end = normalized.endsWith("-") ? normalized.length - 1 : normalized.length;
+  return normalized.slice(start, end);
 }
 
 function findVehicle(vehicles: Vehicle[], vehicleId: string): Vehicle | undefined {
