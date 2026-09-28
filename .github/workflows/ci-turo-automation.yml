@@ -15,6 +15,9 @@ on:
       - 'workflow/turo-automation/**'
       - '.github/workflows/ci-turo-automation.yml'
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: workflow/turo-automation
