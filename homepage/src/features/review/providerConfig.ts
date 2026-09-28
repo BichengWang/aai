@@ -20,11 +20,17 @@ export function loadProviderConfig(): ProviderConfig {
 
     const parsed = JSON.parse(raw) as Partial<ProviderConfig>;
 
-    return {
-      apiKey: parsed.apiKey ?? "",
+    const config = {
+      apiKey: "",
       model: parsed.model ?? "",
       baseUrl: parsed.baseUrl ?? "",
     };
+
+    if (Object.prototype.hasOwnProperty.call(parsed, "apiKey")) {
+      saveProviderConfig(config);
+    }
+
+    return config;
   } catch {
     return emptyProviderConfig();
   }
@@ -35,7 +41,13 @@ export function saveProviderConfig(config: ProviderConfig) {
     return;
   }
 
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  window.localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify({
+      model: config.model,
+      baseUrl: config.baseUrl,
+    })
+  );
 }
 
 export function clearProviderConfig() {

@@ -224,13 +224,16 @@ export default function ReviewWorkspace({
 
   function handleConnectionSave(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    saveProviderConfig({
+    const config = {
       apiKey: providerConfig.apiKey.trim(),
       model: providerConfig.model.trim(),
       baseUrl: providerConfig.baseUrl.trim(),
-    });
-    setProviderConfig(loadProviderConfig());
-    setSavedMessage("Saved for this browser.");
+    };
+    saveProviderConfig(config);
+    setProviderConfig(config);
+    setSavedMessage(
+      "Model and base URL saved for this browser. API key stays in memory while this page is open."
+    );
   }
 
   function handleConnectionReset() {
@@ -454,7 +457,7 @@ export default function ReviewWorkspace({
             ) : null}
             {!hasApiKey ? (
               <p className="review-alert">
-                No provider connection is configured. Open Connection to set a saved key or rely on env defaults.
+                No provider connection is configured. Open Connection to enter an API key or rely on env defaults.
               </p>
             ) : null}
 
@@ -588,7 +591,8 @@ export default function ReviewWorkspace({
               </div>
 
               <p className="review-composer-note">
-                Leave any field empty to fall back to the matching Vite env value.
+                The API key stays in memory while this page is open. Model and base URL
+                are saved for this browser. Leave any field empty to use its Vite env value.
               </p>
               {savedMessage ? <p className="review-alert">{savedMessage}</p> : null}
 

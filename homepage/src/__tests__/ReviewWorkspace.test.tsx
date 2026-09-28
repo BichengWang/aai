@@ -93,7 +93,7 @@ describe("Review workspace", () => {
     ).toBeDisabled();
   });
 
-  it("accepts a pasted api key", async () => {
+  it("keeps a pasted api key in memory without saving it", async () => {
     const user = userEvent.setup();
     vi.stubEnv("VITE_ANTHROPIC_API_KEY", "");
 
@@ -111,11 +111,35 @@ describe("Review workspace", () => {
     );
     await user.click(screen.getByRole("button", { name: /save settings/i }));
 
-    expect(screen.getByText(/saved for this browser\./i)).toBeInTheDocument();
+    expect(screen.getByText(/^model and base url saved for this browser/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/compatible api key/i)).toHaveValue(
+      "typed-test-key"
+    );
     expect(
       JSON.parse(window.localStorage.getItem("review-provider-config") ?? "{}")
-    ).toMatchObject({
-      apiKey: "typed-test-key",
+    ).toEqual({
+      model: "gpt-5.4",
+      baseUrl: "https://api.openai.com/v1",
+    });
+  });
+
+  it("removes a key saved by an older version on load", async () => {
+    window.localStorage.setItem(
+      "review-provider-config",
+      JSON.stringify({
+        apiKey: "legacy-test-key",
+        model: "gpt-5.4",
+        baseUrl: "https://api.openai.com/v1",
+      })
+    );
+
+    renderReviewWorkspace("/review/settings");
+
+    expect(await screen.findByLabelText(/compatible api key/i)).toHaveValue("");
+    expect(screen.getByLabelText(/^model$/i)).toHaveValue("gpt-5.4");
+    expect(
+      JSON.parse(window.localStorage.getItem("review-provider-config") ?? "{}")
+    ).toEqual({
       model: "gpt-5.4",
       baseUrl: "https://api.openai.com/v1",
     });
@@ -364,11 +388,11 @@ describe("Review workspace", () => {
     window.localStorage.setItem(
       "review-provider-config",
       JSON.stringify({
-        apiKey: "typed-test-key",
         model: "gpt-5.4",
         baseUrl: "https://api.openai.com",
       })
     );
+    vi.stubEnv("VITE_LLM_API_KEY", "typed-test-key");
 
     renderReviewWorkspace();
 
@@ -596,10 +620,10 @@ function selectRenderedText(text: string) {
 }
 
 function saveProviderSettings() {
+  vi.stubEnv("VITE_LLM_API_KEY", "typed-test-key");
   window.localStorage.setItem(
     "review-provider-config",
     JSON.stringify({
-      apiKey: "typed-test-key",
       model: "gpt-5.4",
       baseUrl: "https://api.openai.com/v1",
     })
