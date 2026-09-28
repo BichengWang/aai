@@ -42,7 +42,7 @@ export const services: Service[] = [
       "We capture your goals, organize key documents, and connect you with licensed advisors for compliant guidance.",
     shortDescription:
       "Organize goals and access regulated financial guidance with a clear, guided intake.",
-    image: publicAsset("images/financial-planning.jpg"),
+    image: publicAsset("images/financial-planning.png"),
     websiteUrl: "https://bichengwang.github.io/TradingAgents/",
     tag: "FP",
     highlights: [
@@ -176,6 +176,75 @@ export const services: Service[] = [
     ],
   },
   {
+    slug: "local-car-rental",
+    title: "Local Car Rental Service",
+    tagline: "Quick availability checks for trusted local rentals.",
+    description:
+      "We verify inventory, confirm pricing ranges, and connect you with local rental providers you can trust.",
+    shortDescription:
+      "Confirm availability quickly and connect with local rental providers with confidence.",
+    image: publicAsset("images/local-car-rental.jpg"),
+    tag: "CR",
+    highlights: [
+      "Same-day availability checks",
+      "Transparent pricing ranges",
+      "Local provider screening",
+    ],
+    suitedFor: [
+      "Short-term city trips",
+      "Weekend getaways",
+      "Temporary replacement vehicles",
+      "Business travel needs",
+    ],
+    timeline: [
+      {
+        title: "Request a vehicle",
+        description: "Share dates, pickup area, and vehicle preferences.",
+      },
+      {
+        title: "We confirm inventory",
+        description: "Altair verifies availability and aligns with your budget.",
+      },
+      {
+        title: "Book with confidence",
+        description:
+          "Receive a confirmed provider and clear pickup instructions.",
+      },
+    ],
+    outcomes: [
+      { label: "Average response", value: "1-4 hours" },
+      { label: "On-time pickup", value: "96%" },
+      { label: "Repeat rentals", value: "54%" },
+    ],
+    deliverables: [
+      "Confirmed availability and pricing",
+      "Pickup location details",
+      "Support contacts for day-of changes",
+    ],
+    compliance: [
+      "Verified local rental partners",
+      "Clear insurance and policy summaries",
+      "Secure data sharing with providers",
+    ],
+    faqs: [
+      {
+        question: "Do you handle insurance?",
+        answer:
+          "We share partner policies and help you select the right coverage with the provider.",
+      },
+      {
+        question: "Can I change pickup times?",
+        answer:
+          "Yes. We coordinate changes as long as inventory remains available.",
+      },
+      {
+        question: "Is there a booking fee?",
+        answer:
+          "Altair does not charge a booking fee. You pay the provider directly.",
+      },
+    ],
+  },
+  {
     slug: "pet-sitting",
     title: "Pet Sitting Match",
     tagline: "Reliable pet care with fast availability checks.",
@@ -242,75 +311,6 @@ export const services: Service[] = [
         question: "What pets are supported?",
         answer:
           "We primarily support dogs and cats, but can review other requests case by case.",
-      },
-    ],
-  },
-  {
-    slug: "local-car-rental",
-    title: "Local Car Rental Service",
-    tagline: "Quick availability checks for trusted local rentals.",
-    description:
-      "We verify inventory, confirm pricing ranges, and connect you with local rental providers you can trust.",
-    shortDescription:
-      "Confirm availability quickly and connect with local rental providers with confidence.",
-    image: publicAsset("images/local-car-rental.png"),
-    tag: "CR",
-    highlights: [
-      "Same-day availability checks",
-      "Transparent pricing ranges",
-      "Local provider screening",
-    ],
-    suitedFor: [
-      "Short-term city trips",
-      "Weekend getaways",
-      "Temporary replacement vehicles",
-      "Business travel needs",
-    ],
-    timeline: [
-      {
-        title: "Request a vehicle",
-        description: "Share dates, pickup area, and vehicle preferences.",
-      },
-      {
-        title: "We confirm inventory",
-        description: "Altair verifies availability and aligns with your budget.",
-      },
-      {
-        title: "Book with confidence",
-        description:
-          "Receive a confirmed provider and clear pickup instructions.",
-      },
-    ],
-    outcomes: [
-      { label: "Average response", value: "1-4 hours" },
-      { label: "On-time pickup", value: "96%" },
-      { label: "Repeat rentals", value: "54%" },
-    ],
-    deliverables: [
-      "Confirmed availability and pricing",
-      "Pickup location details",
-      "Support contacts for day-of changes",
-    ],
-    compliance: [
-      "Verified local rental partners",
-      "Clear insurance and policy summaries",
-      "Secure data sharing with providers",
-    ],
-    faqs: [
-      {
-        question: "Do you handle insurance?",
-        answer:
-          "We share partner policies and help you select the right coverage with the provider.",
-      },
-      {
-        question: "Can I change pickup times?",
-        answer:
-          "Yes. We coordinate changes as long as inventory remains available.",
-      },
-      {
-        question: "Is there a booking fee?",
-        answer:
-          "Altair does not charge a booking fee. You pay the provider directly.",
       },
     ],
   },
