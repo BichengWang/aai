@@ -17,7 +17,7 @@ vi.mock("../context/AuthContext", () => ({
 }));
 
 describe("workspace review routes", () => {
-  it("renders review outside the standard workspace sidebar shell", async () => {
+  it("renders review inside the workspace sidebar with Review as the active item", async () => {
     window.history.pushState({}, "", "/review?app=workspace");
     render(
       <MemoryRouter initialEntries={["/review?app=workspace"]}>
@@ -26,8 +26,10 @@ describe("workspace review routes", () => {
     );
 
     expect(await screen.findByLabelText(/upload a docx file/i)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /back to chat/i })).toBeInTheDocument();
-    expect(screen.queryByText(/managed llm routing/i)).not.toBeInTheDocument();
+    const reviewLink = screen.getByRole("link", { name: "Review" });
+    expect(reviewLink).toHaveClass("active");
+    expect(screen.getByRole("link", { name: "Chat" })).not.toHaveClass("active");
+    expect(screen.getByText(/managed llm routing/i)).toBeInTheDocument();
   });
 
   it("opens the shared review surface with the connection drawer from the compatibility route", async () => {
