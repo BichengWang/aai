@@ -2,10 +2,8 @@
   display: grid;
   grid-template-columns: minmax(260px, 320px) 1fr;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at top left, rgba(255, 218, 185, 0.35), transparent 28%),
-    linear-gradient(135deg, #f8f2ea 0%, #fffaf4 50%, #eef4ff 100%);
-  color: #132033;
+  background: var(--lab-bg);
+  color: var(--lab-fg);
 }
 
 .workspace-sidebar {
@@ -13,9 +11,30 @@
   flex-direction: column;
   gap: 1.5rem;
   padding: 2rem;
-  border-right: 1px solid rgba(19, 32, 51, 0.08);
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(14px);
+  border-right: 1px solid var(--lab-line);
+}
+
+.workspace-brand-block h1 {
+  font: 400 1.75rem/1.15 var(--lab-font-display);
+  letter-spacing: -0.015em;
+}
+
+.workspace-brand-block p {
+  margin: 0;
+  color: var(--lab-fg-2);
+  font-size: 0.9375rem;
+}
+
+.workspace-page-header h2,
+.workspace-chat-sidebar-header h2,
+.workspace-chat-header h2,
+.workspace-status-panel h2 {
+  font: 400 1.75rem/1.15 var(--lab-font-display);
+  letter-spacing: -0.015em;
+}
+
+.workspace-panel h3 {
+  font: 500 1.0625rem/1.35 var(--lab-font-sans);
 }
 
 .workspace-brand-block h1,
@@ -29,34 +48,48 @@
 
 .workspace-nav {
   display: grid;
-  gap: 0.65rem;
+  gap: 0;
+  border-top: 1px solid var(--lab-line);
 }
 
 .workspace-nav-link {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.9rem 1rem;
-  border-radius: 1rem;
-  color: inherit;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--lab-line);
+  font: 500 0.75rem/1.4 var(--lab-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lab-fg-2);
   text-decoration: none;
-  background: rgba(19, 32, 51, 0.04);
-  transition: transform 160ms ease, background-color 160ms ease, color 160ms ease;
+  transition: color 160ms ease;
+}
+
+.workspace-nav-link::after {
+  content: "→";
+  opacity: 0;
+  transition: opacity 160ms ease;
 }
 
 .workspace-nav-link:hover,
 .workspace-nav-link.active {
-  background: #132033;
-  color: #fffaf4;
-  transform: translateX(2px);
+  color: var(--lab-fg);
+}
+
+.workspace-nav-link.active::after {
+  opacity: 1;
+  color: var(--lab-accent);
 }
 
 .workspace-profile-card,
 .workspace-panel {
-  border: 1px solid rgba(19, 32, 51, 0.08);
-  border-radius: 1.5rem;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 24px 60px rgba(19, 32, 51, 0.08);
+  border: 1px solid var(--lab-line);
+  background: var(--lab-field);
+}
+
+.workspace-panel {
+  border-top: 2px solid var(--lab-fg);
 }
 
 .workspace-profile-card {
@@ -68,7 +101,12 @@
 
 .workspace-profile-name {
   margin: 0;
-  font-weight: 700;
+  font-weight: 500;
+}
+
+.workspace-profile-email {
+  color: var(--lab-fg-3);
+  font-size: 0.875rem;
 }
 
 .workspace-profile-email,
@@ -77,7 +115,20 @@
 }
 
 .workspace-main {
+  min-width: 0;
   padding: 2rem;
+}
+
+/* Pages shared with the marketing site (account) sit inside the shell. */
+.workspace-main .container {
+  width: 100%;
+}
+
+.workspace-main label:has(> .input) {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .workspace-page,
@@ -122,7 +173,7 @@
 }
 
 .workspace-hint {
-  color: #5a6472;
+  color: var(--lab-fg-3);
   font-size: 0.95rem;
 }
 
@@ -133,7 +184,7 @@
 
 .workspace-table-row {
   padding: 1rem 0;
-  border-top: 1px solid rgba(19, 32, 51, 0.08);
+  border-top: 1px solid var(--lab-line);
 }
 
 .workspace-table-row:first-child {
@@ -143,32 +194,31 @@
 
 .workspace-status-chip {
   display: inline-flex;
-  padding: 0.3rem 0.7rem;
-  border-radius: 999px;
-  text-transform: capitalize;
-  font-size: 0.85rem;
-  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font: 500 0.6875rem/1.3 var(--lab-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .workspace-status-chip.valid {
-  background: rgba(23, 134, 85, 0.14);
-  color: #178655;
+  color: #1f7a4d;
 }
 
 .workspace-status-chip.pending {
-  background: rgba(183, 107, 13, 0.14);
-  color: #b76b0d;
+  color: #a15c00;
 }
 
 .workspace-status-chip.invalid,
 .workspace-status-chip.error {
-  background: rgba(193, 47, 47, 0.12);
-  color: #c12f2f;
+  color: #b42318;
 }
 
 .workspace-metric {
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 800;
+  font: 400 clamp(2rem, 4vw, 3rem)/1 var(--lab-font-sans);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
 }
 
 .workspace-chat-page {
@@ -192,14 +242,16 @@
   gap: 0.35rem;
   text-align: left;
   padding: 1rem;
-  border: 1px solid rgba(19, 32, 51, 0.08);
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--lab-line);
+  border-radius: 6px;
+  background: var(--lab-field);
+  color: var(--lab-fg);
+  font: inherit;
 }
 
 .workspace-conversation-card.active {
-  border-color: rgba(19, 32, 51, 0.3);
-  background: rgba(19, 32, 51, 0.06);
+  border-color: var(--lab-fg);
+  box-shadow: inset 2px 0 0 var(--lab-accent);
 }
 
 .workspace-routing-controls {
@@ -217,8 +269,9 @@
   display: grid;
   gap: 0.65rem;
   padding: 1rem 1.1rem;
-  border-radius: 1rem;
-  background: rgba(19, 32, 51, 0.04);
+  border: 1px solid var(--lab-line);
+  border-radius: 6px;
+  background: var(--lab-bg);
 }
 
 .workspace-message header {
@@ -229,11 +282,19 @@
 }
 
 .workspace-message.user {
-  background: rgba(236, 110, 60, 0.12);
+  background: var(--lab-wash);
+  border-color: rgba(43, 59, 201, 0.2);
 }
 
 .workspace-message.assistant {
-  background: rgba(19, 32, 51, 0.08);
+  background: var(--lab-bg);
+}
+
+.workspace-message header {
+  font-family: var(--lab-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--lab-fg-3);
 }
 
 .workspace-textarea {
@@ -243,17 +304,17 @@
 
 .workspace-empty-state {
   padding: 2rem;
-  border: 1px dashed rgba(19, 32, 51, 0.18);
-  border-radius: 1rem;
-  color: #5a6472;
+  border: 1px dashed var(--lab-line-strong);
+  border-radius: 6px;
+  color: var(--lab-fg-3);
 }
 
 .workspace-entry-page {
   place-items: center;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(236, 110, 60, 0.2), transparent 24%),
-    linear-gradient(135deg, #f7efe4 0%, #fffaf4 50%, #edf1fb 100%);
+    radial-gradient(circle at 1px 1px, rgba(18, 19, 22, 0.08) 1px, transparent 1.5px) 0 0 / 24px 24px,
+    var(--lab-bg);
 }
 
 .workspace-status-panel {
@@ -269,10 +330,6 @@
   max-width: 30rem;
 }
 
-.workspace-account-card {
-  align-content: start;
-}
-
 @media (max-width: 1080px) {
   .workspace-app-shell,
   .workspace-chat-page,
@@ -283,7 +340,7 @@
 
   .workspace-sidebar {
     border-right: 0;
-    border-bottom: 1px solid rgba(19, 32, 51, 0.08);
+    border-bottom: 1px solid var(--lab-line);
   }
 }
 
