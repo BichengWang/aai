@@ -14,6 +14,11 @@
   border-right: 1px solid var(--lab-line);
 }
 
+.workspace-back-link {
+  align-self: flex-start;
+  margin-bottom: -0.5rem;
+}
+
 .workspace-brand-block h1 {
   font: 400 1.75rem/1.15 var(--lab-font-display);
   letter-spacing: -0.015em;
