@@ -68,20 +68,17 @@ function BrandMark() {
 export default function App() {
   const location = useLocation();
   const isReviewRoute = location.pathname.startsWith("/review");
-  const isHome = location.pathname === "/";
 
   return (
-    <div
-      className={`page${isReviewRoute ? " page-review" : ""}${isHome ? " page--home" : ""}`}
-    >
+    <div className={`page${isReviewRoute ? " page-review" : " page--lab"}`}>
       {isReviewRoute ? null : (
-        <header className={`site-header${isHome ? " site-header--home lab-night" : ""}`}>
+        <header className="site-header site-header--lab lab-night">
           <a className="skip-link" href="#main-content">
             Skip to content
           </a>
           <div className="container nav">
             <Link className="brand" to="/">
-              {isHome ? <BrandMark /> : null}
+              <BrandMark />
               Altair
             </Link>
             <nav className="nav-links" aria-label="Primary">
@@ -118,11 +115,11 @@ export default function App() {
         </Routes>
       </main>
       {isReviewRoute ? null : (
-        <footer className={`footer${isHome ? " footer--home lab-night" : ""}`}>
+        <footer className="footer footer--lab lab-night">
           <div className="container footer-grid">
             <div>
               <p className="brand">
-                {isHome ? <BrandMark /> : null}
+                <BrandMark />
                 Altair AI LLC
               </p>
               <address className="footer-contact">
@@ -143,14 +140,12 @@ export default function App() {
               <p className="footer-meta">© 2026 Altair AI LLC</p>
             </div>
           </div>
-          {isHome ? (
-            <div className="container lab-footer-mark" aria-hidden="true">
-              <span className="lab-footer-mark-word">Altair</span>
-              <span className="lab-footer-mark-coord">
-                α Aql · RA 19h 50m 47s · Dec +08° 52′ 06″
-              </span>
-            </div>
-          ) : null}
+          <div className="container lab-footer-mark" aria-hidden="true">
+            <span className="lab-footer-mark-word">Altair</span>
+            <span className="lab-footer-mark-coord">
+              α Aql · RA 19h 50m 47s · Dec +08° 52′ 06″
+            </span>
+          </div>
         </footer>
       )}
     </div>

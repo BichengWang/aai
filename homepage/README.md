@@ -102,5 +102,5 @@ The workspace function exposes these routes under `workspace-api`:
 
 ## Notes
 
-- Homepage (`/`) styles live in `src/home.css`, scoped to `.page--home`, `.home-lab` and `lab-*` classes; shared styles for other routes stay in `src/index.css`.
+- The site uses one design system: tokens, header/footer, type and form primitives in `src/lab.css`; inner-page layouts (page head, services, intake forms, auth, account) in `src/pages.css`; homepage sections in `src/home.css`. `src/index.css` holds the base reset plus the review workspace, and `src/workspace.css` the LLM workspace app; both read the same `--lab-*` tokens.
 - The hero figure is an inline SVG (`src/components/lab/AquilaFigure.tsx`); the homepage uses no background image.

@@ -137,52 +137,59 @@ export default function OAuthConsent() {
   };
 
   return (
-    <section className="page-section">
-      <div className="container auth-shell">
-        <div className="auth-copy">
-          <span className="pill">OAuth consent</span>
-          <h1 className="section-title">{details ? `${details.client.name} is requesting access` : status}</h1>
-          <p className="section-subtitle">
+    <section className="lab-page lab-auth">
+      <div className="container lab-grid lab-auth-grid">
+        <div className="lab-auth-copy">
+          <p className="lab-kicker lab-micro">
+            <span>Account</span>
+            <span className="lab-kicker-sep" aria-hidden="true">
+              /
+            </span>
+            <span>OAuth consent</span>
+          </p>
+          <h1 className="lab-h1">{details ? `${details.client.name} is requesting access` : status}</h1>
+          <p className="lab-lede">
             {details
               ? `Review the scopes below before Altair issues an authorization code to ${details.client.name}.`
               : "Altair uses Supabase OAuth to authenticate the user first, then collect consent for the requesting application."}
           </p>
           {details ? (
-            <div className="card-panel">
-              <h3>App details</h3>
-              <div className="stack-list">
-                <div className="stack-item">Signed in as {details.user.email}</div>
-                <div className="stack-item">Redirect URI: {details.redirect_uri}</div>
-                <div className="stack-item">
+            <>
+              <h2 className="lab-micro lab-list-title">App details</h2>
+              <ul className="lab-ruled" role="list">
+                <li>Signed in as {details.user.email}</li>
+                <li>Redirect URI: {details.redirect_uri}</li>
+                <li>
                   Client URL:{" "}
-                  <a className="text-link" href={details.client.uri} target="_blank" rel="noreferrer">
+                  <a className="lab-link" href={details.client.uri} target="_blank" rel="noreferrer">
                     {details.client.uri}
                   </a>
-                </div>
-              </div>
-            </div>
+                </li>
+              </ul>
+            </>
           ) : null}
         </div>
-        <div className="card-panel form-panel auth-card">
+        <div className="lab-auth-card">
+          <p className="lab-micro lab-auth-card-head">Authorization · OAuth 2.1</p>
           {error ? (
-            <p className="status-banner error" role="alert">
+            <p className="lab-notice lab-notice--error" role="alert">
               {error}
             </p>
           ) : null}
-          {!details && !error ? <p className="status-banner success">{status}</p> : null}
+          {!details && !error ? <p className="lab-notice lab-notice--success">{status}</p> : null}
           {!user && authorizationId ? (
             <>
               <button
-                className="button"
+                className="lab-btn lab-btn--primary lab-btn--block"
                 type="button"
                 onClick={handleSignIn}
                 disabled={submitting !== null || !authConfigured}
               >
                 {submitting === "signin" ? "Redirecting to Google..." : "Continue with Google"}
               </button>
-              <p className="auth-switch">
+              <p className="lab-auth-switch">
                 Need a different route?{" "}
-                <Link className="text-link" to={buildAppPath("/login")}>
+                <Link className="lab-link" to={buildAppPath("/login")}>
                   Open login
                 </Link>
               </p>
@@ -190,16 +197,14 @@ export default function OAuthConsent() {
           ) : null}
           {details ? (
             <>
-              <h3>Requested scopes</h3>
-              <div className="stack-list">
+              <h2 className="lab-h3">Requested scopes</h2>
+              <ul className="lab-ruled" role="list">
                 {scopes.map((scope) => (
-                  <div className="stack-item" key={scope}>
-                    {getScopeLabel(scope)}
-                  </div>
+                  <li key={scope}>{getScopeLabel(scope)}</li>
                 ))}
-              </div>
+              </ul>
               <button
-                className="button"
+                className="lab-btn lab-btn--primary lab-btn--block"
                 type="button"
                 onClick={() => void handleConsent("approve")}
                 disabled={submitting !== null}
@@ -207,7 +212,7 @@ export default function OAuthConsent() {
                 {submitting === "approve" ? "Approving..." : "Approve access"}
               </button>
               <button
-                className="button ghost"
+                className="lab-btn lab-btn--ghost lab-btn--block"
                 type="button"
                 onClick={() => void handleConsent("deny")}
                 disabled={submitting !== null}
