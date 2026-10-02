@@ -84,6 +84,7 @@ test("lab chrome and page head apply across the marketing site", async ({ page }
     ["/enquiry", /tell us what you need/i],
     ["/contact", /talk with the altair team/i],
     ["/login", /welcome back to altair/i],
+    ["/no-such-page", /this page is not on the chart/i],
   ];
 
   for (const [path, heading] of routes) {
