@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { AuthProvider } from "../context/AuthContext";
 import App from "../App";
@@ -35,6 +35,12 @@ describe("Altair homepage", () => {
     expect(
       screen.getByRole("navigation", { name: /primary/i })
     ).toBeInTheDocument();
+    const primaryNav = screen.getByRole("navigation", { name: /primary/i });
+    expect(within(primaryNav).getByRole("link", { name: "Workspace" })).toHaveAttribute(
+      "href",
+      "/?app=workspace"
+    );
+    expect(within(primaryNav).queryByRole("link", { name: "Review" })).not.toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: /qx@altairworld.com/i })
     ).toHaveAttribute("href", "mailto:qx@altairworld.com");

@@ -124,6 +124,24 @@
   width: 100%;
 }
 
+/* Review fills the whole column instead of sitting in the padded page frame. */
+.workspace-main:has(.review-page),
+.workspace-main:has(.review-route-fallback) {
+  padding: 0;
+}
+
+@media (min-width: 1040px) {
+  .workspace-app-shell:has(.review-page) {
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .workspace-main:has(.review-page) {
+    min-height: 0;
+    overflow: hidden;
+  }
+}
+
 .workspace-main label:has(> .input) {
   display: grid;
   gap: 0.5rem;

@@ -1,4 +1,4 @@
-import { Link, NavLink, Route, Routes, useLocation } from "react-router-dom";
+import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Enquiry from "./pages/Enquiry";
 import ServiceDetail from "./pages/ServiceDetail";
@@ -13,7 +13,7 @@ import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import { useAuth } from "./context/AuthContext";
-import { ReviewRoute, ReviewSettingsRoute } from "./features/review/routes";
+import { buildAppPath, buildWorkspaceUrl, getWorkspaceOrigin } from "./lib/runtime";
 
 function AuthLinks() {
   const { loading, user, signOut } = useAuth();
@@ -39,6 +39,21 @@ function AuthLinks() {
       <Link to="/register">Register</Link>
     </>
   );
+}
+
+function WorkspaceLink({ children }: { children: string }) {
+  const sameOrigin = getWorkspaceOrigin(window.location) === window.location.origin;
+
+  if (sameOrigin) {
+    return <Link to={buildAppPath("/", { app: "workspace" })}>{children}</Link>;
+  }
+
+  return <a href={buildWorkspaceUrl("/")}>{children}</a>;
+}
+
+function LegacyReviewRedirect() {
+  const { pathname } = useLocation();
+  return <Navigate to={buildAppPath(pathname, { app: "workspace" })} replace />;
 }
 
 function BrandMark() {
@@ -67,35 +82,27 @@ function BrandMark() {
 }
 
 export default function App() {
-  const location = useLocation();
-  const isReviewRoute = location.pathname.startsWith("/review");
-
   return (
-    <div className={`page${isReviewRoute ? " page-review" : " page--lab"}`}>
-      {isReviewRoute ? null : (
-        <header className="site-header site-header--lab lab-night">
-          <a className="skip-link" href="#main-content">
-            Skip to content
-          </a>
-          <div className="container nav">
-            <Link className="brand" to="/">
-              <BrandMark />
-              Altair
-            </Link>
-            <nav className="nav-links" aria-label="Primary">
-              <NavLink to="/services">Services</NavLink>
-              <NavLink to="/enquiry">Enquiry</NavLink>
-              <NavLink to="/contact">Contact</NavLink>
-              <NavLink to="/review">Review</NavLink>
-              <AuthLinks />
-            </nav>
-          </div>
-        </header>
-      )}
-      <main
-        id="main-content"
-        className={`page-content${isReviewRoute ? " page-content-review" : ""}`}
-      >
+    <div className="page page--lab">
+      <header className="site-header site-header--lab lab-night">
+        <a className="skip-link" href="#main-content">
+          Skip to content
+        </a>
+        <div className="container nav">
+          <Link className="brand" to="/">
+            <BrandMark />
+            Altair
+          </Link>
+          <nav className="nav-links" aria-label="Primary">
+            <NavLink to="/services">Services</NavLink>
+            <NavLink to="/enquiry">Enquiry</NavLink>
+            <NavLink to="/contact">Contact</NavLink>
+            <WorkspaceLink>Workspace</WorkspaceLink>
+            <AuthLinks />
+          </nav>
+        </div>
+      </header>
+      <main id="main-content" className="page-content">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
@@ -111,45 +118,43 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/account" element={<Account />} />
           </Route>
-          <Route path="/review" element={<ReviewRoute />} />
-          <Route path="/review/settings" element={<ReviewSettingsRoute />} />
+          <Route path="/review" element={<LegacyReviewRedirect />} />
+          <Route path="/review/settings" element={<LegacyReviewRedirect />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-      {isReviewRoute ? null : (
-        <footer className="footer footer--lab lab-night">
-          <div className="container footer-grid">
-            <div>
-              <p className="brand">
-                <BrandMark />
-                Altair AI LLC
-              </p>
-              <address className="footer-contact">
-                <a href="mailto:qx@altairworld.com">qx@altairworld.com</a>
-                <span>San Francisco Bay Area</span>
-                <span>Mon-Fri, 9am-6pm PST</span>
-              </address>
-            </div>
-            <div className="footer-links">
-              <Link to="/services">Services</Link>
-              <Link to="/enquiry">Enquiry</Link>
-              <Link to="/contact">Contact</Link>
-              <Link to="/review">Review</Link>
-              <AuthLinks />
-            </div>
-            <div>
-              <p className="footer-meta">San Francisco Bay Area</p>
-              <p className="footer-meta">© 2026 Altair AI LLC</p>
-            </div>
+      <footer className="footer footer--lab lab-night">
+        <div className="container footer-grid">
+          <div>
+            <p className="brand">
+              <BrandMark />
+              Altair AI LLC
+            </p>
+            <address className="footer-contact">
+              <a href="mailto:qx@altairworld.com">qx@altairworld.com</a>
+              <span>San Francisco Bay Area</span>
+              <span>Mon-Fri, 9am-6pm PST</span>
+            </address>
           </div>
-          <div className="container lab-footer-mark" aria-hidden="true">
-            <span className="lab-footer-mark-word">Altair</span>
-            <span className="lab-footer-mark-coord">
-              α Aql · RA 19h 50m 47s · Dec +08° 52′ 06″
-            </span>
+          <div className="footer-links">
+            <Link to="/services">Services</Link>
+            <Link to="/enquiry">Enquiry</Link>
+            <Link to="/contact">Contact</Link>
+            <WorkspaceLink>Workspace</WorkspaceLink>
+            <AuthLinks />
           </div>
-        </footer>
-      )}
+          <div>
+            <p className="footer-meta">San Francisco Bay Area</p>
+            <p className="footer-meta">© 2026 Altair AI LLC</p>
+          </div>
+        </div>
+        <div className="container lab-footer-mark" aria-hidden="true">
+          <span className="lab-footer-mark-word">Altair</span>
+          <span className="lab-footer-mark-coord">
+            α Aql · RA 19h 50m 47s · Dec +08° 52′ 06″
+          </span>
+        </div>
+      </footer>
     </div>
   );
 }
