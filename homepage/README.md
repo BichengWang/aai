@@ -102,5 +102,5 @@ The workspace function exposes these routes under `workspace-api`:
 
 ## Notes
 
-- The hero section uses a fixed background image at `public/images/background.png`.
-- You can adjust the overlay and image treatment in `src/index.css` (`.hero-surface`).
+- Homepage (`/`) styles live in `src/home.css`, scoped to `.page--home`, `.home-lab` and `lab-*` classes; shared styles for other routes stay in `src/index.css`.
+- The hero figure is an inline SVG (`src/components/lab/AquilaFigure.tsx`); the homepage uses no background image.

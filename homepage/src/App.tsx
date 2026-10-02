@@ -40,19 +40,48 @@ function AuthLinks() {
   );
 }
 
+function BrandMark() {
+  return (
+    <svg
+      className="lab-brand-mark"
+      viewBox="0 0 20 20"
+      width="22"
+      height="22"
+      aria-hidden="true"
+      focusable="false"
+      fill="currentColor"
+    >
+      <path
+        d="M13.4 3.7 L10 9 L6.6 16.5"
+        fill="none"
+        stroke="currentColor"
+        strokeOpacity=".45"
+        strokeWidth="1"
+      />
+      <circle cx="13.4" cy="3.7" r="2" />
+      <circle cx="10" cy="9" r="3.2" />
+      <circle cx="6.6" cy="16.5" r="2" />
+    </svg>
+  );
+}
+
 export default function App() {
   const location = useLocation();
   const isReviewRoute = location.pathname.startsWith("/review");
+  const isHome = location.pathname === "/";
 
   return (
-    <div className={`page${isReviewRoute ? " page-review" : ""}`}>
+    <div
+      className={`page${isReviewRoute ? " page-review" : ""}${isHome ? " page--home" : ""}`}
+    >
       {isReviewRoute ? null : (
-        <header className="site-header">
+        <header className={`site-header${isHome ? " site-header--home lab-night" : ""}`}>
           <a className="skip-link" href="#main-content">
             Skip to content
           </a>
           <div className="container nav">
             <Link className="brand" to="/">
+              {isHome ? <BrandMark /> : null}
               Altair
             </Link>
             <nav className="nav-links" aria-label="Primary">
@@ -89,10 +118,13 @@ export default function App() {
         </Routes>
       </main>
       {isReviewRoute ? null : (
-        <footer className="footer">
+        <footer className={`footer${isHome ? " footer--home lab-night" : ""}`}>
           <div className="container footer-grid">
             <div>
-              <p className="brand">Altair AI LLC</p>
+              <p className="brand">
+                {isHome ? <BrandMark /> : null}
+                Altair AI LLC
+              </p>
               <address className="footer-contact">
                 <a href="mailto:qx@altairworld.com">qx@altairworld.com</a>
                 <span>San Francisco Bay Area</span>
@@ -111,6 +143,14 @@ export default function App() {
               <p className="footer-meta">© 2026 Altair AI LLC</p>
             </div>
           </div>
+          {isHome ? (
+            <div className="container lab-footer-mark" aria-hidden="true">
+              <span className="lab-footer-mark-word">Altair</span>
+              <span className="lab-footer-mark-coord">
+                α Aql · RA 19h 50m 47s · Dec +08° 52′ 06″
+              </span>
+            </div>
+          ) : null}
         </footer>
       )}
     </div>
