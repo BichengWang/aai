@@ -7,7 +7,7 @@ function WorkspaceNavLink({ to, label }: { to: string; label: string }) {
     <NavLink
       to={buildAppPath(to, { app: "workspace" })}
       className={({ isActive }) => `workspace-nav-link${isActive ? " active" : ""}`}
-      end={to === "/chat"}
+      end={to !== "/review"}
     >
       {label}
     </NavLink>
@@ -29,6 +29,7 @@ export default function WorkspaceShell() {
         </div>
         <nav className="workspace-nav">
           <WorkspaceNavLink to="/chat" label="Chat" />
+          <WorkspaceNavLink to="/review" label="Review" />
           <WorkspaceNavLink to="/keys" label="Keys" />
           <WorkspaceNavLink to="/usage" label="Usage" />
           <WorkspaceNavLink to="/account" label="Account" />

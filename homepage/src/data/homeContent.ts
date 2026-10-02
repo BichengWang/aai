@@ -159,16 +159,16 @@ export const systems: ReadonlyArray<SystemEntry> = [
     description:
       "Upload a DOCX, highlight any passage and ask a language model about it — using your own provider key, model and endpoint.",
     functions: "Documents · LLM chat",
-    status: "Live · No sign-in needed",
+    status: "Live · Altair account",
     cta: "Open the review tool",
-    href: "/review",
+    href: "/review?app=workspace",
   },
   {
     id: "S-03",
     title: "LLM workspace",
     description:
       "A managed chat workspace with provider credentials and usage tracking, on a dedicated host for signed-in Altair accounts.",
-    functions: "Chat · Keys · Usage",
+    functions: "Chat · Review · Keys · Usage",
     status: "Live · Altair account",
     cta: "Open the workspace",
     href: null,

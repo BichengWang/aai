@@ -80,8 +80,8 @@ The workspace function exposes these routes under `workspace-api`:
 
 ## Review workspace
 
-- Visit `/review` to open the DOCX review workspace.
-- Visit `/review/settings` to store the provider connection used by the review workspace in this browser.
+- Visit `/review?app=workspace` (the **Review** item in the workspace sidebar) to open the DOCX review workspace. Signed-out visitors are sent to workspace login first; the old `/review` URL redirects here.
+- Visit `/review/settings?app=workspace` to store the provider connection used by the review workspace in this browser.
 - The chat uses an OpenAI-compatible `/chat/completions` endpoint.
 - If only `VITE_ANTHROPIC_API_KEY` is set, the review workspace now defaults to `https://api.anthropic.com/v1` and `claude-sonnet-4-20250514`.
 - Saved settings override fallback env vars. Supported env vars are `VITE_LLM_API_KEY`, `VITE_LLM_MODEL`, `VITE_LLM_BASE_URL`, plus `VITE_ANTHROPIC_API_KEY`, `VITE_ANTHROPIC_MODEL`, and `VITE_ANTHROPIC_API_URL`.

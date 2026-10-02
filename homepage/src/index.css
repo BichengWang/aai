@@ -245,27 +245,6 @@ img {
 
 /* ---------- Review workspace ---------- */
 
-.page-review {
-  gap: 0;
-}
-
-.page-content-review {
-  flex: 1;
-  gap: 0;
-}
-
-@media (min-width: 1040px) {
-  .page-review {
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  .page-content-review {
-    min-height: 0;
-    overflow: hidden;
-  }
-}
-
 .review-page {
   position: relative;
   min-height: 100%;
@@ -347,14 +326,6 @@ img {
   min-width: 0;
   justify-content: flex-start;
   gap: 16px;
-}
-
-.review-topbar-link {
-  flex-shrink: 0;
-  font-family: var(--lab-font-display);
-  font-size: 1.375rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
 }
 
 .review-topbar-document {

@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from "@testing-library/rea
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import App from "../App";
+import WorkspaceApp from "../apps/WorkspaceApp";
 import * as docxPreview from "docx-preview";
 import JSZip from "jszip";
 
@@ -12,8 +12,8 @@ vi.mock("docx-preview", () => ({
 
 vi.mock("../context/AuthContext", () => ({
   useAuth: () => ({
-    user: null,
-    profile: null,
+    user: { email: "member@altair.test" },
+    profile: { full_name: "Altair Member" },
     loading: false,
     signOut: vi.fn(),
   }),
@@ -559,9 +559,11 @@ describe("Review workspace", () => {
 });
 
 function renderReviewWorkspace(initialEntry = "/review") {
+  window.history.pushState({}, "", `${initialEntry}?app=workspace`);
+
   return render(
-    <MemoryRouter initialEntries={[initialEntry]}>
-      <App />
+    <MemoryRouter initialEntries={[`${initialEntry}?app=workspace`]}>
+      <WorkspaceApp />
     </MemoryRouter>
   );
 }

@@ -25,10 +25,10 @@ export default function WorkspaceApp() {
         <Route path="/register" element={<Register />} />
       </Route>
       <Route element={<ProtectedRoute redirectTo={buildAppPath("/login", { app: "workspace" })} />}>
-        <Route path="/review" element={<ReviewRoute />} />
-        <Route path="/review/settings" element={<ReviewSettingsRoute />} />
         <Route element={<WorkspaceShell />}>
           <Route path="/chat" element={<WorkspaceChat />} />
+          <Route path="/review" element={<ReviewRoute />} />
+          <Route path="/review/settings" element={<ReviewSettingsRoute />} />
           <Route path="/keys" element={<WorkspaceKeys />} />
           <Route path="/usage" element={<WorkspaceUsage />} />
           <Route path="/account" element={<Account />} />

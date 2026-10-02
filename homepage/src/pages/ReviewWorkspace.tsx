@@ -6,8 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { requestReviewResponse } from "../features/review/anthropic";
 import {
   buildReviewDocumentContext,
@@ -26,7 +25,7 @@ import type {
   SelectedExcerpt,
   UploadedDoc,
 } from "../features/review/types";
-import { buildAppPath, getActiveApp } from "../lib/runtime";
+import { buildAppPath } from "../lib/runtime";
 
 type ReviewWorkspaceProps = {
   initialConnectionOpen?: boolean;
@@ -37,10 +36,7 @@ export default function ReviewWorkspace({
   initialConnectionOpen = false,
   settingsEntry = false,
 }: ReviewWorkspaceProps) {
-  const activeApp = getActiveApp();
-  const isWorkspaceApp = activeApp === "workspace";
   const navigate = useNavigate();
-  const { user } = useAuth();
   const fileInputId = "review-docx-upload";
   const viewerRef = useRef<HTMLDivElement | null>(null);
   const composerFormRef = useRef<HTMLFormElement | null>(null);
@@ -58,11 +54,7 @@ export default function ReviewWorkspace({
   const [isRendering, setIsRendering] = useState(false);
   const [isSending, setIsSending] = useState(false);
 
-  const reviewHomePath = buildAppPath("/review", { app: activeApp });
-  const workspaceChatPath = buildAppPath("/chat", { app: "workspace" });
-  const workspaceReviewPath = buildAppPath("/review", { app: "workspace" });
-  const workspaceLoginPath = buildAppPath("/login", { app: "workspace" });
-  const marketingHomePath = buildAppPath("/", { app: "marketing" });
+  const reviewHomePath = buildAppPath("/review", { app: "workspace" });
 
   const configuredApiKey =
     providerConfig.apiKey.trim() ||
@@ -326,15 +318,6 @@ export default function ReviewWorkspace({
     !question.trim() ||
     !hasApiKey ||
     isSending;
-  const utilityLink = isWorkspaceApp
-    ? {
-        label: "Back to chat",
-        to: workspaceChatPath,
-      }
-    : {
-        label: user ? "Open workspace" : "Workspace sign in",
-        to: user ? workspaceReviewPath : workspaceLoginPath,
-      };
 
   return (
     <section className="review-page">
@@ -351,12 +334,6 @@ export default function ReviewWorkspace({
       <div className="review-shell">
         <header className="review-topbar lab-night">
           <div className="review-topbar-brand">
-            <Link
-              className="review-topbar-link"
-              to={isWorkspaceApp ? workspaceChatPath : marketingHomePath}
-            >
-              {isWorkspaceApp ? "Altair Workspace" : "Altair Review"}
-            </Link>
             <div className="review-topbar-document">
               <strong>{uploadedDoc?.name ?? "No document loaded"}</strong>
               <span>
@@ -378,9 +355,6 @@ export default function ReviewWorkspace({
             <button className="button ghost" onClick={openConnection} type="button">
               Connection
             </button>
-            <Link className="button ghost" to={utilityLink.to}>
-              {utilityLink.label}
-            </Link>
           </div>
         </header>
 
