@@ -1,34 +1,45 @@
-import { CSSProperties } from "react";
-import { quotes } from "../data/homeContent";
+import { quotes, stats } from "../data/homeContent";
+import LabSectionHead from "./LabSectionHead";
 
 export default function SocialProof() {
   return (
-    <section className="section">
+    <section id="field-notes" className="lab-section" aria-labelledby="lab-field-notes-title">
       <div className="container">
-        <div className="section-header">
-          <span className="pill">Trust</span>
-          <h2 className="section-title">Trusted by local clients</h2>
-          <p className="section-subtitle">
-            Clear communication, vetted providers, and a process that respects
-            your time.
-          </p>
+        <LabSectionHead
+          index="06"
+          label="Field notes"
+          titleId="lab-field-notes-title"
+          title="What clients tell us"
+          intro="Clear communication, vetted providers, and a process that respects your time."
+        />
+        <div className="lab-grid">
+          <div className="lab-offset">
+            <p className="lab-statline">
+              <span>
+                <span className="lab-micro">Client satisfaction</span>{" "}
+                <span className="lab-data">{stats.clientSatisfaction}</span>
+              </span>
+              <span>
+                <span className="lab-micro">Response rate</span>{" "}
+                <span className="lab-data">{stats.responseRate}</span>
+              </span>
+            </p>
+          </div>
         </div>
-        <div className="quote-grid">
-          {quotes.map((item, index) => (
-            <figure
-              key={item.quote}
-              className="quote-card"
-              style={{ "--i": index } as CSSProperties}
-            >
-              <blockquote>
-                <p>{item.quote}</p>
-              </blockquote>
-              <figcaption>
-                <cite className="quote-name">{item.name}</cite>
-              </figcaption>
-            </figure>
+        <ul className="lab-quotes" role="list">
+          {quotes.map((item) => (
+            <li key={item.quote}>
+              <figure className="lab-quote lab-reveal">
+                <blockquote>
+                  <p>{`“${item.quote}”`}</p>
+                </blockquote>
+                <figcaption>
+                  <cite className="lab-micro">— {item.name}</cite>
+                </figcaption>
+              </figure>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );
