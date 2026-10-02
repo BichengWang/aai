@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import LabSectionHead from "./LabSectionHead";
 
 export default function Contact() {
   const [sent, setSent] = useState(false);
@@ -9,68 +10,70 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="section">
-      <div className="container contact-grid">
-        <div>
-          <span className="pill">Contact</span>
-          <h2 className="section-title">Start with a quick message</h2>
-          <p className="section-subtitle">
-            Tell us what you need and we will help you connect with trusted
-            local providers.
-          </p>
-          <div className="contact-card">
-            <div className="contact-item">
-              <span className="contact-label">Location</span>
-              <span>San Francisco Bay Area</span>
+    <section id="contact" className="lab-section lab-contact" aria-labelledby="lab-contact-title">
+      <div className="container">
+        <LabSectionHead
+          index="08"
+          label="Contact"
+          titleId="lab-contact-title"
+          title="Start with a quick message"
+          intro="Tell us what you need and we will help you connect with trusted local providers."
+        />
+        <div className="lab-grid lab-contact-grid">
+          <form className="lab-form" onSubmit={handleSubmit}>
+            <label className="lab-field">
+              Name
+              <input
+                className="lab-input"
+                type="text"
+                placeholder="Your name"
+                autoComplete="name"
+                required
+              />
+            </label>
+            <label className="lab-field">
+              Email
+              <input
+                className="lab-input"
+                type="email"
+                placeholder="name@email.com"
+                autoComplete="email"
+                required
+              />
+            </label>
+            <label className="lab-field">
+              Send us what you need
+              <textarea
+                className="lab-input lab-textarea"
+                placeholder="Tell us about the service you need..."
+                required
+              />
+            </label>
+            <button className="lab-btn lab-btn--primary" type="submit" disabled={sent}>
+              {sent ? "Message sent" : "Send message"}
+            </button>
+            {sent ? (
+              <p className="lab-form-status" role="status" aria-live="polite">
+                <span className="lab-dot" aria-hidden="true" />
+                Thanks! We received your message and will follow up soon.
+              </p>
+            ) : null}
+          </form>
+          <dl className="lab-contact-details">
+            <div>
+              <dt className="lab-micro">Location</dt>
+              <dd>San Francisco Bay Area</dd>
             </div>
-            <div className="contact-item">
-              <span className="contact-label">Email</span>
-              <span>qx@altairworld.com</span>
+            <div>
+              <dt className="lab-micro">Email</dt>
+              <dd>qx@altairworld.com</dd>
             </div>
-            <div className="contact-item">
-              <span className="contact-label">Hours</span>
-              <span>Mon-Fri, 9am-6pm PST</span>
+            <div>
+              <dt className="lab-micro">Hours</dt>
+              <dd>Mon-Fri, 9am-6pm PST</dd>
             </div>
-          </div>
+          </dl>
         </div>
-        <form className="contact-card" onSubmit={handleSubmit}>
-          <label>
-            Name
-            <input
-              className="input"
-              type="text"
-              placeholder="Your name"
-              autoComplete="name"
-              required
-            />
-          </label>
-          <label>
-            Email
-            <input
-              className="input"
-              type="email"
-              placeholder="name@email.com"
-              autoComplete="email"
-              required
-            />
-          </label>
-          <label>
-            Send us what you need
-            <textarea
-              className="input textarea"
-              placeholder="Tell us about the service you need..."
-              required
-            />
-          </label>
-          <button className="button" type="submit" disabled={sent}>
-            {sent ? "Message sent" : "Send message"}
-          </button>
-          {sent ? (
-            <p className="form-success" role="status" aria-live="polite">
-              Thanks! We received your message and will follow up soon.
-            </p>
-          ) : null}
-        </form>
       </div>
     </section>
   );

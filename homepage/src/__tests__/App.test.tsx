@@ -15,7 +15,7 @@ describe("Altair homepage", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: /local services, matched by ai/i,
+        name: /applied ai for the services people rely on/i,
       })
     ).toBeInTheDocument();
     expect(

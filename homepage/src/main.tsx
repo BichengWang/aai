@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { getAuthCallbackPathFromHash, getRouterBasename } from "./lib/runtime";
 import "./index.css";
 import "./workspace.css";
+import "./home.css";
 
 const root = document.getElementById("root");
 
