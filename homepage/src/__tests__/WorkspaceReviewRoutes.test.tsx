@@ -30,6 +30,7 @@ describe("workspace review routes", () => {
     expect(reviewLink).toHaveClass("active");
     expect(screen.getByRole("link", { name: "Chat" })).not.toHaveClass("active");
     expect(screen.getByText(/managed llm routing/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /back to home/i })).toHaveAttribute("href", "/");
   });
 
   it("opens the shared review surface with the connection drawer from the compatibility route", async () => {

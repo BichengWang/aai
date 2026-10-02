@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { buildAppPath, buildWorkspaceUrl } from "../lib/runtime";
 
@@ -20,6 +20,9 @@ export default function WorkspaceShell() {
   return (
     <div className="workspace-app-shell">
       <aside className="workspace-sidebar lab-night">
+        <Link className="text-link workspace-back-link" to={buildAppPath("/", { app: "marketing" })}>
+          <span aria-hidden="true">←</span> Back to home
+        </Link>
         <div className="workspace-brand-block">
           <span className="pill">Altair Workspace</span>
           <h1>Managed LLM routing</h1>
