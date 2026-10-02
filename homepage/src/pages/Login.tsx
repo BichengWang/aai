@@ -44,54 +44,61 @@ export default function Login() {
     : appendNextSearchParam(buildAppPath("/register"), from);
 
   return (
-    <section className="page-section">
-      <div className="container auth-shell">
-        <div className="auth-copy">
-          <span className="pill">Login</span>
-          <h1 className="section-title">Welcome back to Altair</h1>
-          <p className="section-subtitle">
+    <section className="lab-page lab-auth">
+      <div className="container lab-grid lab-auth-grid">
+        <div className="lab-auth-copy">
+          <p className="lab-kicker lab-micro">
+            <span>Account</span>
+            <span className="lab-kicker-sep" aria-hidden="true">
+              /
+            </span>
+            <span>Login</span>
+          </p>
+          <h1 className="lab-h1">Welcome back to Altair</h1>
+          <p className="lab-lede">
             Continue with Google OAuth to access your account and resume any pending authorization.
           </p>
-          <div className="bullet-list">
-            <div className="bullet-item">
-              <span aria-hidden="true">01</span>
+          <ol className="lab-ruled lab-ruled--numbered" role="list">
+            <li>
+              <span className="lab-micro" aria-hidden="true">01</span>
               <span>Single OAuth sign-in flow across marketing and workspace access</span>
-            </div>
-            <div className="bullet-item">
-              <span aria-hidden="true">02</span>
+            </li>
+            <li>
+              <span className="lab-micro" aria-hidden="true">02</span>
               <span>Supabase-managed session handling and callback recovery</span>
-            </div>
-            <div className="bullet-item">
-              <span aria-hidden="true">03</span>
+            </li>
+            <li>
+              <span className="lab-micro" aria-hidden="true">03</span>
               <span>Automatic return to the OAuth consent screen when an app requested access</span>
-            </div>
-          </div>
+            </li>
+          </ol>
         </div>
-        <div className="card-panel form-panel auth-card">
+        <div className="lab-auth-card">
+          <p className="lab-micro lab-auth-card-head">Sign in · Google OAuth</p>
           {!authConfigured ? (
-            <p className="status-banner warning">{getMissingConfigMessage()}</p>
+            <p className="lab-notice lab-notice--warning">{getMissingConfigMessage()}</p>
           ) : null}
           {effectiveMessage ? (
-            <p className="status-banner error" role="alert">
+            <p className="lab-notice lab-notice--error" role="alert">
               {effectiveMessage}
             </p>
           ) : null}
           {authorizationId ? (
-            <p className="status-banner success">
+            <p className="lab-notice lab-notice--success">
               Sign in first, then we will send you to the Altair consent screen to finish authorization.
             </p>
           ) : null}
           <button
-            className="button"
+            className="lab-btn lab-btn--primary lab-btn--block"
             type="button"
             onClick={handleGoogleSignIn}
             disabled={submitting || !authConfigured}
           >
             {submitting ? "Redirecting to Google..." : "Continue with Google"}
           </button>
-          <p className="auth-switch">
+          <p className="lab-auth-switch">
             Need a new account?{" "}
-            <Link className="text-link" to={switchPath} state={{ from }}>
+            <Link className="lab-link" to={switchPath} state={{ from }}>
               Register with Google
             </Link>
           </p>

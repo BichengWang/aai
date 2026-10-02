@@ -19,7 +19,7 @@ export default function WorkspaceShell() {
 
   return (
     <div className="workspace-app-shell">
-      <aside className="workspace-sidebar">
+      <aside className="workspace-sidebar lab-night">
         <div className="workspace-brand-block">
           <span className="pill">Altair Workspace</span>
           <h1>Managed LLM routing</h1>

@@ -68,20 +68,26 @@ export default function AuthCallback() {
   }, [authConfigured, navigate, refreshProfile, searchParams]);
 
   return (
-    <section className="page-section">
-      <div className="container auth-shell single">
-        <div className="card-panel auth-card status-card">
-          <span className="pill">Auth callback</span>
-          <h1 className="section-title">{status}</h1>
-          <p className="section-subtitle">
+    <section className="lab-page lab-auth">
+      <div className="container lab-grid lab-auth-grid lab-auth-grid--single">
+        <div className="lab-auth-copy">
+          <p className="lab-kicker lab-micro">
+            <span>Account</span>
+            <span className="lab-kicker-sep" aria-hidden="true">
+              /
+            </span>
+            <span>Auth callback</span>
+          </p>
+          <h1 className="lab-h1">{status}</h1>
+          <p className="lab-lede">
             We are finishing the Supabase OAuth return and syncing your profile record.
           </p>
           {error ? (
-            <p className="status-banner error" role="alert">
+            <p className="lab-notice lab-notice--error" role="alert">
               {error}
             </p>
           ) : (
-            <p className="status-banner success">Redirecting you now...</p>
+            <p className="lab-notice lab-notice--success">Redirecting you now...</p>
           )}
         </div>
       </div>

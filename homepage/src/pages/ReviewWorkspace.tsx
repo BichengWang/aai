@@ -349,7 +349,7 @@ export default function ReviewWorkspace({
       />
 
       <div className="review-shell">
-        <header className="review-topbar">
+        <header className="review-topbar lab-night">
           <div className="review-topbar-brand">
             <Link
               className="review-topbar-link"

@@ -1,164 +1,222 @@
-import { CSSProperties } from "react";
 import { Link, useParams } from "react-router-dom";
+import LabSectionHead from "../components/LabSectionHead";
+import LabPageHead from "../components/lab/LabPageHead";
+import ServicePlate from "../components/lab/ServicePlate";
 import { services } from "../data/services";
+
+const arrow = (
+  <span className="lab-btn-arrow" aria-hidden="true">
+    →
+  </span>
+);
 
 export default function ServiceDetail() {
   const { slug } = useParams();
-  const service = services.find((item) => item.slug === slug);
+  const index = services.findIndex((item) => item.slug === slug);
+  const service = services[index];
 
   if (!service) {
     return (
-      <section className="page-section">
-        <div className="container">
-          <h1 className="section-title">Service not found</h1>
-          <p className="section-subtitle">
-            The service you are looking for is not available yet.
-          </p>
-          <Link className="button" to="/services">
-            Back to services
-          </Link>
-        </div>
-      </section>
+      <div className="lab-page">
+        <LabPageHead
+          kicker={["Services", "Not found"]}
+          title="Service not found"
+          lede="The service you are looking for is not available yet."
+          actions={
+            <Link className="lab-btn lab-btn--primary" to="/services">
+              Back to services
+            </Link>
+          }
+        />
+      </div>
     );
   }
 
+  const id = `D-0${index + 1}`;
+
   return (
-    <>
-      <section className="page-section service-hero">
-        <div className="container split-layout">
-          <div>
-            <span className="pill">{service.tag}</span>
-            <p className="eyebrow">{service.tagline}</p>
-            <h1 className="section-title">{service.title}</h1>
-            <p className="section-subtitle">{service.description}</p>
-            <div className="bullet-list">
-              {service.highlights.map((highlight) => (
-                <div key={highlight} className="bullet-item">
-                  <span aria-hidden="true">+</span>
-                  <span>{highlight}</span>
-                </div>
-              ))}
-            </div>
-            <div className="hero-actions">
-              <Link className="button" to="/enquiry">
-                Start an enquiry
-              </Link>
-              <Link className="button ghost" to="/services">
-                Back to services
-              </Link>
-              {service.websiteUrl && (
-                <a className="button ghost" href={service.websiteUrl} target="_blank" rel="noopener noreferrer">
-                  Visit website
-                </a>
-              )}
-            </div>
-          </div>
-          <div className="card-panel service-media">
-            <img src={service.image} alt={service.title} />
-            <div className="service-metrics">
-              {service.outcomes.map((metric) => (
-                <div key={metric.label} className="metric-item">
-                  <p className="metric-value">{metric.value}</p>
-                  <p className="metric-label">{metric.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="container split-layout">
-          <div className="card-panel">
-            <h2>Who this is for</h2>
-            <div className="stack-list">
-              {service.suitedFor.map((item) => (
-                <span key={item} className="stack-item">
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="card-panel">
-            <h2>What you receive</h2>
-            <div className="stack-list">
-              {service.deliverables.map((item) => (
-                <span key={item} className="stack-item">
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section alt">
-        <div className="container">
-          <div className="section-header">
-            <span className="pill">Process</span>
-            <h2 className="section-title">A clear intake timeline</h2>
-            <p className="section-subtitle">
-              Every request includes transparent steps and status updates.
-            </p>
-          </div>
-          <div className="timeline-grid">
-            {service.timeline.map((step, index) => (
-              <article
-                key={step.title}
-                className="timeline-card"
-                style={{ "--i": index } as CSSProperties}
+    <div className="lab-page">
+      <LabPageHead
+        kicker={["Services", `${id} · ${service.tag}`]}
+        title={service.title}
+        lede={service.description}
+        actions={
+          <>
+            <Link className="lab-btn lab-btn--primary" to="/enquiry">
+              Start an enquiry
+              {arrow}
+            </Link>
+            <Link className="lab-btn lab-btn--ghost" to="/services">
+              Back to services
+            </Link>
+            {service.websiteUrl ? (
+              <a
+                className="lab-btn lab-btn--ghost"
+                href={service.websiteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <span className="step-index">0{index + 1}</span>
-                <h3>{step.title}</h3>
-                <p>{step.description}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+                Visit website
+              </a>
+            ) : null}
+          </>
+        }
+        aside={
+          <ServicePlate
+            id={id}
+            tag={service.tag}
+            index={index}
+            caption={`Fig. ${id} — ${service.tagline}`}
+          />
+        }
+      />
 
-      <section className="section">
-        <div className="container split-layout">
-          <div>
-            <span className="pill">Compliance</span>
-            <h2 className="section-title">Compliance and care built in</h2>
-            <p className="section-subtitle">
-              We keep intake aligned with regulatory requirements and protect
-              your information at every step.
-            </p>
-          </div>
-          <div className="card-panel">
-            <div className="stack-list">
-              {service.compliance.map((item) => (
-                <span key={item} className="stack-item">
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section">
+      <section className="lab-section lab-section--tight" aria-label="Outcomes">
         <div className="container">
-          <div className="section-header">
-            <span className="pill">FAQ</span>
-            <h2 className="section-title">Service questions</h2>
-          </div>
-          <div className="faq-grid">
-            {service.faqs.map((item, index) => (
-              <div
-                key={item.question}
-                className="faq-card"
-                style={{ "--i": index } as CSSProperties}
-              >
-                <h3>{item.question}</h3>
-                <p>{item.answer}</p>
+          <dl className="lab-stats">
+            {service.outcomes.map((metric) => (
+              <div key={metric.label} className="lab-stat">
+                <dt className="lab-micro">{metric.label}</dt>
+                <dd className="lab-metric-value">{metric.value}</dd>
               </div>
             ))}
+          </dl>
+        </div>
+      </section>
+
+      <section className="lab-section" aria-labelledby="svc-scope-title">
+        <div className="container">
+          <LabSectionHead
+            index="01"
+            label="Scope"
+            titleId="svc-scope-title"
+            title="Who this is for, and what you receive"
+          />
+          <div className="lab-grid">
+            <div className="lab-offset lab-columns">
+              <div className="lab-reveal">
+                <h3 className="lab-micro lab-list-title">Suited for</h3>
+                <ul className="lab-ruled" role="list">
+                  {service.suitedFor.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="lab-reveal">
+                <h3 className="lab-micro lab-list-title">Deliverables</h3>
+                <ul className="lab-ruled" role="list">
+                  {service.deliverables.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="lab-reveal">
+                <h3 className="lab-micro lab-list-title">Highlights</h3>
+                <ul className="lab-ruled" role="list">
+                  {service.highlights.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </section>
-    </>
+
+      <section className="lab-section lab-section--band" aria-labelledby="svc-process-title">
+        <div className="container">
+          <LabSectionHead
+            index="02"
+            label="Process"
+            titleId="svc-process-title"
+            title="A clear intake timeline"
+            intro="Every request includes transparent steps and status updates."
+          />
+          <div className="lab-steps-wrap">
+            <span className="lab-steps-progress" aria-hidden="true" />
+            <ol className="lab-steps" role="list">
+              {service.timeline.map((step, stepIndex) => (
+                <li key={step.title} className="lab-step lab-reveal">
+                  <span className="lab-step-node" aria-hidden="true" />
+                  <p className="lab-micro">{`Step 0${stepIndex + 1}`}</p>
+                  <h3 className="lab-h3">{step.title}</h3>
+                  <p className="lab-body">{step.description}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section className="lab-section" aria-labelledby="svc-compliance-title">
+        <div className="container">
+          <LabSectionHead
+            index="03"
+            label="Compliance"
+            titleId="svc-compliance-title"
+            title="Compliance and care built in"
+            intro="We keep intake aligned with regulatory requirements and protect your information at every step."
+          />
+          <div className="lab-grid">
+            <ol className="lab-ruled lab-ruled--numbered lab-offset lab-reveal" role="list">
+              {service.compliance.map((item, itemIndex) => (
+                <li key={item}>
+                  <span className="lab-micro" aria-hidden="true">
+                    {`C-0${itemIndex + 1}`}
+                  </span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section className="lab-section" aria-labelledby="svc-faq-title">
+        <div className="container">
+          <LabSectionHead index="04" label="FAQ" titleId="svc-faq-title" title="Service questions" />
+          <div className="lab-grid">
+            <div className="lab-faq lab-offset lab-reveal">
+              {service.faqs.map((item, faqIndex) => (
+                <details key={item.question} className="lab-faq-item">
+                  <summary>
+                    <span className="lab-faq-num lab-micro" aria-hidden="true">
+                      {`Q${faqIndex + 1}`}
+                    </span>
+                    <span className="lab-faq-q">{item.question}</span>
+                    <span className="lab-faq-icon" aria-hidden="true" />
+                  </summary>
+                  <p className="lab-faq-a">{item.answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="lab-section lab-section--band" aria-labelledby="svc-cta-title">
+        <div className="container lab-grid lab-cta">
+          <p className="lab-label">Next step</p>
+          <div className="lab-cta-main">
+            <h2 id="svc-cta-title" className="lab-h2">
+              Ready when you are.
+            </h2>
+            <p className="lab-intro">
+              Share your timeline and location; we confirm availability and send
+              clear next steps.
+            </p>
+            <div className="lab-pagehead-actions">
+              <Link className="lab-btn lab-btn--primary" to="/enquiry">
+                Start an enquiry
+                {arrow}
+              </Link>
+              <Link className="lab-link" to="/services">
+                See all services
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }

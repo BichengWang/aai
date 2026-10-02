@@ -44,48 +44,62 @@ export default function Register() {
     : appendNextSearchParam(buildAppPath("/login"), from);
 
   return (
-    <section className="page-section">
-      <div className="container auth-shell">
-        <div className="auth-copy">
-          <span className="pill">Register</span>
-          <h1 className="section-title">Create your Altair account</h1>
-          <p className="section-subtitle">
+    <section className="lab-page lab-auth">
+      <div className="container lab-grid lab-auth-grid">
+        <div className="lab-auth-copy">
+          <p className="lab-kicker lab-micro">
+            <span>Account</span>
+            <span className="lab-kicker-sep" aria-hidden="true">
+              /
+            </span>
+            <span>Register</span>
+          </p>
+          <h1 className="lab-h1">Create your Altair account</h1>
+          <p className="lab-lede">
             Registration now uses Google OAuth only, so account creation and sign-in follow the same Supabase flow.
           </p>
-          <div className="card-panel">
-            <h3>What you get</h3>
-            <div className="stack-list">
-              <div className="stack-item">A single Google identity for account creation and future sign-in</div>
-              <div className="stack-item">Profile provisioning in Supabase as soon as the session is established</div>
-              <div className="stack-item">Automatic return to Altair OAuth consent when registration started from an app</div>
-            </div>
-          </div>
+          <h2 className="lab-micro lab-list-title">What you get</h2>
+          <ol className="lab-ruled lab-ruled--numbered" role="list">
+            <li>
+              <span className="lab-micro" aria-hidden="true">01</span>
+              <span>A single Google identity for account creation and future sign-in</span>
+            </li>
+            <li>
+              <span className="lab-micro" aria-hidden="true">02</span>
+              <span>Profile provisioning in Supabase as soon as the session is established</span>
+            </li>
+            <li>
+              <span className="lab-micro" aria-hidden="true">03</span>
+              <span>Automatic return to Altair OAuth consent when registration started from an app</span>
+            </li>
+          </ol>
         </div>
-        <div className="card-panel form-panel auth-card">
+        <div className="lab-auth-card">
+          <p className="lab-micro lab-auth-card-head">Register · Google OAuth</p>
           {!authConfigured ? (
-            <p className="status-banner warning">{getMissingConfigMessage()}</p>
+            <p className="lab-notice lab-notice--warning">{getMissingConfigMessage()}</p>
           ) : null}
           {effectiveError ? (
-            <p className="status-banner error" role="alert">
+            <p className="lab-notice lab-notice--error" role="alert">
               {effectiveError}
             </p>
           ) : null}
           {authorizationId ? (
-            <p className="status-banner success">
+            <p className="lab-notice lab-notice--success">
               Finish Google sign-in first. You will return to the Altair consent screen after registration completes.
             </p>
           ) : null}
           <button
-            className="button"
+            className="lab-btn lab-btn--primary lab-btn--block"
             type="button"
             onClick={handleGoogleSignIn}
             disabled={submitting || !authConfigured}
           >
             {submitting ? "Redirecting to Google..." : "Register with Google"}
           </button>
-          <p className="auth-switch">
+          <p className="lab-auth-switch">
             Already registered?{" "}
-            <Link className="text-link" to={switchPath} state={{ from }}>
+            <Link className="lab-link" to={switchPath} state={{ from }}>
               Sign in with Google
             </Link>
           </p>
