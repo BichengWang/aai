@@ -9,6 +9,7 @@ import Register from "./pages/Register";
 import Account from "./pages/Account";
 import AuthCallback from "./pages/AuthCallback";
 import OAuthConsent from "./pages/OAuthConsent";
+import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import { useAuth } from "./context/AuthContext";
@@ -112,6 +113,7 @@ export default function App() {
           </Route>
           <Route path="/review" element={<ReviewRoute />} />
           <Route path="/review/settings" element={<ReviewSettingsRoute />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       {isReviewRoute ? null : (
