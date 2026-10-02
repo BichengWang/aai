@@ -64,7 +64,7 @@ test("homepage lab layout holds at 360px and links every service", async ({ page
   await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
 
   for (const slug of ["financial-planning", "legal-services", "local-car-rental", "pet-sitting"]) {
-    await expect(page.locator(`.home-lab a[href$="/services/${slug}"]`)).toHaveCount(1);
+    await expect(page.locator(`.lab-page a[href$="/services/${slug}"]`)).toHaveCount(1);
   }
 
   await expect(page.getByRole("link", { name: "Visit website" })).toHaveAttribute(
@@ -73,21 +73,38 @@ test("homepage lab layout holds at 360px and links every service", async ({ page
   );
 });
 
-test("homepage dark chrome stays scoped to the homepage", async ({ page }) => {
+test("lab chrome and page head apply across the marketing site", async ({ page }) => {
   await page.goto("/");
-
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#0b0c10");
-  await expect(page.locator("header.site-header")).toHaveClass(/site-header--home/);
+  await expect(page.locator("header.site-header")).toHaveClass(/site-header--lab/);
 
-  await page.getByRole("link", { name: "Open the review tool" }).click();
-  await expect(page).toHaveURL(/\/review$/);
+  const routes: Array<[string, RegExp]> = [
+    ["/services", /find the right local service/i],
+    ["/services/legal-services", /legal services discovery/i],
+    ["/enquiry", /tell us what you need/i],
+    ["/contact", /talk with the altair team/i],
+    ["/login", /welcome back to altair/i],
+    ["/no-such-page", /this page is not on the chart/i],
+  ];
 
-  await page.goto("/");
-  await page.getByRole("link", { name: "Browse services" }).click();
-  await expect(page).toHaveURL(/\/services$/);
-  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#f5efe6");
-  await expect(page.locator(".page--home")).toHaveCount(0);
-  await expect(page.locator("header.site-header")).not.toHaveClass(/site-header--home/);
+  for (const [path, heading] of routes) {
+    await page.goto(path);
+    await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
+    await expect(page.locator("header.site-header")).toHaveClass(/site-header--lab/);
+    await expect(page.locator("footer.footer")).toHaveClass(/footer--lab/);
+    await expect(page.locator(".page--lab .lab-page")).toHaveCount(1);
+  }
+
+  await page.setViewportSize({ width: 360, height: 800 });
+  for (const [path] of routes) {
+    await page.goto(path);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+      ),
+      `${path} has no horizontal scroll at 360px`
+    ).toBeLessThanOrEqual(0);
+  }
 });
 
 test("homepage motion respects reduced motion", async ({ page }) => {

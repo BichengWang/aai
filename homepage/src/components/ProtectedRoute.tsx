@@ -13,8 +13,8 @@ export default function ProtectedRoute({ redirectTo = "/login" }: ProtectedRoute
 
   if (loading) {
     return (
-      <section className="page-section">
-        <div className="container route-loading">Checking your session...</div>
+      <section className="lab-page lab-auth">
+        <div className="container route-loading lab-micro">Checking your session...</div>
       </section>
     );
   }
