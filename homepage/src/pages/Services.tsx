@@ -89,7 +89,7 @@ export default function Services() {
               <Link className="lab-btn lab-btn--primary" to="/enquiry">
                 Start an enquiry
               </Link>
-              <Link className="lab-btn lab-btn--ghost" to="/contact">
+              <Link className="lab-btn lab-btn--ghost" to="/enquiry">
                 Contact the team
               </Link>
             </div>

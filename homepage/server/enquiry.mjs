@@ -1,7 +1,7 @@
 const MAX_BODY_BYTES = 32_768;
 const EMAIL = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const SERVICES = new Set(["financial-planning", "legal-services", "local-car-rental", "pet-sitting"]);
+const SERVICES = new Set(["financial-planning", "legal-services", "local-car-rental", "pet-sitting", "general"]);
 const TOPICS = new Set(["services", "partnerships", "support"]);
 const TIMELINES = new Set(["24-hours", "week", "flexible"]);
 
