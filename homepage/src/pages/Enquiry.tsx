@@ -1,4 +1,6 @@
-import { FormEvent, useState } from "react";
+import { useEnquiryForm } from "../lib/useEnquiryForm";
+import EnquiryFormStatus from "../components/EnquiryFormStatus";
+import EnquiryHoneypot from "../components/EnquiryHoneypot";
 import { Link } from "react-router-dom";
 import LabPageHead from "../components/lab/LabPageHead";
 import { services } from "../data/services";
@@ -10,12 +12,7 @@ const commitments = [
 ];
 
 export default function Enquiry() {
-  const [sent, setSent] = useState(false);
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSent(true);
-  };
+  const { pending, sent, error, handleSubmit } = useEnquiryForm("enquiry");
 
   return (
     <div className="lab-page">
@@ -48,64 +45,65 @@ export default function Enquiry() {
               </p>
             </div>
           </aside>
-          <form className="lab-form lab-intake-form" onSubmit={handleSubmit}>
-            <div className="lab-form-row">
+          <form className="lab-form lab-intake-form" onSubmit={handleSubmit} aria-busy={pending}>
+            <fieldset className="form-fields" disabled={pending || sent}>
+              <EnquiryHoneypot />
+              <div className="lab-form-row">
+                <label className="lab-field">
+                  Name
+                  <input className="lab-input" type="text" name="name" maxLength={120} autoComplete="name" required />
+                </label>
+                <label className="lab-field">
+                  Email
+                  <input className="lab-input" type="email" name="email" maxLength={254} autoComplete="email" required />
+                </label>
+              </div>
+              <div className="lab-form-row">
+                <label className="lab-field">
+                  Postcode
+                  <input className="lab-input" type="text" name="postcode" maxLength={20} autoComplete="postal-code" required />
+                </label>
+                <label className="lab-field">
+                  Timeline
+                  <select className="lab-input lab-select" name="timeline" required>
+                    <option value="">Choose a timeline</option>
+                    <option value="24-hours">Within 24 hours</option>
+                    <option value="week">Within a week</option>
+                    <option value="flexible">Flexible</option>
+                  </select>
+                </label>
+              </div>
               <label className="lab-field">
-                Name
-                <input className="lab-input" type="text" autoComplete="name" required />
-              </label>
-              <label className="lab-field">
-                Email
-                <input className="lab-input" type="email" autoComplete="email" required />
-              </label>
-            </div>
-            <div className="lab-form-row">
-              <label className="lab-field">
-                Postcode
-                <input className="lab-input" type="text" autoComplete="postal-code" required />
-              </label>
-              <label className="lab-field">
-                Timeline
-                <select className="lab-input lab-select" required>
-                  <option value="">Choose a timeline</option>
-                  <option value="24-hours">Within 24 hours</option>
-                  <option value="week">Within a week</option>
-                  <option value="flexible">Flexible</option>
+                Service needed
+                <select className="lab-input lab-select" name="service" required>
+                  <option value="">Select a service</option>
+                  {services.map((service) => (
+                    <option key={service.slug} value={service.slug}>
+                      {service.title}
+                    </option>
+                  ))}
                 </select>
               </label>
-            </div>
-            <label className="lab-field">
-              Service needed
-              <select className="lab-input lab-select" required>
-                <option value="">Select a service</option>
-                {services.map((service) => (
-                  <option key={service.slug} value={service.slug}>
-                    {service.title}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="lab-field">
-              Tell us what you need
-              <textarea
-                className="lab-input lab-textarea"
-                placeholder="Share a few details..."
-                required
-              />
-            </label>
-            <div className="lab-form-actions">
-              <button className="lab-btn lab-btn--primary" type="submit">
-                Submit enquiry
-              </button>
-              <Link className="lab-link" to="/services">
-                Back to services
-              </Link>
-            </div>
-            {sent ? (
-              <p className="lab-form-status" role="status">
-                Thanks! We received your enquiry and will follow up soon.
-              </p>
-            ) : null}
+              <label className="lab-field">
+                Tell us what you need
+                <textarea
+                  className="lab-input lab-textarea"
+                  name="message"
+                  maxLength={5000}
+                  placeholder="Share a few details..."
+                  required
+                />
+              </label>
+              <div className="lab-form-actions">
+                <button className="lab-btn lab-btn--primary" type="submit">
+                  {pending ? "Sending..." : sent ? "Enquiry sent" : "Submit enquiry"}
+                </button>
+                <Link className="lab-link" to="/services">
+                  Back to services
+                </Link>
+              </div>
+            </fieldset>
+            <EnquiryFormStatus error={error} sent={sent} kind="enquiry" />
           </form>
         </div>
       </section>

@@ -10,7 +10,8 @@
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
     "test:e2e": "playwright test",
-    "test": "npm run test:unit"
+    "test:server": "node --test server/enquiry.test.mjs",
+    "test": "npm run test:unit && npm run test:server"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.99.1",

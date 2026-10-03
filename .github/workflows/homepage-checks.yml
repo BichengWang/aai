@@ -7,6 +7,7 @@ on:
   pull_request:
     paths:
       - "homepage/**"
+      - "netlify.toml"
       - ".github/workflows/homepage-checks.yml"
 
 permissions:
@@ -34,6 +35,15 @@ jobs:
 
       - name: Unit tests
         run: npm run test:unit
+
+      - name: Email endpoint tests
+        run: npm run test:server
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Enquiry end-to-end tests
+        run: npx playwright test e2e/enquiry.spec.ts
 
       - name: Verify production build
         run: npm run build

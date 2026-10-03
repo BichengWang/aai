@@ -55,7 +55,7 @@ export function getRouterBasename(locationLike: LocationLike = window.location) 
   if (
     locationLike.hostname.toLowerCase() === "bichengwang.github.io" &&
     (locationLike.pathname === GITHUB_PAGES_REPOSITORY_PATH ||
-      locationLike.pathname.startsWith(`${GITHUB_PAGES_REPOSITORY_PATH}/`))
+      locationLike.pathname?.startsWith(`${GITHUB_PAGES_REPOSITORY_PATH}/`))
   ) {
     return GITHUB_PAGES_REPOSITORY_PATH;
   }

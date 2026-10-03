@@ -1,10 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { enquiryPlugin } from "./server/viteEnquiryPlugin.mjs";
 
 export default defineConfig({
   base: "/",
   envPrefix: ["VITE_", "NEXT_PUBLIC_"],
-  plugins: [react()],
+  plugins: [react(), enquiryPlugin()],
   build: {
     chunkSizeWarningLimit: 550,
     rollupOptions: {
