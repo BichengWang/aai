@@ -15,7 +15,7 @@ async function routeToHandler(page: Page, fetchEmail: typeof fetch) {
   });
 }
 
-for (const path of ["/", "/contact", "/enquiry"]) {
+for (const path of ["/", "/enquiry"]) {
   test(`${path} submits the complete form through the email handler`, async ({ page }) => {
     let outgoing: OutgoingEmail | undefined;
     let idempotencyKey = "";
@@ -36,7 +36,6 @@ for (const path of ["/", "/contact", "/enquiry"]) {
     await form.getByLabel("Name", { exact: true }).fill("Ada Lovelace");
     await form.getByLabel("Email", { exact: true }).fill("ada@example.com");
     await form.locator("textarea").fill("Please help me find a local provider.\nI am available next week.");
-    if (path === "/contact") await form.getByLabel("Topic").selectOption("partnerships");
     if (path === "/enquiry") {
       await form.getByLabel("Postcode").fill("94103");
       await form.getByLabel("Service needed").selectOption("pet-sitting");
@@ -56,7 +55,6 @@ for (const path of ["/", "/contact", "/enquiry"]) {
     expect(outgoing?.text).toContain("Name: Ada Lovelace");
     expect(outgoing?.text).toContain("I am available next week.");
     expect(idempotencyKey).toMatch(/^altair-enquiry\/[0-9a-f-]{36}$/);
-    if (path === "/contact") expect(outgoing?.text).toContain("Topic: partnerships");
     if (path === "/enquiry") {
       expect(outgoing?.text).toContain("Postcode: 94103");
       expect(outgoing?.text).toContain("Service: pet-sitting");
@@ -71,27 +69,35 @@ test("failed delivery preserves the form and reuses the retry key; edits get a n
     keys.push(new Headers(init?.headers).get("Idempotency-Key")!);
     return keys.length < 3 ? Response.json({ message: "Private provider error" }, { status: 500 }) : Response.json({ id: "retry-id" });
   });
-  await page.goto("/contact");
+  await page.goto("/enquiry");
   const form = page.locator("main form");
   await form.getByLabel("Name", { exact: true }).fill("Ada Lovelace");
   await form.getByLabel("Email", { exact: true }).fill("ada@example.com");
-  await form.getByLabel("Topic").selectOption("support");
-  await form.getByLabel("Message", { exact: true }).fill("Please help.");
-  const submit = form.getByRole("button", { name: "Send message" });
+  await form.getByLabel("Postcode").fill("94103");
+  await form.getByLabel("Service needed").selectOption("general");
+  await form.getByLabel("Timeline").selectOption("flexible");
+  await form.getByLabel("Tell us what you need").fill("Please help.");
+  const submit = form.getByRole("button", { name: "Submit enquiry" });
   await submit.click();
   await expect(form.getByRole("alert")).toContainText("couldn't send");
   await expect(form.getByRole("status")).toHaveCount(0);
-  await expect(form.getByLabel("Message", { exact: true })).toHaveValue("Please help.");
+  await expect(form.getByLabel("Tell us what you need")).toHaveValue("Please help.");
   await expect(submit).toBeEnabled();
   await submit.click();
   await expect.poll(() => keys.length).toBe(2);
   await expect(submit).toBeEnabled();
   expect(keys[1]).toBe(keys[0]);
-  await form.getByLabel("Message", { exact: true }).fill("Updated request.");
+  await form.getByLabel("Tell us what you need").fill("Updated request.");
   await submit.click();
   await expect(form.getByRole("status")).toBeVisible();
   await expect(form.getByRole("alert")).toHaveCount(0);
   expect(keys[2]).not.toBe(keys[0]);
+});
+
+test("/contact redirects to the single intake form", async ({ page }) => {
+  await page.goto("/contact");
+  await expect(page).toHaveURL(/\/enquiry$/);
+  await expect(page.getByLabel("Postcode")).toBeVisible();
 });
 
 test("homepage enquiry link opens the service enquiry form", async ({ page }) => {
@@ -103,16 +109,18 @@ test("homepage enquiry link opens the service enquiry form", async ({ page }) =>
 });
 
 test("unconfigured delivery reports an error through the local server", async ({ page }) => {
-  await page.goto("/contact");
+  await page.goto("/enquiry");
   const form = page.locator("main form");
   await form.getByLabel("Name", { exact: true }).fill("Ada Lovelace");
   await form.getByLabel("Email", { exact: true }).fill("ada@example.com");
-  await form.getByLabel("Topic").selectOption("support");
-  await form.getByLabel("Message", { exact: true }).fill("Please help.");
-  await form.getByRole("button", { name: "Send message" }).click();
+  await form.getByLabel("Postcode").fill("94103");
+  await form.getByLabel("Service needed").selectOption("general");
+  await form.getByLabel("Timeline").selectOption("flexible");
+  await form.getByLabel("Tell us what you need").fill("Please help.");
+  await form.getByRole("button", { name: "Submit enquiry" }).click();
   await expect(form.getByRole("alert")).toContainText("temporarily unavailable");
   await expect(form.getByRole("status")).toHaveCount(0);
-  await expect(form.getByRole("button", { name: "Send message" })).toBeEnabled();
+  await expect(form.getByRole("button", { name: "Submit enquiry" })).toBeEnabled();
 });
 
 test("rate limited and non-JSON responses never show success", async ({ page }) => {
@@ -120,12 +128,14 @@ test("rate limited and non-JSON responses never show success", async ({ page }) 
   await page.route("**/api/enquiry", (route) => route.fulfill({
     status: ++attempts === 1 ? 429 : 200, contentType: "text/html", body: "<html>Unavailable</html>",
   }));
-  await page.goto("/contact");
+  await page.goto("/enquiry");
   const form = page.locator("main form");
   await form.getByLabel("Name", { exact: true }).fill("Ada Lovelace");
   await form.getByLabel("Email", { exact: true }).fill("ada@example.com");
-  await form.getByLabel("Topic").selectOption("support");
-  await form.getByLabel("Message", { exact: true }).fill("Please help.");
+  await form.getByLabel("Postcode").fill("94103");
+  await form.getByLabel("Service needed").selectOption("general");
+  await form.getByLabel("Timeline").selectOption("flexible");
+  await form.getByLabel("Tell us what you need").fill("Please help.");
   await form.getByRole("button").click();
   await expect(form.getByRole("alert")).toContainText("wait a minute");
   await form.getByRole("button").click();

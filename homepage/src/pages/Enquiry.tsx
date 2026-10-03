@@ -17,12 +17,12 @@ export default function Enquiry() {
   return (
     <div className="lab-page">
       <LabPageHead
-        kicker={["Enquiry", "Intake form"]}
-        title="Tell us what you need"
-        lede="Share a few details and we will match you with the right local provider."
+        kicker={["Contact", "Intake form"]}
+        title="Talk with the Altair team"
+        lede="Share a few details and we will respond within 24 hours with next steps or a matched local provider."
       />
 
-      <section className="lab-section" aria-label="Enquiry form">
+      <section className="lab-section" aria-label="Contact and enquiry form">
         <div className="container lab-grid lab-intake">
           <aside className="lab-intake-aside">
             <ol className="lab-ruled lab-ruled--numbered" role="list">
@@ -33,6 +33,27 @@ export default function Enquiry() {
                 </li>
               ))}
             </ol>
+            <div className="lab-intake-note">
+              <h2 className="lab-h3">Contact details</h2>
+              <dl className="lab-contact-details">
+                <div>
+                  <dt className="lab-micro">Location</dt>
+                  <dd>San Francisco Bay Area</dd>
+                </div>
+                <div>
+                  <dt className="lab-micro">Email</dt>
+                  <dd>
+                    <a className="lab-link" href="mailto:qx@altairworld.com">
+                      qx@altairworld.com
+                    </a>
+                  </dd>
+                </div>
+                <div>
+                  <dt className="lab-micro">Hours</dt>
+                  <dd>Mon-Fri, 9am-6pm PST</dd>
+                </div>
+              </dl>
+            </div>
             <div className="lab-intake-note">
               <h2 className="lab-h3">What happens next</h2>
               <p className="lab-body">
@@ -82,6 +103,7 @@ export default function Enquiry() {
                       {service.title}
                     </option>
                   ))}
+                  <option value="general">General question or provider partnership</option>
                 </select>
               </label>
               <label className="lab-field">

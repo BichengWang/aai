@@ -3,7 +3,6 @@ import Home from "./pages/Home";
 import Enquiry from "./pages/Enquiry";
 import ServiceDetail from "./pages/ServiceDetail";
 import Services from "./pages/Services";
-import ContactPage from "./pages/Contact";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Account from "./pages/Account";
@@ -95,8 +94,7 @@ export default function App() {
           </Link>
           <nav className="nav-links" aria-label="Primary">
             <NavLink to="/services">Services</NavLink>
-            <NavLink to="/enquiry">Enquiry</NavLink>
-            <NavLink to="/contact">Contact</NavLink>
+            <NavLink to="/enquiry">Contact</NavLink>
             <WorkspaceLink>Workspace</WorkspaceLink>
             <AuthLinks />
           </nav>
@@ -108,7 +106,7 @@ export default function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/services/:slug" element={<ServiceDetail />} />
           <Route path="/enquiry" element={<Enquiry />} />
-          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/contact" element={<Navigate to="/enquiry" replace />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/oauth/consent" element={<OAuthConsent />} />
           <Route element={<PublicOnlyRoute />}>
@@ -138,8 +136,7 @@ export default function App() {
           </div>
           <div className="footer-links">
             <Link to="/services">Services</Link>
-            <Link to="/enquiry">Enquiry</Link>
-            <Link to="/contact">Contact</Link>
+            <Link to="/enquiry">Contact</Link>
             <WorkspaceLink>Workspace</WorkspaceLink>
             <AuthLinks />
           </div>
