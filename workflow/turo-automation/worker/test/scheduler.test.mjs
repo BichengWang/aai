@@ -3,6 +3,107 @@ import assert from "node:assert/strict";
 import { createJobScheduler } from "../dist/scheduler/createJobScheduler.js";
 import { withRetry } from "../dist/scheduler/withRetry.js";
 
+function deferred() {
+  let resolve;
+  const promise = new Promise((done) => { resolve = done; });
+  return { promise, resolve };
+}
+
+test("slow jobs skip ticks while other jobs continue and resume after completion", { timeout: 3_000 }, async (t) => {
+  const releaseSlowJob = deferred();
+  const otherJobRepeated = deferred();
+  const slowJobRepeated = deferred();
+  let slowRuns = 0;
+  let otherRuns = 0;
+  let activeSlowRuns = 0;
+  let maxActiveSlowRuns = 0;
+
+  const scheduler = createJobScheduler([
+    {
+      name: "slow-job",
+      intervalMs: 10,
+      async run() {
+        slowRuns++;
+        activeSlowRuns++;
+        maxActiveSlowRuns = Math.max(maxActiveSlowRuns, activeSlowRuns);
+        try {
+          if (slowRuns === 1) await releaseSlowJob.promise;
+          else slowJobRepeated.resolve();
+        } finally {
+          activeSlowRuns--;
+        }
+      },
+    },
+    {
+      name: "other-job",
+      intervalMs: 10,
+      async run() {
+        if (++otherRuns === 4) otherJobRepeated.resolve();
+      },
+    },
+  ]);
+  t.after(() => {
+    releaseSlowJob.resolve();
+    scheduler.stop();
+  });
+
+  scheduler.start();
+  await otherJobRepeated.promise;
+  assert.equal(slowRuns, 1, "interval ticks must not overlap an unfinished run");
+  releaseSlowJob.resolve();
+  await slowJobRepeated.promise;
+  assert.equal(maxActiveSlowRuns, 1);
+});
+
+test("jobs remain busy during retry backoff and resume after exhausted retries", { timeout: 3_000 }, async (t) => {
+  const releaseRetry = deferred();
+  const retryStarted = deferred();
+  const otherJobRepeated = deferred();
+  const nextRunStarted = deferred();
+  let attempts = 0;
+  let otherRuns = 0;
+
+  const scheduler = createJobScheduler([
+    {
+      name: "retry-job",
+      intervalMs: 10,
+      maxAttempts: 2,
+      retryDelayMs: 500,
+      async run() {
+        const attempt = ++attempts;
+        if (attempt === 1) throw new Error("first attempt failed");
+        if (attempt === 2) {
+          retryStarted.resolve();
+          await releaseRetry.promise;
+          throw new Error("retry failed");
+        }
+        nextRunStarted.resolve();
+      },
+    },
+    {
+      name: "other-job",
+      intervalMs: 10,
+      async run() {
+        if (++otherRuns === 4) otherJobRepeated.resolve();
+      },
+    },
+  ]);
+  t.after(() => {
+    releaseRetry.resolve();
+    scheduler.stop();
+  });
+
+  scheduler.start();
+  await otherJobRepeated.promise;
+  assert.equal(attempts, 1, "ticks must not start runs during retry backoff");
+  await retryStarted.promise;
+  await new Promise((resolve) => setTimeout(resolve, 30));
+  assert.equal(attempts, 2, "ticks must not overlap the active retry");
+  releaseRetry.resolve();
+  await nextRunStarted.promise;
+  assert.equal(attempts, 3, "the next tick must run after retries are exhausted");
+});
+
 test("JobScheduler runs each job immediately on start", async () => {
   const ran = [];
 

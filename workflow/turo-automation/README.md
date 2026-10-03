@@ -91,6 +91,11 @@ Set `TRIP_IMPORT_CSV_PATH=data/trips.sample.csv` to import the bundled sample tr
 WORKER_MODE=scheduled npm run dev:worker
 ```
 
+Each job runs immediately, then repeats on its interval. If a job is still running
+(including retry backoff), its next ticks are skipped and logged as
+`scheduler.job_skip` with reason `already_running`. Other jobs continue on their
+own intervals; the busy job resumes on the next tick after it finishes.
+
 Optional interval env vars:
 - `INTERVAL_IMPORT_MS`
 - `INTERVAL_LIFECYCLE_MS`

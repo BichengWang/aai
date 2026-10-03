@@ -19,13 +19,21 @@ export interface JobScheduler {
 /**
  * Minimal interval-based job scheduler.
  * Each job runs immediately on start, then repeats at its configured interval.
+ * Ticks are skipped while that job is still running, including its retries.
  * Failed jobs are retried with exponential backoff up to maxAttempts.
  * Job failures after all retries are logged but do not affect other jobs.
  */
 export function createJobScheduler(jobs: ScheduledJob[]): JobScheduler {
   const handles: ReturnType<typeof setInterval>[] = [];
+  const runningJobs = new Set<ScheduledJob>();
 
   async function safeRun(job: ScheduledJob) {
+    if (runningJobs.has(job)) {
+      logWorkerEvent("scheduler.job_skip", { name: job.name, reason: "already_running" });
+      return;
+    }
+
+    runningJobs.add(job);
     try {
       logWorkerEvent("scheduler.job_start", { name: job.name });
       await withRetry(() => job.run(), job.name, {
@@ -38,6 +46,8 @@ export function createJobScheduler(jobs: ScheduledJob[]): JobScheduler {
         name: job.name,
         error: error instanceof Error ? error.message : String(error),
       });
+    } finally {
+      runningJobs.delete(job);
     }
   }
 
