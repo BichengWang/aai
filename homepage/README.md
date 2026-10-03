@@ -48,7 +48,7 @@ Elegant, single-page marketing site for Altair's local services platform.
 
 ## Contact and enquiry email delivery
 
-The homepage contact form, `/contact`, and `/enquiry` submit to `POST /api/enquiry`. The server sends the complete submission to the team through [Resend](https://resend.com/docs/api-reference/emails/send-email), with the customer's email as Reply-To. Success appears only after Resend accepts the email and returns its ID; acceptance does not guarantee inbox delivery. Failed submissions keep the entered details available for retry.
+The homepage contact form and the unified `/enquiry` intake form (`/contact` redirects there) submit to `POST /api/enquiry`. The server sends the complete submission to the team through [Resend](https://resend.com/docs/api-reference/emails/send-email), with the customer's email as Reply-To. Success appears only after Resend accepts the email and returns its ID; acceptance does not guarantee inbox delivery. Failed submissions keep the entered details available for retry.
 
 To enable delivery:
 
@@ -95,7 +95,7 @@ The workspace function exposes these routes under `workspace-api`:
 
 ## Auth routes
 
-- Public: `/`, `/services`, `/services/:slug`, `/enquiry`, `/contact`, `/login`, `/register`, `/auth/callback`, `/oauth/consent`
+- Public: `/`, `/services`, `/services/:slug`, `/enquiry` (`/contact` redirects), `/login`, `/register`, `/auth/callback`, `/oauth/consent`
 - Protected: `/account`
 - Workspace host: `/`, `/login`, `/register`, `/auth/callback`, `/oauth/consent`, `/chat`, `/keys`, `/usage`, `/account`
 
