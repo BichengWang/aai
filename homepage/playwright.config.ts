@@ -5,11 +5,12 @@ export default defineConfig({
   retries: 0,
   use: {
     baseURL: "http://127.0.0.1:4174",
+    channel: process.env.PLAYWRIGHT_CHANNEL || undefined,
     trace: "on-first-retry",
   },
   webServer: {
     command:
-      "VITE_LLM_API_KEY=playwright-test-key VITE_LLM_MODEL=gpt-5.4 VITE_SUPABASE_URL=https://example.com VITE_SUPABASE_PUBLISHABLE_KEY=playwright-publishable-key npm run dev -- --host 127.0.0.1 --port 4174",
+      "RESEND_API_KEY= ENQUIRY_FROM_EMAIL= VITE_LLM_API_KEY=playwright-test-key VITE_LLM_MODEL=gpt-5.4 VITE_SUPABASE_URL=https://example.com VITE_SUPABASE_PUBLISHABLE_KEY=playwright-publishable-key npm run dev -- --host 127.0.0.1 --port 4174",
     url: "http://127.0.0.1:4174",
     reuseExistingServer: false,
   },

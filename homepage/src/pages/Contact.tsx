@@ -1,4 +1,6 @@
-import { FormEvent, useState } from "react";
+import { useEnquiryForm } from "../lib/useEnquiryForm";
+import EnquiryFormStatus from "../components/EnquiryFormStatus";
+import EnquiryHoneypot from "../components/EnquiryHoneypot";
 import { Link } from "react-router-dom";
 import LabPageHead from "../components/lab/LabPageHead";
 
@@ -9,12 +11,7 @@ const commitments = [
 ];
 
 export default function ContactPage() {
-  const [sent, setSent] = useState(false);
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setSent(true);
-  };
+  const { pending, sent, error, handleSubmit } = useEnquiryForm("contact");
 
   return (
     <div className="lab-page">
@@ -57,47 +54,48 @@ export default function ContactPage() {
               </dl>
             </div>
           </aside>
-          <form className="lab-form lab-intake-form" onSubmit={handleSubmit}>
-            <div className="lab-form-row">
+          <form className="lab-form lab-intake-form" onSubmit={handleSubmit} aria-busy={pending}>
+            <fieldset className="form-fields" disabled={pending || sent}>
+              <EnquiryHoneypot />
+              <div className="lab-form-row">
+                <label className="lab-field">
+                  Name
+                  <input className="lab-input" type="text" name="name" maxLength={120} autoComplete="name" required />
+                </label>
+                <label className="lab-field">
+                  Email
+                  <input className="lab-input" type="email" name="email" maxLength={254} autoComplete="email" required />
+                </label>
+              </div>
               <label className="lab-field">
-                Name
-                <input className="lab-input" type="text" autoComplete="name" required />
+                Topic
+                <select className="lab-input lab-select" name="topic" required>
+                  <option value="">Select a topic</option>
+                  <option value="services">Services enquiry</option>
+                  <option value="partnerships">Provider partnership</option>
+                  <option value="support">General support</option>
+                </select>
               </label>
               <label className="lab-field">
-                Email
-                <input className="lab-input" type="email" autoComplete="email" required />
+                Message
+                <textarea
+                  className="lab-input lab-textarea"
+                  name="message"
+                  maxLength={5000}
+                  placeholder="Tell us how we can help..."
+                  required
+                />
               </label>
-            </div>
-            <label className="lab-field">
-              Topic
-              <select className="lab-input lab-select" required>
-                <option value="">Select a topic</option>
-                <option value="services">Services enquiry</option>
-                <option value="partnerships">Provider partnership</option>
-                <option value="support">General support</option>
-              </select>
-            </label>
-            <label className="lab-field">
-              Message
-              <textarea
-                className="lab-input lab-textarea"
-                placeholder="Tell us how we can help..."
-                required
-              />
-            </label>
-            <div className="lab-form-actions">
-              <button className="lab-btn lab-btn--primary" type="submit">
-                Send message
-              </button>
-              <Link className="lab-link" to="/services">
-                Back to services
-              </Link>
-            </div>
-            {sent ? (
-              <p className="lab-form-status" role="status">
-                Thanks! We received your message and will follow up soon.
-              </p>
-            ) : null}
+              <div className="lab-form-actions">
+                <button className="lab-btn lab-btn--primary" type="submit">
+                  {pending ? "Sending..." : sent ? "Message sent" : "Send message"}
+                </button>
+                <Link className="lab-link" to="/services">
+                  Back to services
+                </Link>
+              </div>
+            </fieldset>
+            <EnquiryFormStatus error={error} sent={sent} kind="message" />
           </form>
         </div>
       </section>
