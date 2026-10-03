@@ -4,6 +4,25 @@ Chronological notes on repo setup, architecture decisions, implementation progre
 
 ---
 
+## 2026-10-03
+
+### Prevent overlapping scheduled worker jobs
+
+- Skip interval ticks while the same scheduled job is running or waiting to retry,
+  so slow adapters cannot trigger concurrent imports, alerts, or draft generation
+  from that job within a worker process.
+- Log skipped ticks as `scheduler.job_skip` with reason `already_running`.
+- Release the job after success or exhausted retries; unrelated jobs keep running.
+- Add real-timer scheduler integration coverage for slow jobs, retry backoff,
+  failure recovery, and independent job progress.
+
+**Verification**: `npm test` — all package builds and 49 tests pass. Both new
+real-timer regression tests fail against the scheduler on `origin/main`.
+Compiled scheduled-worker smoke check: health endpoint returns 200, all five jobs
+repeat, and SIGTERM exits cleanly.
+
+---
+
 ## 2026-04-03
 
 ### Phase 10 closeout
