@@ -73,6 +73,7 @@ The **Research** tab opens the TradingAgents report site at `/TradingAgents/`. O
 
 - `TRADINGAGENTS_REPORTS_ORIGIN` (Cloudflare Pages environment variable) is the origin to serve from. It defaults to `https://bichengwang.github.io`, the GitHub Pages copy. Once TradingAgents' `scripts/publish_site.sh` also deploys to its own Cloudflare Pages project, set it to that project's URL, e.g. `https://tradingagents-reports.pages.dev`. The paths are the same on both.
 - The reports share this origin with the signed-in app, so every response carries `Content-Security-Policy: script-src 'none'` and the function strips `<script>` and `<meta http-equiv>` tags. The report pages are static and stay readable without their theme script; the light/dark toggle and instant page loads are off on this copy.
+- The function dresses the pages in the Altair look: it adds the Altair header and footer from [`server/researchChrome.mjs`](./server/researchChrome.mjs), the Altair favicon and mark, and [`public/research.css`](./public/research.css), which maps the MkDocs theme onto the lab tokens and fonts. These are static copies, so keep them in step with `src/App.tsx` and `src/lab.css`. The header's Workspace link follows `VITE_WORKSPACE_ORIGIN` like the app's.
 - `npm run dev` does not run Pages Functions; use `npx wrangler pages dev dist` after `npm run build`. On Netlify, `netlify.toml` redirects `/TradingAgents/*` to the GitHub Pages copy instead.
 
 ## Workspace edge function setup

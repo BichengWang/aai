@@ -1,0 +1,394 @@
+/*
+ * Altair look for the TradingAgents reports at /TradingAgents/.
+ * functions/TradingAgents serves those Material for MkDocs pages without
+ * script, adds this stylesheet, and wraps them in the Altair header and footer
+ * from server/researchChrome.mjs. Token values mirror src/lab.css.
+ * Material sets the root font size to 125% or more, so the chrome uses px.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,300..400&display=swap");
+
+:root {
+  --lab-bg: #f2f2ee;
+  --lab-bg-2: #e7e7e1;
+  --lab-fg: #121316;
+  --lab-fg-2: #46484e;
+  --lab-fg-3: #64666c;
+  --lab-accent: #2b3bc9;
+  --lab-accent-strong: #1e2a9a;
+  --lab-line: rgba(18, 19, 22, 0.14);
+  --lab-wash: rgba(43, 59, 201, 0.07);
+  --lab-night: #0b0c10;
+  --lab-night-2: #14161c;
+  --lab-night-fg: #edede8;
+  --lab-night-fg-2: #a7a9b0;
+  --lab-night-fg-3: #868991;
+  --lab-night-accent: #a3b4ff;
+  --lab-night-line: rgba(237, 237, 232, 0.12);
+  --lab-night-line-strong: rgba(237, 237, 232, 0.3);
+  --lab-night-control: #666970;
+  --lab-font-display: "Newsreader", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --lab-font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --lab-font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --lab-gutter: clamp(16px, 4vw, 40px);
+  --lab-maxw: 1240px;
+}
+
+/* Overscroll matches the night header and footer. */
+html {
+  background: var(--lab-night);
+}
+
+/* ---------- Material palette and type on lab tokens ---------- */
+
+/* The attribute selector outranks Material's palette rules on body. */
+body[data-md-color-scheme] {
+  --md-default-bg-color: var(--lab-bg);
+  --md-default-fg-color: var(--lab-fg);
+  --md-default-fg-color--light: var(--lab-fg-2);
+  --md-default-fg-color--lighter: var(--lab-fg-3);
+  --md-default-fg-color--lightest: var(--lab-line);
+  --md-primary-fg-color: var(--lab-night);
+  --md-primary-fg-color--light: var(--lab-night-2);
+  --md-primary-fg-color--dark: var(--lab-night);
+  --md-primary-bg-color: var(--lab-night-fg);
+  --md-primary-bg-color--light: var(--lab-night-fg-2);
+  --md-accent-fg-color: var(--lab-accent-strong);
+  --md-accent-fg-color--transparent: var(--lab-wash);
+  --md-typeset-color: var(--lab-fg);
+  --md-typeset-a-color: var(--lab-accent);
+  --md-typeset-table-color: var(--lab-line);
+  --md-typeset-table-color--light: var(--lab-wash);
+  --md-code-fg-color: var(--lab-fg);
+  --md-code-bg-color: var(--lab-bg-2);
+  --md-footer-bg-color: var(--lab-night);
+  --md-footer-bg-color--dark: var(--lab-night);
+  --md-footer-fg-color: var(--lab-night-fg);
+  --md-footer-fg-color--light: var(--lab-night-fg-2);
+  --md-footer-fg-color--lighter: var(--lab-night-fg-3);
+  --md-text-font-family: var(--lab-font-sans);
+  --md-code-font-family: var(--lab-font-mono);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Report bar: Material's header and ticker tabs ---------- */
+
+/* Line the bar, tabs, sidebars and footer up with the Altair header; the
+   theme insets their text about 16px inside .md-grid. */
+@media screen and (min-width: 76.25em) {
+  .md-grid {
+    max-width: min(calc(var(--lab-maxw) + 32px), calc(100% - 2 * var(--lab-gutter) + 32px));
+  }
+
+  [dir="ltr"] .md-header__title {
+    margin-left: 0.6rem;
+  }
+}
+
+.md-header {
+  box-shadow: none;
+  border-bottom: 1px solid var(--lab-night-line);
+}
+
+/* Theme logo, palette switch (it needs the theme script) and repository link. */
+.md-header .md-logo,
+.md-header__option,
+.md-header__source {
+  display: none;
+}
+
+.md-header__title {
+  font-family: var(--lab-font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.md-tabs__link {
+  font-weight: 500;
+  color: var(--lab-night-fg-2);
+  opacity: 1;
+}
+
+.md-tabs__link:hover,
+.md-tabs__item--active .md-tabs__link {
+  color: var(--lab-night-fg);
+}
+
+.md-tabs__item--active .md-tabs__link {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+
+/* ---------- Report content ---------- */
+
+.md-typeset h1,
+.md-typeset h2 {
+  font-family: var(--lab-font-display);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--lab-fg);
+}
+
+.md-typeset h3,
+.md-typeset h4 {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.md-typeset a:not(.headerlink) {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(43, 59, 201, 0.35);
+}
+
+.md-typeset table:not([class]) {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The theme script wraps wide tables in a scroll box; without it they would
+   widen the page, so they scroll inside themselves (the theme's own fallback). */
+@media screen {
+  .md-typeset table:not([class]) {
+    display: inline-block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
+.md-typeset table:not([class]) th {
+  font-family: var(--lab-font-mono);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--lab-fg-3);
+  background: var(--lab-bg-2);
+}
+
+.md-nav--secondary .md-nav__title {
+  font-family: var(--lab-font-mono);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lab-fg-3);
+}
+
+/* The drawer logo is the Altair mark (functions/TradingAgents swaps it in). */
+.md-logo svg {
+  color: var(--lab-night-accent);
+}
+
+.md-footer-meta {
+  border-top: 1px solid var(--lab-night-line);
+}
+
+.md-copyright {
+  font-family: var(--lab-font-mono);
+  color: var(--lab-night-fg-3);
+}
+
+/* ---------- Altair header and footer ---------- */
+
+.altair-header,
+.altair-footer {
+  background: var(--lab-night);
+  color: var(--lab-night-fg);
+  font: 400 15px/1.6 var(--lab-font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.altair-header a,
+.altair-footer a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.altair-header a:focus-visible,
+.altair-footer a:focus-visible {
+  outline: 2px solid var(--lab-night-accent);
+  outline-offset: 3px;
+}
+
+.altair-wrap {
+  width: min(var(--lab-maxw), calc(100% - 2 * var(--lab-gutter)));
+  margin: 0 auto;
+}
+
+.altair-header {
+  border-bottom: 1px solid var(--lab-night-line);
+}
+
+.altair-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 64px;
+}
+
+.altair-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font: 500 22px/1 var(--lab-font-display);
+  letter-spacing: -0.01em;
+  color: var(--lab-night-fg);
+}
+
+.altair-brand svg {
+  flex: none;
+  color: var(--lab-night-accent);
+}
+
+.altair-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font: 500 14px/1.2 var(--lab-font-sans);
+  color: var(--lab-night-fg-2);
+}
+
+.altair-nav a {
+  padding-block: 4px;
+}
+
+.altair-nav a:hover,
+.altair-nav a[aria-current="page"] {
+  color: var(--lab-night-fg);
+}
+
+.altair-nav a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+
+.altair-nav a[href$="/register"] {
+  padding: 7px 12px;
+  border: 1px solid var(--lab-night-control);
+  border-radius: 6px;
+  color: var(--lab-night-fg);
+}
+
+.altair-nav a[href$="/register"]:hover {
+  border-color: var(--lab-night-fg);
+}
+
+@media (max-width: 720px) {
+  .altair-bar {
+    flex-wrap: wrap;
+    row-gap: 10px;
+    padding: 14px 0 12px;
+    min-height: 0;
+  }
+
+  .altair-nav {
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+    justify-items: start;
+    width: 100%;
+    gap: 10px 22px;
+    font-size: 13px;
+  }
+}
+
+.altair-footer {
+  padding: clamp(56px, 7vw, 96px) 0 28px;
+  color: var(--lab-night-fg-2);
+}
+
+.altair-footer-grid {
+  display: grid;
+  gap: 32px;
+  align-items: start;
+}
+
+.altair-footer .altair-brand {
+  font-size: 24px;
+}
+
+.altair-footer-contact {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  font-style: normal;
+}
+
+.altair-footer-contact a {
+  font-weight: 500;
+  color: var(--lab-night-fg);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--lab-night-line-strong);
+}
+
+.altair-footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  justify-items: start;
+  gap: 10px 24px;
+  font-weight: 500;
+  color: var(--lab-night-fg);
+}
+
+.altair-footer-links a {
+  padding-block: 2px;
+}
+
+.altair-footer-contact a:hover,
+.altair-footer-links a:hover {
+  color: var(--lab-night-accent);
+}
+
+@media (min-width: 1024px) {
+  .altair-footer-grid {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    column-gap: 48px;
+  }
+
+  .altair-footer-links {
+    display: flex;
+    gap: 10px 20px;
+  }
+}
+
+.altair-footer-meta {
+  margin: 0 0 6px;
+  font: 500 12px/1.4 var(--lab-font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lab-night-fg-3);
+}
+
+.altair-footer-mark {
+  display: grid;
+  gap: 12px;
+  margin-top: clamp(48px, 6vw, 80px);
+  overflow: hidden;
+}
+
+.altair-footer-word {
+  font: 300 clamp(72px, 21vw, 256px)/0.8 var(--lab-font-display);
+  letter-spacing: -0.045em;
+  /* Opaque equivalent of 8% ink on night: overlapping glyphs stay seamless. */
+  color: #1d1e21;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.altair-footer-coord {
+  padding-top: 12px;
+  border-top: 1px solid var(--lab-night-line);
+  font: 500 12px/1.4 var(--lab-font-mono);
+  letter-spacing: 0.08em;
+  color: var(--lab-night-fg-3);
+  text-align: right;
+}
+
+@media (max-width: 599px) {
+  .altair-footer-coord {
+    text-align: left;
+  }
+}

@@ -4,7 +4,16 @@
 // Cloudflare Pages project with the same paths. Point the
 // TRADINGAGENTS_REPORTS_ORIGIN variable at that project; until then the
 // GitHub Pages copy is served.
+import {
+  BRAND_MARK,
+  researchFooter,
+  researchHeader,
+  workspaceHref,
+} from "../../server/researchChrome.mjs";
+
 const DEFAULT_ORIGIN = "https://bichengwang.github.io";
+const ALTAIR_HEAD =
+  '<meta name="theme-color" content="#0b0c10"><link rel="stylesheet" href="/research.css">';
 
 // Only content headers pass through, so the other host's HSTS, cookies or
 // content encoding never apply to this domain.
@@ -69,5 +78,34 @@ export async function onRequest({ request, env }) {
       element.remove();
     },
   };
-  return new HTMLRewriter().on("script", drop).on("meta[http-equiv]", drop).transform(response);
+  // Dress the pages as part of this site: Altair header, footer, fonts,
+  // palette (public/research.css) and icon in place of the theme's own.
+  const workspace = workspaceHref(url, env.VITE_WORKSPACE_ORIGIN);
+  return new HTMLRewriter()
+    .on("script", drop)
+    .on("meta[http-equiv]", drop)
+    .on('link[href^="https://fonts.googleapis.com/"]', drop)
+    .on('link[rel="icon"]', {
+      element(element) {
+        element.setAttribute("href", "/favicon.svg");
+        element.setAttribute("type", "image/svg+xml");
+      },
+    })
+    .on("a.md-logo", {
+      element(element) {
+        element.setInnerContent(BRAND_MARK, { html: true });
+      },
+    })
+    .on("head", {
+      element(element) {
+        element.append(ALTAIR_HEAD, { html: true });
+      },
+    })
+    .on("body", {
+      element(element) {
+        element.prepend(researchHeader(workspace), { html: true });
+        element.append(researchFooter(workspace), { html: true });
+      },
+    })
+    .transform(response);
 }
