@@ -167,19 +167,13 @@ body[data-md-color-scheme] {
 
 /* ---------- Homepage daily summaries ---------- */
 
-/* One column: the dates become a row of links above full-width tables, which
-   scroll inside their own wrapper when narrow. */
-.daily-summary-layout {
-  display: block;
-}
-
+/* Keep extra.css's layout (dates on the left, tables on the right; stacked
+   below 60em) and fit the rail to the lab look. The theme's list indents
+   squeezed the dates, and the sticky rail must clear the report bar. */
 .daily-summary-rail {
-  position: static;
-  max-height: none;
-  margin-bottom: 1rem;
-  padding: 0;
-  border: 0;
-  background: none;
+  top: 5.5rem;
+  border-color: var(--lab-line);
+  border-radius: 6px;
 }
 
 .daily-summary-rail h3 {
@@ -189,29 +183,14 @@ body[data-md-color-scheme] {
   color: var(--lab-fg-3);
 }
 
-[dir] .md-typeset .daily-summary-rail ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0;
+[dir] .md-typeset .daily-summary-rail ul,
+[dir] .md-typeset .daily-summary-rail li {
+  margin-left: 0;
+  margin-right: 0;
   list-style: none;
 }
 
-[dir] .md-typeset .daily-summary-rail li {
-  min-width: 0;
-  margin: 0;
-  padding: 0.25rem 0.6rem;
-  border: 1px solid var(--lab-line);
-  border-radius: 6px;
-}
-
-.daily-summary-rail .daily-summary-date,
 .daily-summary-rail span {
-  display: inline;
-}
-
-.daily-summary-rail span {
-  margin-left: 0.4em;
   color: var(--lab-fg-3);
 }
 
@@ -225,9 +204,6 @@ body[data-md-color-scheme] {
   white-space: nowrap;
 }
 
-.daily-summary-tables td:last-child {
-  min-width: 16rem;
-}
 
 .md-typeset table:not([class]) th {
   font-family: var(--lab-font-mono);
