@@ -62,6 +62,9 @@ test("homepage lab layout holds at 360px and links every service", async ({ page
     )
   ).toBeLessThanOrEqual(0);
   await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
+  await expect(
+    page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Research" })
+  ).toHaveAttribute("href", "/TradingAgents/");
 
   for (const slug of ["financial-planning", "legal-services", "local-car-rental", "pet-sitting"]) {
     await expect(page.locator(`.lab-page a[href$="/services/${slug}"]`)).toHaveCount(1);
