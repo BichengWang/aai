@@ -72,15 +72,23 @@ body[data-md-color-scheme] {
 
 /* ---------- Report bar: Material's header and ticker tabs ---------- */
 
-/* Line the bar, tabs, sidebars and footer up with the Altair header; the
-   theme insets their text about 16px inside .md-grid. */
+/* Reports span the full width (as TradingAgents' extra.css intends), lined up
+   with the Altair header's gutter; the theme insets its text about 16px
+   inside .md-grid. The ticker tabs replace the left navigation sidebar, which
+   only repeats the current page; the phone drawer still uses it. */
 @media screen and (min-width: 76.25em) {
   .md-grid {
-    max-width: min(calc(var(--lab-maxw) + 32px), calc(100% - 2 * var(--lab-gutter) + 32px));
+    max-width: none;
+    margin-inline: calc(var(--lab-gutter) - 16px);
   }
 
   [dir="ltr"] .md-header__title {
     margin-left: 0.6rem;
+  }
+
+  .md-sidebar--primary,
+  .md-sidebar--secondary:not(:has(.md-nav__link)) {
+    display: none;
   }
 }
 
@@ -147,13 +155,78 @@ body[data-md-color-scheme] {
 }
 
 /* The theme script wraps wide tables in a scroll box; without it they would
-   widen the page, so they scroll inside themselves (the theme's own fallback). */
-@media screen {
+   widen the page on narrow screens, so there they scroll inside themselves
+   (the theme's own fallback). Wider screens keep full-width tables. */
+@media screen and (max-width: 59.9375em) {
   .md-typeset table:not([class]) {
     display: inline-block;
     max-width: 100%;
     overflow-x: auto;
   }
+}
+
+/* ---------- Homepage daily summaries ---------- */
+
+/* One column: the dates become a row of links above full-width tables, which
+   scroll inside their own wrapper when narrow. */
+.daily-summary-layout {
+  display: block;
+}
+
+.daily-summary-rail {
+  position: static;
+  max-height: none;
+  margin-bottom: 1rem;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.daily-summary-rail h3 {
+  font-family: var(--lab-font-mono);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--lab-fg-3);
+}
+
+[dir] .md-typeset .daily-summary-rail ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  list-style: none;
+}
+
+[dir] .md-typeset .daily-summary-rail li {
+  min-width: 0;
+  margin: 0;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--lab-line);
+  border-radius: 6px;
+}
+
+.daily-summary-rail .daily-summary-date,
+.daily-summary-rail span {
+  display: inline;
+}
+
+.daily-summary-rail span {
+  margin-left: 0.4em;
+  color: var(--lab-fg-3);
+}
+
+.md-typeset .daily-summary-tables table:not([class]) {
+  display: table;
+  width: 100%;
+  max-width: none;
+}
+
+.daily-summary-tables td:nth-child(-n + 3) {
+  white-space: nowrap;
+}
+
+.daily-summary-tables td:last-child {
+  min-width: 16rem;
 }
 
 .md-typeset table:not([class]) th {
@@ -209,8 +282,9 @@ body[data-md-color-scheme] {
   outline-offset: 3px;
 }
 
+/* Full width like the report beneath it, on the same gutter. */
 .altair-wrap {
-  width: min(var(--lab-maxw), calc(100% - 2 * var(--lab-gutter)));
+  width: calc(100% - 2 * var(--lab-gutter));
   margin: 0 auto;
 }
 
