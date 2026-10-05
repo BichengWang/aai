@@ -7,6 +7,13 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
+# Cloudflare Pages serves /TradingAgents/ through functions/TradingAgents;
+# on Netlify the Research link goes to the reports' GitHub Pages origin.
+[[redirects]]
+  from = "/TradingAgents/*"
+  to = "https://bichengwang.github.io/TradingAgents/:splat"
+  status = 302
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

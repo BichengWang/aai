@@ -50,6 +50,12 @@ function WorkspaceLink({ children }: { children: string }) {
   return <a href={buildWorkspaceUrl("/")}>{children}</a>;
 }
 
+// The TradingAgents reports are served at /TradingAgents/ outside this app
+// (functions/TradingAgents), so the link needs a full page load.
+function ResearchLink() {
+  return <a href="/TradingAgents/">Research</a>;
+}
+
 function LegacyReviewRedirect() {
   const { pathname } = useLocation();
   return <Navigate to={buildAppPath(pathname, { app: "workspace" })} replace />;
@@ -94,6 +100,7 @@ export default function App() {
           </Link>
           <nav className="nav-links" aria-label="Primary">
             <NavLink to="/services">Services</NavLink>
+            <ResearchLink />
             <NavLink to="/enquiry">Contact</NavLink>
             <WorkspaceLink>Workspace</WorkspaceLink>
             <AuthLinks />
@@ -136,6 +143,7 @@ export default function App() {
           </div>
           <div className="footer-links">
             <Link to="/services">Services</Link>
+            <ResearchLink />
             <Link to="/enquiry">Contact</Link>
             <WorkspaceLink>Workspace</WorkspaceLink>
             <AuthLinks />
