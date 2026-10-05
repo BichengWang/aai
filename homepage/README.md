@@ -67,6 +67,14 @@ The handler validates required fields and service/topic choices, rejects oversiz
 
 Run `npm run test:server` for endpoint validation and `npx playwright test e2e/enquiry.spec.ts` for browser submission, pending state, retry, and failure checks. If Playwright's bundled Chromium is unavailable but Google Chrome is installed, use `PLAYWRIGHT_CHANNEL=chrome npx playwright test e2e/enquiry.spec.ts`. The browser tests use the real handler with a simulated email provider and intentionally clear local email credentials; they do not send actual emails.
 
+## TradingAgents reports (`/TradingAgents/`)
+
+The **Research** tab opens the TradingAgents report site at `/TradingAgents/`. On Cloudflare Pages, [`functions/TradingAgents/[[path]].js`](./functions/TradingAgents/%5B%5Bpath%5D%5D.js) serves that path from another origin, so the reports look like part of this site and new reports appear as soon as TradingAgents publishes them:
+
+- `TRADINGAGENTS_REPORTS_ORIGIN` (Cloudflare Pages environment variable) is the origin to serve from. It defaults to `https://bichengwang.github.io`, the GitHub Pages copy. Once TradingAgents' `scripts/publish_site.sh` also deploys to its own Cloudflare Pages project, set it to that project's URL, e.g. `https://tradingagents-reports.pages.dev`. The paths are the same on both.
+- The reports share this origin with the signed-in app, so every response carries `Content-Security-Policy: script-src 'none'` and the function strips `<script>` and `<meta http-equiv>` tags. The report pages are static and stay readable without their theme script; the light/dark toggle and instant page loads are off on this copy.
+- `npm run dev` does not run Pages Functions; use `npx wrangler pages dev dist` after `npm run build`. On Netlify, `netlify.toml` redirects `/TradingAgents/*` to the GitHub Pages copy instead.
+
 ## Workspace edge function setup
 
 Deploy the Supabase Edge Function in [`supabase/functions/workspace-api`](./supabase/functions/workspace-api).
@@ -95,7 +103,7 @@ The workspace function exposes these routes under `workspace-api`:
 
 ## Auth routes
 
-- Public: `/`, `/services`, `/services/:slug`, `/enquiry` (`/contact` redirects), `/login`, `/register`, `/auth/callback`, `/oauth/consent`
+- Public: `/`, `/services`, `/services/:slug`, `/enquiry` (`/contact` redirects), `/login`, `/register`, `/auth/callback`, `/oauth/consent`, plus the proxied `/TradingAgents/` reports
 - Protected: `/account`
 - Workspace host: `/`, `/login`, `/register`, `/auth/callback`, `/oauth/consent`, `/chat`, `/keys`, `/usage`, `/account`
 
