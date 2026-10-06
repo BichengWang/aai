@@ -365,6 +365,9 @@ html:has(.page--lab) body {
 /* Text links */
 
 .lab-link {
+  /* Inline padding grows the hit area to the 24px WCAG 2.2 target size
+     without moving the surrounding text. */
+  padding-block: 3px;
   font: 500 0.9375rem/1.4 var(--lab-font-sans);
   color: var(--lab-fg);
   text-decoration: underline;
@@ -380,7 +383,7 @@ html:has(.page--lab) body {
   appearance: none;
   background: none;
   border: 0;
-  padding: 0;
+  padding: 3px 0;
   cursor: pointer;
 }
 
@@ -648,6 +651,15 @@ html:has(.page--lab) body {
 .page--lab .skip-link {
   background: #edede8;
   color: #0b0c10;
+}
+
+/* Route changes move focus here for screen readers; no ring on a landmark. */
+.page--lab #main-content:focus {
+  outline: none;
+}
+
+.site-header--lab .brand {
+  padding-block: 4px;
 }
 
 /* The global stylesheet hides the nav below 720px; bring it back on "/" only. */

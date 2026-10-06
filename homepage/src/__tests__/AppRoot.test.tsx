@@ -37,6 +37,6 @@ describe("AppRoot", () => {
 
     await user.click(screen.getByRole("button", { name: "Go workspace" }));
 
-    expect(screen.getByText("workspace app")).toBeInTheDocument();
+    expect(await screen.findByText("workspace app")).toBeInTheDocument();
   });
 });

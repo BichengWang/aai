@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
+import { usePageTitle } from "../lib/usePageChrome";
 import LabPageHead from "../components/lab/LabPageHead";
 
 export default function NotFound() {
+  usePageTitle("Page not found");
   return (
     <div className="lab-page">
       <LabPageHead

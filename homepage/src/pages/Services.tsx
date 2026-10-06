@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
+import { isExternalUrl, linkTargetProps } from "../lib/links";
+import { usePageTitle } from "../lib/usePageChrome";
 import LabPageHead from "../components/lab/LabPageHead";
 import ServicePlate from "../components/lab/ServicePlate";
 import { services } from "../data/services";
 
 export default function Services() {
+  usePageTitle("Services");
   return (
     <div className="lab-page">
       <LabPageHead
@@ -60,10 +63,12 @@ export default function Services() {
                       <a
                         className="lab-link"
                         href={service.websiteUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        {...linkTargetProps(service.websiteUrl)}
                       >
-                        Visit website<span aria-hidden="true"> ↗</span>
+                        {service.websiteLabel ?? "Visit website"}
+                        <span aria-hidden="true">
+                          {isExternalUrl(service.websiteUrl) ? " ↗" : " →"}
+                        </span>
                       </a>
                     ) : null}
                   </div>

@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import { useAuth } from "./context/AuthContext";
 import { buildAppPath, buildWorkspaceUrl, getWorkspaceOrigin } from "./lib/runtime";
+import { useRouteChangeReset } from "./lib/usePageChrome";
 
 function AuthLinks() {
   const { loading, user, signOut } = useAuth();
@@ -87,6 +88,8 @@ function BrandMark() {
 }
 
 export default function App() {
+  useRouteChangeReset("main-content");
+
   return (
     <div className="page page--lab">
       <header className="site-header site-header--lab lab-night">
@@ -107,7 +110,7 @@ export default function App() {
           </nav>
         </div>
       </header>
-      <main id="main-content" className="page-content">
+      <main id="main-content" className="page-content" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { usePageTitle } from "../lib/usePageChrome";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { navigateToUrl } from "../lib/browser";
@@ -26,6 +27,7 @@ function getScopeLabel(scope: string) {
 }
 
 export default function OAuthConsent() {
+  usePageTitle("Authorize access");
   const [searchParams] = useSearchParams();
   const { authConfigured, loading, user, signInWithGoogle } = useAuth();
   const [details, setDetails] = useState<OAuthAuthorizationDetails | null>(null);

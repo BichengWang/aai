@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePageTitle } from "../lib/usePageChrome";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -11,6 +12,7 @@ import {
 import { getAuthErrorMessage, getMissingConfigMessage } from "../lib/supabase";
 
 export default function Register() {
+  usePageTitle("Create an account");
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { authConfigured, authError, clearAuthError, signInWithGoogle } = useAuth();
