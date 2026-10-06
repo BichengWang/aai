@@ -72,7 +72,7 @@ test("homepage lab layout holds at 360px and links every service", async ({ page
 
   await expect(page.getByRole("link", { name: "Visit website" })).toHaveAttribute(
     "href",
-    "https://bichengwang.github.io/TradingAgents/"
+    "/TradingAgents/"
   );
 });
 

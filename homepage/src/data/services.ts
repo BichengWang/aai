@@ -43,7 +43,7 @@ export const services: Service[] = [
     shortDescription:
       "Organize goals and access regulated financial guidance with a clear, guided intake.",
     image: publicAsset("images/financial-planning.png"),
-    websiteUrl: "https://bichengwang.github.io/TradingAgents/",
+    websiteUrl: "/TradingAgents/",
     tag: "FP",
     highlights: [
       "Goal-focused planning intake",
