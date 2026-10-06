@@ -1,4 +1,5 @@
 import { useEnquiryForm } from "../lib/useEnquiryForm";
+import { usePageTitle } from "../lib/usePageChrome";
 import EnquiryFormStatus from "../components/EnquiryFormStatus";
 import EnquiryHoneypot from "../components/EnquiryHoneypot";
 import { Link } from "react-router-dom";
@@ -12,6 +13,7 @@ const commitments = [
 ];
 
 export default function Enquiry() {
+  usePageTitle("Contact");
   const { pending, sent, error, handleSubmit } = useEnquiryForm("enquiry");
 
   return (

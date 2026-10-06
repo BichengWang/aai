@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { usePageTitle } from "../lib/usePageChrome";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getDefaultSignedInPath, resolveRedirectPath } from "../lib/runtime";
@@ -10,6 +11,7 @@ import {
 } from "../lib/authCallback";
 
 export default function AuthCallback() {
+  usePageTitle("Signing in");
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { authConfigured, refreshProfile } = useAuth();

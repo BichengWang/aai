@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { usePageTitle } from "../lib/usePageChrome";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import OpenWorkspaceButton from "../components/OpenWorkspaceButton";
@@ -25,6 +26,7 @@ function formatDate(value: string | null | undefined) {
 }
 
 export default function Account() {
+  usePageTitle("Account");
   const { authError, profile, refreshProfile, session, signOut, user } = useAuth();
   const activeApp = getActiveApp();
   const [workspaceData, setWorkspaceData] = useState<WorkspaceKeyListResponse | null>(null);

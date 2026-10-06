@@ -70,7 +70,7 @@ test("homepage lab layout holds at 360px and links every service", async ({ page
     await expect(page.locator(`.lab-page a[href$="/services/${slug}"]`)).toHaveCount(1);
   }
 
-  await expect(page.getByRole("link", { name: "Visit website" })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "View live research" })).toHaveAttribute(
     "href",
     "/TradingAgents/"
   );
@@ -119,4 +119,17 @@ test("homepage motion respects reduced motion", async ({ page }) => {
     )
   );
   expect(names).toEqual(["none", "none", "none", "none"]);
+});
+
+test("client navigation opens the next page at the top with its own title", async ({ page }) => {
+  await page.goto("/");
+  await expect(page).toHaveTitle("Altair AI LLC | Applied AI for everyday local services");
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+
+  await page.locator("footer").getByRole("link", { name: "Services" }).click();
+
+  await expect(page).toHaveURL(/\/services$/);
+  await expect(page).toHaveTitle("Services | Altair");
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  await expect(page.locator("#main-content")).toBeFocused();
 });
