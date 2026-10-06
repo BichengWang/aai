@@ -1,7 +1,11 @@
+import { Suspense, lazy } from "react";
 import App from "./App";
-import WorkspaceApp from "./apps/WorkspaceApp";
 import { useLocation } from "react-router-dom";
 import { detectActiveApp } from "./lib/runtime";
+
+// Marketing visitors never need the signed-in workspace (chat, keys, usage,
+// review tool), so it loads only when the workspace app is active.
+const WorkspaceApp = lazy(() => import("./apps/WorkspaceApp"));
 
 export default function AppRoot() {
   const location = useLocation();
@@ -13,5 +17,11 @@ export default function AppRoot() {
     hash: location.hash,
   });
 
-  return activeApp === "workspace" ? <WorkspaceApp /> : <App />;
+  return activeApp === "workspace" ? (
+    <Suspense fallback={null}>
+      <WorkspaceApp />
+    </Suspense>
+  ) : (
+    <App />
+  );
 }

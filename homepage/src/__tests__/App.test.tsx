@@ -44,7 +44,7 @@ describe("Altair homepage", () => {
     expect(
       screen.getByRole("link", { name: /qx@altairworld.com/i })
     ).toHaveAttribute("href", "mailto:qx@altairworld.com");
-    expect(screen.getByRole("link", { name: "Visit website" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "View live research" })).toHaveAttribute(
       "href",
       "/TradingAgents/"
     );

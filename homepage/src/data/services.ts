@@ -21,6 +21,8 @@ export type Service = {
   shortDescription: string;
   image: string;
   websiteUrl?: string;
+  /** Link text for websiteUrl; defaults to "Visit website". */
+  websiteLabel?: string;
   tag: string;
   highlights: string[];
   suitedFor: string[];
@@ -44,6 +46,7 @@ export const services: Service[] = [
       "Organize goals and access regulated financial guidance with a clear, guided intake.",
     image: publicAsset("images/financial-planning.png"),
     websiteUrl: "/TradingAgents/",
+    websiteLabel: "View live research",
     tag: "FP",
     highlights: [
       "Goal-focused planning intake",

@@ -1,4 +1,6 @@
 import { Link, useParams } from "react-router-dom";
+import { linkTargetProps } from "../lib/links";
+import { usePageTitle } from "../lib/usePageChrome";
 import LabSectionHead from "../components/LabSectionHead";
 import LabPageHead from "../components/lab/LabPageHead";
 import ServicePlate from "../components/lab/ServicePlate";
@@ -14,6 +16,7 @@ export default function ServiceDetail() {
   const { slug } = useParams();
   const index = services.findIndex((item) => item.slug === slug);
   const service = services[index];
+  usePageTitle(service ? service.title : "Service not found");
 
   if (!service) {
     return (
@@ -53,10 +56,9 @@ export default function ServiceDetail() {
               <a
                 className="lab-btn lab-btn--ghost"
                 href={service.websiteUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                {...linkTargetProps(service.websiteUrl)}
               >
-                Visit website
+                {service.websiteLabel ?? "Visit website"}
               </a>
             ) : null}
           </>

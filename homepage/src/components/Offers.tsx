@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { isExternalUrl, linkTargetProps } from "../lib/links";
 import { services } from "../data/services";
 import LabSectionHead from "./LabSectionHead";
 
@@ -37,10 +38,12 @@ export default function Offers() {
                       <a
                         className="lab-link"
                         href={service.websiteUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        {...linkTargetProps(service.websiteUrl)}
                       >
-                        Visit website<span aria-hidden="true"> ↗</span>
+                        {service.websiteLabel ?? "Visit website"}
+                        <span aria-hidden="true">
+                          {isExternalUrl(service.websiteUrl) ? " ↗" : " →"}
+                        </span>
                       </a>
                     </p>
                   ) : null}
