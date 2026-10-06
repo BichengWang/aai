@@ -38,6 +38,15 @@ html {
   background: var(--lab-night);
 }
 
+/* The theme scales its root size up on wide screens (137.5%, then 150%).
+   The other tabs keep one type size, and the content width is capped like
+   theirs, so hold the theme at its 125% base. */
+@media screen and (min-width: 100em) {
+  html {
+    font-size: 125%;
+  }
+}
+
 /* ---------- Material palette and type on lab tokens ---------- */
 
 /* The attribute selector outranks Material's palette rules on body. */
@@ -72,14 +81,15 @@ body[data-md-color-scheme] {
 
 /* ---------- Report bar: Material's header and ticker tabs ---------- */
 
-/* Reports span the full width (as TradingAgents' extra.css intends), lined up
-   with the Altair header's gutter; the theme insets its text about 16px
-   inside .md-grid. The ticker tabs replace the left navigation sidebar, which
-   only repeats the current page; the phone drawer still uses it. */
+/* Same content width as the other tabs (.container in src/lab.css): at most
+   --lab-maxw, centred on the gutter. The theme insets its text about 16px
+   inside .md-grid, so the grid is 32px wider to line the text up. The ticker
+   tabs replace the left navigation sidebar, which only repeats the current
+   page; the phone drawer still uses it. */
 @media screen and (min-width: 76.25em) {
   .md-grid {
-    max-width: none;
-    margin-inline: calc(var(--lab-gutter) - 16px);
+    max-width: min(calc(var(--lab-maxw) + 32px), calc(100% - 2 * var(--lab-gutter) + 32px));
+    margin-inline: auto;
   }
 
   [dir="ltr"] .md-header__title {
@@ -194,14 +204,31 @@ body[data-md-color-scheme] {
   color: var(--lab-fg-3);
 }
 
+/* At the site's content width the table shares a row with the dates rail, so
+   drop extra.css's 48rem minimum and let the suggestion wrap: every column
+   stays in view instead of scrolling sideways. */
 .md-typeset .daily-summary-tables table:not([class]) {
   display: table;
   width: 100%;
+  min-width: 0;
   max-width: none;
 }
 
-.daily-summary-tables td:nth-child(-n + 3) {
+.md-typeset .daily-summary-tables table:not([class]) :is(th, td) {
+  padding: 0.5rem 0.45rem;
+}
+
+.md-typeset .daily-summary-tables table:not([class]) th {
+  min-width: 0;
+  letter-spacing: 0.02em;
+}
+
+.daily-summary-tables td:nth-child(-n + 2) {
   white-space: nowrap;
+}
+
+.daily-summary-tables td:nth-child(3) {
+  white-space: normal;
 }
 
 
@@ -258,9 +285,9 @@ body[data-md-color-scheme] {
   outline-offset: 3px;
 }
 
-/* Full width like the report beneath it, on the same gutter. */
+/* Same width as .container on the other tabs. */
 .altair-wrap {
-  width: calc(100% - 2 * var(--lab-gutter));
+  width: min(var(--lab-maxw), calc(100% - 2 * var(--lab-gutter)));
   margin: 0 auto;
 }
 
