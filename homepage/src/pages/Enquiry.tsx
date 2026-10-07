@@ -13,7 +13,10 @@ const commitments = [
 ];
 
 export default function Enquiry() {
-  usePageTitle("Contact");
+  usePageTitle(
+    "Contact",
+    "Tell the Altair team what you need, where and when. We reply within 24 hours with next steps or a matched local provider in the San Francisco Bay Area."
+  );
   const { pending, sent, error, handleSubmit } = useEnquiryForm("enquiry");
 
   return (

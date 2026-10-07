@@ -2,6 +2,8 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
+  // e2e/built runs against the production build: playwright.built.config.ts
+  testIgnore: "built/**",
   retries: 0,
   use: {
     baseURL: "http://127.0.0.1:4174",

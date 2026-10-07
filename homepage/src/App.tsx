@@ -13,7 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import { useAuth } from "./context/AuthContext";
 import { buildAppPath, buildWorkspaceUrl, getWorkspaceOrigin } from "./lib/runtime";
-import { useRouteChangeReset } from "./lib/usePageChrome";
+import { useHydrated, useRouteChangeReset } from "./lib/usePageChrome";
 
 function AuthLinks() {
   const { loading, user, signOut } = useAuth();
@@ -42,6 +42,14 @@ function AuthLinks() {
 }
 
 function WorkspaceLink({ children }: { children: string }) {
+  const hydrated = useHydrated();
+
+  // Prerendered HTML can't know the host it is served from; this path opens
+  // the workspace on any host until the page is live.
+  if (!hydrated) {
+    return <a href="/?app=workspace">{children}</a>;
+  }
+
   const sameOrigin = getWorkspaceOrigin(window.location) === window.location.origin;
 
   if (sameOrigin) {

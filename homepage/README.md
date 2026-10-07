@@ -67,6 +67,22 @@ The handler validates required fields and service/topic choices, rejects oversiz
 
 Run `npm run test:server` for endpoint validation and `npx playwright test e2e/enquiry.spec.ts` for browser submission, pending state, retry, and failure checks. If Playwright's bundled Chromium is unavailable but Google Chrome is installed, use `PLAYWRIGHT_CHANNEL=chrome npx playwright test e2e/enquiry.spec.ts`. The browser tests use the real handler with a simulated email provider and intentionally clear local email credentials; they do not send actual emails.
 
+## Prerendered pages and search
+
+`npm run build` writes real HTML for the public marketing pages, so they arrive with their content, open on slow devices without waiting for the app script, and read correctly to search engines, link previews and anything else that does not run JavaScript:
+
+1. `vite build` builds the browser app.
+2. `vite build --ssr src/entry-prerender.tsx` builds a Node copy of the marketing app.
+3. [`scripts/prerender.mjs`](./scripts/prerender.mjs) renders each path in `prerenderedPaths` (home, services, every service page, the intake form) to `dist/<path>.html` with its own title, description, canonical URL, Open Graph preview (`public/og-image.png`) and schema.org data. It also writes `sitemap.xml` and `robots.txt`, a copy of the empty app shell for each path in `shellPaths` (login, account, auth callbacks, workspace routes) so static hosts answer them with 200, and `404.html`, the empty shell for any other path.
+4. [`scripts/verify-built-routes.mjs`](./scripts/verify-built-routes.mjs) checks the result.
+
+Cloudflare Pages and Netlify both serve `/services.html` at `/services`. In the browser, [`src/main.tsx`](./src/main.tsx) hydrates a prerendered page when the URL is that page in the marketing app, and renders from scratch otherwise. Workspace URLs (the `llm.` host or `?app=workspace`) share these files; an inline script in `index.html` hides the marketing markup until the workspace replaces it.
+
+- Canonical and sitemap URLs use `SITE_URL` (build environment), default `https://altairworld.com`.
+- A page sets its title and description with `usePageTitle(title, description)`. Add a new public page to `prerenderedPaths` in `src/entry-prerender.tsx`, and a new browser-only route to `shellPaths`.
+- Marketing components render in Node at build time, so they must not read `window` or `document` while rendering. For output that depends on the browser, render a host-independent fallback until `useHydrated()` is true (see `WorkspaceLink` in `src/App.tsx`).
+- `npm run test:e2e:built` builds the site and runs [`e2e/built`](./e2e/built) against it.
+
 ## TradingAgents reports (`/TradingAgents/`)
 
 The **Research** tab opens the TradingAgents report site at `/TradingAgents/`. On Cloudflare Pages, [`functions/TradingAgents/[[path]].js`](./functions/TradingAgents/%5B%5Bpath%5D%5D.js) serves that path from another origin, so the reports look like part of this site and new reports appear as soon as TradingAgents publishes them:
@@ -124,10 +140,11 @@ The workspace function exposes these routes under `workspace-api`:
   ```bash
   npm run test:unit
   ```
-- End-to-end tests:
+- End-to-end tests (development server, then the production build):
   ```bash
   npx playwright install
   npm run test:e2e
+  npm run test:e2e:built
   ```
 
 ## Notes
