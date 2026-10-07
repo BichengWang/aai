@@ -4,6 +4,7 @@ import AppRoot from "./AppRoot";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { getActiveApp, getAuthCallbackPathFromHash, getRouterBasename } from "./lib/runtime";
+import { getSupabase } from "./lib/supabase";
 import "./index.css";
 import "./workspace.css";
 import "./lab.css";
@@ -46,3 +47,7 @@ if (prerenderedPath && prerenderedPath === pathname && getActiveApp() === "marke
   document.documentElement.removeAttribute("data-app");
   createRoot(root).render(app);
 }
+
+// Fetch the auth SDK while React renders, not after; AuthProvider's effect
+// awaits the same request. A failure surfaces there.
+getSupabase().catch(() => {});

@@ -11,6 +11,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          // Loaded on first use by getSupabase (src/lib/supabase.ts).
+          if (id.includes("/node_modules/@supabase/") || id.includes("/node_modules/iceberg-js/")) {
+            return "supabase";
+          }
           if (
             id.includes("/node_modules/docx-preview/") ||
             id.includes("/node_modules/jszip/") ||

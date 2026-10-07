@@ -15,8 +15,8 @@ import {
   getAuthErrorMessage,
   getGoogleRedirectUrl,
   getMissingConfigMessage,
+  getSupabase,
   isSupabaseConfigured,
-  supabase,
 } from "../lib/supabase";
 import type { AppUserProfile, AuthContextValue } from "../types/auth";
 
@@ -45,19 +45,57 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
-    if (!supabase) {
-      setLoading(false);
-      return;
-    }
-
-    const client = supabase;
     let active = true;
+    let subscription: { unsubscribe: () => void } | undefined;
 
     const bootstrap = async () => {
+      let client: Awaited<ReturnType<typeof getSupabase>>;
+
+      try {
+        client = await getSupabase();
+      } catch (error) {
+        if (active) {
+          startTransition(() => {
+            setAuthError(getAuthErrorMessage(error));
+            setLoading(false);
+          });
+        }
+        return;
+      }
+
+      if (!active) {
+        return;
+      }
+
+      if (!client) {
+        setLoading(false);
+        return;
+      }
+
+      const initialSessionRequest = client.auth.getSession();
+
+      subscription = client.auth.onAuthStateChange((_, nextSession) => {
+        startTransition(() => {
+          setSession(nextSession);
+          setUser(nextSession?.user ?? null);
+
+          if (!nextSession?.user) {
+            setProfile(null);
+            setAuthError(null);
+          }
+        });
+
+        if (nextSession?.user) {
+          window.setTimeout(() => {
+            void applySignedInUser(nextSession.user);
+          }, 0);
+        }
+      }).data.subscription;
+
       const {
         data: { session: initialSession },
         error,
-      } = await client.auth.getSession();
+      } = await initialSessionRequest;
 
       if (!active) {
         return;
@@ -84,33 +122,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     void bootstrap();
 
-    const {
-      data: { subscription },
-    } = client.auth.onAuthStateChange((_, nextSession) => {
-      startTransition(() => {
-        setSession(nextSession);
-        setUser(nextSession?.user ?? null);
-
-        if (!nextSession?.user) {
-          setProfile(null);
-          setAuthError(null);
-        }
-      });
-
-      if (nextSession?.user) {
-        window.setTimeout(() => {
-          void applySignedInUser(nextSession.user);
-        }, 0);
-      }
-    });
-
     return () => {
       active = false;
-      subscription.unsubscribe();
+      subscription?.unsubscribe();
     };
   }, [applySignedInUser]);
 
   const signInWithGoogle = useCallback(async (nextPath?: string) => {
+    const supabase = await getSupabase();
+
     if (!supabase) {
       throw new Error(getMissingConfigMessage());
     }
@@ -141,6 +161,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   const signOut = useCallback(async () => {
+    const supabase = await getSupabase();
+
     if (!supabase) {
       throw new Error(getMissingConfigMessage());
     }

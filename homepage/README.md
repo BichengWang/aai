@@ -151,3 +151,4 @@ The workspace function exposes these routes under `workspace-api`:
 
 - The site uses one design system: tokens, header/footer, type and form primitives in `src/lab.css`; inner-page layouts (page head, services, intake forms, auth, account) in `src/pages.css`; homepage sections in `src/home.css`. `src/index.css` holds the base reset plus the review workspace, and `src/workspace.css` the LLM workspace app; both read the same `--lab-*` tokens.
 - The hero figure is an inline SVG (`src/components/lab/AquilaFigure.tsx`); the homepage uses no background image.
+- The Supabase SDK is about a third of the app's JavaScript, so it is not in the main bundle. Get the client with `await getSupabase()` from `src/lib/supabase.ts` (null when auth is not configured); never import `@supabase/supabase-js` for values, only for types. `src/main.tsx` starts the download while React renders, and the build emits it as `assets/supabase-*.js`.

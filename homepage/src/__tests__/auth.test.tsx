@@ -77,21 +77,8 @@ const selectMaybeSingleMock = vi.fn();
 const upsertSelectSingleMock = vi.fn();
 let authStateChangeHandler: ((event: string, session: MockSession | null) => void) | null = null;
 
-vi.mock("../lib/supabase", () => ({
-  isSupabaseConfigured: true,
-  getGoogleRedirectUrl: (nextPath?: string) => {
-    const url = new URL("http://localhost:5173/auth/callback");
-
-    if (nextPath) {
-      url.searchParams.set("next", nextPath);
-    }
-
-    return url.toString();
-  },
-  getMissingConfigMessage: () => "Missing config",
-  getAuthErrorMessage: (error: unknown) =>
-    error instanceof Error ? error.message : typeof error === "string" ? error : "Unknown error",
-  supabase: {
+vi.mock("../lib/supabase", () => {
+  const client = {
     auth: {
       getSession: (...args: unknown[]) => getSessionMock(...args),
       onAuthStateChange: (...args: unknown[]) => onAuthStateChangeMock(...args),
@@ -119,8 +106,25 @@ vi.mock("../lib/supabase", () => ({
         }),
       }),
     }),
-  },
-}));
+  };
+
+  return {
+    isSupabaseConfigured: true,
+    getGoogleRedirectUrl: (nextPath?: string) => {
+      const url = new URL("http://localhost:5173/auth/callback");
+
+      if (nextPath) {
+        url.searchParams.set("next", nextPath);
+      }
+
+      return url.toString();
+    },
+    getMissingConfigMessage: () => "Missing config",
+    getAuthErrorMessage: (error: unknown) =>
+      error instanceof Error ? error.message : typeof error === "string" ? error : "Unknown error",
+    getSupabase: () => Promise.resolve(client),
+  };
+});
 
 vi.mock("../lib/browser", () => ({
   navigateToUrl: (...args: unknown[]) => navigateToUrlMock(...args),

@@ -10,7 +10,7 @@
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
     "test:e2e": "playwright test",
-    "test:e2e:built": "npm run build && playwright test -c playwright.built.config.ts",
+    "test:e2e:built": "VITE_SUPABASE_URL=https://example.com VITE_SUPABASE_PUBLISHABLE_KEY=playwright-publishable-key npm run build && playwright test -c playwright.built.config.ts",
     "test:server": "node --test server/enquiry.test.mjs",
     "test": "npm run test:unit && npm run test:server"
   },

@@ -90,3 +90,44 @@ test("paths without a page still render the app", async ({ page }) => {
   await page.goto("/login");
   await expect(page.getByRole("heading", { name: /welcome back to altair/i })).toBeVisible();
 });
+
+test("the auth SDK loads after the page, then resolves the header", async ({ page }) => {
+  const html = await (await page.request.get("/")).text();
+  expect(html).not.toMatch(/supabase-[\w-]+\.js/);
+
+  const sdk = page.waitForRequest((request) => /\/assets\/supabase-[\w-]+\.js$/.test(request.url()));
+  await page.goto("/");
+  await sdk;
+  await expect(page.getByRole("link", { name: "Login" }).first()).toBeVisible();
+});
+
+test("a stored session still shows the signed-in header", async ({ page }) => {
+  // Profile requests go to the placeholder project; keep them offline.
+  await page.route(/^https:\/\/example\.com\//, (route) => route.abort());
+  await page.addInitScript(() => {
+    const expiresAt = Math.floor(Date.now() / 1000) + 3600;
+    window.localStorage.setItem(
+      "sb-example-auth-token",
+      JSON.stringify({
+        access_token: "e2e-access-token",
+        refresh_token: "e2e-refresh-token",
+        token_type: "bearer",
+        expires_in: 3600,
+        expires_at: expiresAt,
+        user: {
+          id: "e2e-user",
+          aud: "authenticated",
+          email: "member@altair.test",
+          app_metadata: { provider: "google" },
+          user_metadata: {},
+          created_at: "2026-01-01T00:00:00.000Z",
+        },
+      })
+    );
+  });
+
+  await page.goto("/services");
+  const nav = page.getByRole("navigation", { name: "Primary" });
+  await expect(nav.getByRole("link", { name: "Account" })).toBeVisible();
+  await expect(nav.getByRole("button", { name: "Logout" })).toBeVisible();
+});
