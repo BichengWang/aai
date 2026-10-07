@@ -18,6 +18,9 @@ export default defineConfig({
           ) {
             return "docx-vendor";
           }
+          if (id.includes("/node_modules/@supabase/")) {
+            return "supabase-vendor";
+          }
         },
       },
     },

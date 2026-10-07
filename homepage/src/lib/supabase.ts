@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "../types/auth";
 import { appendNextSearchParam, buildAppPath } from "./runtime";
 
@@ -78,16 +78,36 @@ const hasValidSupabaseConfig =
   Boolean(supabasePublishableKey?.trim()) &&
   !isPlaceholderPublishableKey(supabasePublishableKey);
 
-export const supabase = hasValidSupabaseConfig
-  ? createClient<Database>(supabaseUrl!, supabasePublishableKey!, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-      },
-    })
-  : null;
-export const isSupabaseConfigured = Boolean(supabase);
+export const isSupabaseConfigured = hasValidSupabaseConfig;
+
+let clientPromise: Promise<SupabaseClient<Database> | null> | null = null;
+
+// supabase-js is about a third of the marketing bundle, so it is fetched on
+// first use (AuthProvider asks right after hydration) instead of blocking it.
+// Every caller shares the one client.
+export function loadSupabase(): Promise<SupabaseClient<Database> | null> {
+  if (!hasValidSupabaseConfig) {
+    return Promise.resolve(null);
+  }
+
+  clientPromise ??= import("@supabase/supabase-js").then(
+    ({ createClient }) =>
+      createClient<Database>(supabaseUrl!, supabasePublishableKey!, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+        },
+      }),
+    (error: unknown) => {
+      // Let the next caller retry a failed chunk download.
+      clientPromise = null;
+      throw error;
+    }
+  );
+
+  return clientPromise;
+}
 
 export function getMissingConfigMessage() {
   return "Supabase authentication is not configured. Replace the placeholder VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY values, or provide NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.";

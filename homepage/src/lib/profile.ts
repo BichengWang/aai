@@ -1,5 +1,5 @@
 import type { User } from "@supabase/supabase-js";
-import { supabase } from "./supabase";
+import { loadSupabase } from "./supabase";
 import type { AppUserProfile, Database } from "../types/auth";
 
 function resolveAuthProvider(user: User) {
@@ -22,6 +22,8 @@ export function deriveProfileFromUser(user: User): AppUserProfile {
 }
 
 export async function fetchProfile(userId: string): Promise<AppUserProfile | null> {
+  const supabase = await loadSupabase();
+
   if (!supabase) {
     return null;
   }
@@ -40,6 +42,8 @@ export async function fetchProfile(userId: string): Promise<AppUserProfile | nul
 }
 
 export async function upsertProfileFromUser(user: User): Promise<AppUserProfile | null> {
+  const supabase = await loadSupabase();
+
   if (!supabase) {
     return deriveProfileFromUser(user);
   }

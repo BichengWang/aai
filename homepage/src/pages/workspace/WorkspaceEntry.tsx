@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { buildAppPath } from "../../lib/runtime";
 import { consumeWorkspaceHandoff, getWorkspaceErrorMessage } from "../../lib/workspaceApi";
-import { supabase } from "../../lib/supabase";
+import { loadSupabase } from "../../lib/supabase";
 
 export default function WorkspaceEntry() {
   const navigate = useNavigate();
@@ -18,18 +18,23 @@ export default function WorkspaceEntry() {
       return;
     }
 
-    if (!authConfigured || !supabase) {
+    if (!authConfigured) {
       setError("Supabase auth is not configured.");
       return;
     }
 
-    const client = supabase;
     let active = true;
 
     const run = async () => {
       setStatus("Completing your single sign-on handoff...");
 
       try {
+        const client = await loadSupabase();
+
+        if (!client) {
+          throw new Error("Supabase auth is not configured.");
+        }
+
         const payload = await consumeWorkspaceHandoff(handoffToken);
         const { error: sessionError } = await client.auth.setSession({
           access_token: payload.accessToken,

@@ -4,7 +4,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { navigateToUrl } from "../lib/browser";
 import { buildAppPath, buildOAuthConsentPath } from "../lib/runtime";
-import { getAuthErrorMessage, getMissingConfigMessage, supabase } from "../lib/supabase";
+import { getAuthErrorMessage, getMissingConfigMessage, loadSupabase } from "../lib/supabase";
 
 type OAuthAuthorizationDetails = {
   authorization_id: string;
@@ -44,7 +44,7 @@ export default function OAuthConsent() {
       return;
     }
 
-    if (!authConfigured || !supabase) {
+    if (!authConfigured) {
       setError(getMissingConfigMessage());
       setStatus("Supabase auth is not configured.");
       return;
@@ -63,11 +63,16 @@ export default function OAuthConsent() {
     }
 
     let active = true;
-    const client = supabase;
 
     const loadAuthorizationDetails = async () => {
       setStatus("Loading authorization request...");
       setError(null);
+
+      const client = await loadSupabase();
+
+      if (!active || !client) {
+        return;
+      }
 
       const { data, error: detailsError } = await client.auth.oauth.getAuthorizationDetails(authorizationId);
 
@@ -115,6 +120,8 @@ export default function OAuthConsent() {
   };
 
   const handleConsent = async (decision: "approve" | "deny") => {
+    const supabase = authorizationId ? await loadSupabase() : null;
+
     if (!authorizationId || !supabase) {
       return;
     }

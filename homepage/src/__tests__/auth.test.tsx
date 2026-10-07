@@ -91,7 +91,7 @@ vi.mock("../lib/supabase", () => ({
   getMissingConfigMessage: () => "Missing config",
   getAuthErrorMessage: (error: unknown) =>
     error instanceof Error ? error.message : typeof error === "string" ? error : "Unknown error",
-  supabase: {
+  loadSupabase: async () => ({
     auth: {
       getSession: (...args: unknown[]) => getSessionMock(...args),
       onAuthStateChange: (...args: unknown[]) => onAuthStateChangeMock(...args),
@@ -119,7 +119,7 @@ vi.mock("../lib/supabase", () => ({
         }),
       }),
     }),
-  },
+  }),
 }));
 
 vi.mock("../lib/browser", () => ({

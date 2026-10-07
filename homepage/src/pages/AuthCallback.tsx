@@ -3,7 +3,7 @@ import { usePageTitle } from "../lib/usePageChrome";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getDefaultSignedInPath, resolveRedirectPath } from "../lib/runtime";
-import { getMissingConfigMessage, supabase } from "../lib/supabase";
+import { getAuthErrorMessage, getMissingConfigMessage, loadSupabase } from "../lib/supabase";
 import {
   finishSignIn,
   parseCallbackError,
@@ -34,13 +34,12 @@ export default function AuthCallback() {
       return;
     }
 
-    if (!authConfigured || !supabase) {
+    if (!authConfigured) {
       setError(getMissingConfigMessage());
       setStatus("Supabase auth is not configured.");
       return;
     }
 
-    const client = supabase;
     const next = resolveRedirectPath(searchParams.get("next"), getDefaultSignedInPath());
     let completed = false;
 
@@ -58,15 +57,33 @@ export default function AuthCallback() {
       navigate(next, { replace: true });
     };
 
-    const cleanup = finishSignIn(client, artifacts, {
-      onCompleted: completeSignIn,
-      onError: (msg) => {
-        setError(msg);
-        setStatus("OAuth sign-in did not complete.");
-      },
-    });
+    let active = true;
+    let cleanup: (() => void) | null = null;
 
-    return cleanup;
+    const onError = (msg: string) => {
+      setError(msg);
+      setStatus("OAuth sign-in did not complete.");
+    };
+
+    loadSupabase().then(
+      (client) => {
+        if (!active || !client) {
+          return;
+        }
+
+        cleanup = finishSignIn(client, artifacts, { onCompleted: completeSignIn, onError });
+      },
+      (caughtError: unknown) => {
+        if (active) {
+          onError(getAuthErrorMessage(caughtError));
+        }
+      }
+    );
+
+    return () => {
+      active = false;
+      cleanup?.();
+    };
   }, [authConfigured, navigate, refreshProfile, searchParams]);
 
   return (
