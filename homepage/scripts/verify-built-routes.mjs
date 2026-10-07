@@ -31,7 +31,8 @@ for (const path of pages) {
   assertAppShell(file, html);
   assert.ok(html.includes(`<div id="root" data-prerendered="${path}">`), `${file} is not prerendered.`);
   assert.match(html, /<h1[ >]/, `${file} has no heading.`);
-  assert.match(html, new RegExp(`<link rel="canonical" href="https?://[^/"]+${path}" />`), `${file} has no canonical URL.`);
+  const canonical = html.match(/<link rel="canonical" href="([^"]+)" \/>/)?.[1];
+  assert.equal(canonical && new URL(canonical).pathname, path, `${file} has no canonical URL for ${path}.`);
   assert.equal(html.match(/<title>/g)?.length, 1, `${file} must have one <title>.`);
   assert.equal(html.match(/<meta name="description"/g)?.length, 1, `${file} must have one description.`);
 }

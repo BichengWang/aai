@@ -31,10 +31,9 @@ test("every sitemap page arrives with its content and its own head", async ({ br
     await noScript.goto(path);
     await expect(noScript.locator("h1")).toBeVisible();
     await expect(noScript.locator("main")).not.toBeEmpty();
-    await expect(noScript.locator('link[rel="canonical"]')).toHaveAttribute(
-      "href",
-      new RegExp(`^https://[^/]+${path.replace(/[/]/g, "\\/")}$`)
-    );
+    const canonical = new URL((await noScript.locator('link[rel="canonical"]').getAttribute("href")) ?? "");
+    expect(canonical.protocol).toBe("https:");
+    expect(canonical.pathname).toBe(path);
     await expect(noScript.locator('meta[property="og:image"]')).toHaveAttribute("content", /\/og-image\.png$/);
     titles.add(await noScript.title());
   }
