@@ -25,6 +25,7 @@ for (const path of ["/", "/enquiry"]) {
     await routeToHandler(page, async (url, init) => {
       expect(url).toBe("https://api.resend.com/emails");
       expect(new Headers(init?.headers).get("Authorization")).toBe("Bearer server-test-key");
+      expect(new Headers(init?.headers).get("User-Agent")).toBe("altair-enquiry/1.0");
       idempotencyKey = new Headers(init?.headers).get("Idempotency-Key")!;
       outgoing = JSON.parse(init?.body as string);
       sends++;
