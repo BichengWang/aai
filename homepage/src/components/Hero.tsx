@@ -47,6 +47,19 @@ export default function Hero() {
           <p className="lab-hero-note lab-micro">
             Free to start · No subscription or credit fees
           </p>
+          <a
+            className="lab-partner-badge"
+            href="https://claude.com/partners"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/images/claude-partner-network.png"
+              alt="Certified Claude Partner Network member"
+              width={800}
+              height={64}
+            />
+          </a>
         </div>
         <AquilaFigure />
         <dl className="lab-metrics">
