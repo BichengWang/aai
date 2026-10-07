@@ -1,9 +1,9 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import AppRoot from "./AppRoot";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import { getAuthCallbackPathFromHash, getRouterBasename } from "./lib/runtime";
+import { getActiveApp, getAuthCallbackPathFromHash, getRouterBasename } from "./lib/runtime";
 import "./index.css";
 import "./workspace.css";
 import "./lab.css";
@@ -22,12 +22,27 @@ if (callbackPathFromHash) {
   window.history.replaceState(null, "", callbackPathFromHash);
 }
 
-createRoot(root).render(
+const app = (
   <StrictMode>
-      <BrowserRouter basename={getRouterBasename()}>
-        <AuthProvider>
-          <AppRoot />
-        </AuthProvider>
-      </BrowserRouter>
+    <BrowserRouter basename={getRouterBasename()}>
+      <AuthProvider>
+        <AppRoot />
+      </AuthProvider>
+    </BrowserRouter>
   </StrictMode>
 );
+
+// Static hosts serve a prerendered page (scripts/prerender.mjs) for its own
+// path. Hydrate it only when this URL is that page in the marketing app; any
+// other case (the workspace host, ?app=workspace, an auth callback rewritten
+// above, a fallback copy) renders from scratch.
+const prerenderedPath = root.dataset.prerendered;
+const pathname = window.location.pathname.replace(/(.)\/+$/, "$1");
+
+if (prerenderedPath && prerenderedPath === pathname && getActiveApp() === "marketing") {
+  hydrateRoot(root, app);
+} else {
+  root.replaceChildren();
+  document.documentElement.removeAttribute("data-app");
+  createRoot(root).render(app);
+}

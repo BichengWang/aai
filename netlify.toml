@@ -14,7 +14,9 @@
   to = "https://bichengwang.github.io/TradingAgents/:splat"
   status = 302
 
+# Paths without a file of their own get the empty app shell. Prerendered
+# pages (/services.html, ...) shadow this rule; index.html is the home page.
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/404.html"
   status = 200
