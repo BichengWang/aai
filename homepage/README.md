@@ -53,19 +53,35 @@ The homepage contact form and the unified `/enquiry` intake form (`/contact` red
 To enable delivery:
 
 1. Verify a sending domain in Resend and create a sending API key.
-2. Set these **server-only** variables in Netlify with the **Functions** scope:
+2. Set these **server-only** variables in Netlify with the **Functions** scope, or as Cloudflare Pages environment variables (encrypt the key as a secret):
    ```bash
    RESEND_API_KEY=your-resend-api-key
    ENQUIRY_FROM_EMAIL=Altair <enquiries@your-verified-domain.example>
    ENQUIRY_TO_EMAIL=qx@altairworld.com
    ```
    The recipient defaults to `qx@altairworld.com`. Never prefix these settings with `VITE_` or `NEXT_PUBLIC_`; the key must stay out of browser bundles. For local development, place them in `.env.local`; Vite serves the same handler through server middleware. Restart the development server after changing them.
-3. Deploy using the repository-root `netlify.toml`. It builds `homepage`, bundles the enquiry function, and enables SPA routes. Redeploy after setting production secrets. Static hosting (including GitHub Pages) cannot run this function; use Netlify for email submission.
+3. Deploy. On Netlify, the repository-root `netlify.toml` builds `homepage` and bundles [`netlify/functions/enquiry.mjs`](./netlify/functions/enquiry.mjs). On Cloudflare Pages, [`functions/api/enquiry.js`](./functions/api/enquiry.js) runs the same handler. Redeploy after setting production secrets. Static hosting without functions (including GitHub Pages) cannot send email.
 4. Submit a contact message on the deployed site and verify it arrives at the team inbox. Check Resend's delivery logs if it does not arrive.
 
-The handler validates required fields and service/topic choices, rejects oversized requests, and includes a hidden bot-trap field. [Netlify limits](https://docs.netlify.com/manage/security/secure-access-to-sites/rate-limiting/) this endpoint to five requests per IP/domain per minute; verify the rule is reported in the deploy log. Retries of unchanged forms reuse a Resend idempotency key to avoid duplicate emails within Resend's 24-hour deduplication window. There is no database queue: when delivery is unavailable, the form reports an error and offers the team's email address. No customer auto-reply is sent.
+The handler validates required fields and service/topic choices, rejects oversized requests, and includes a hidden bot-trap field. [Netlify limits](https://docs.netlify.com/manage/security/secure-access-to-sites/rate-limiting/) this endpoint to five requests per IP/domain per minute; verify the rule is reported in the deploy log. Cloudflare Pages has no per-function limit, so add a [rate limiting rule](https://developers.cloudflare.com/waf/rate-limiting-rules/) for `/api/enquiry` in the domain's WAF. Retries of unchanged forms reuse a Resend idempotency key to avoid duplicate emails within Resend's 24-hour deduplication window. There is no database queue: when delivery is unavailable, the form reports an error and offers the team's email address. No customer auto-reply is sent.
 
 Run `npm run test:server` for endpoint validation and `npx playwright test e2e/enquiry.spec.ts` for browser submission, pending state, retry, and failure checks. If Playwright's bundled Chromium is unavailable but Google Chrome is installed, use `PLAYWRIGHT_CHANNEL=chrome npx playwright test e2e/enquiry.spec.ts`. The browser tests use the real handler with a simulated email provider and intentionally clear local email credentials; they do not send actual emails.
+
+## Prerendered pages and search
+
+`npm run build` writes real HTML for the public marketing pages, so they arrive with their content, open on slow devices without waiting for the app script, and read correctly to search engines, link previews and anything else that does not run JavaScript:
+
+1. `vite build` builds the browser app.
+2. `vite build --ssr src/entry-prerender.tsx` builds a Node copy of the marketing app.
+3. [`scripts/prerender.mjs`](./scripts/prerender.mjs) renders each path in `prerenderedPaths` (home, services, every service page, the intake form) to `dist/<path>.html` with its own title, description, canonical URL, Open Graph preview (`public/og-image.png`) and schema.org data. It also writes `sitemap.xml` and `robots.txt`, a copy of the empty app shell for each path in `shellPaths` (login, account, auth callbacks, workspace routes) so static hosts answer them with 200, and `404.html`, the empty shell for any other path.
+4. [`scripts/verify-built-routes.mjs`](./scripts/verify-built-routes.mjs) checks the result.
+
+Cloudflare Pages and Netlify both serve `/services.html` at `/services`. In the browser, [`src/main.tsx`](./src/main.tsx) hydrates a prerendered page when the URL is that page in the marketing app, and renders from scratch otherwise. Workspace URLs (the `llm.` host or `?app=workspace`) share these files; an inline script in `index.html` hides the marketing markup until the workspace replaces it.
+
+- Canonical and sitemap URLs use `SITE_URL` (build environment), default `https://altairworld.com`.
+- A page sets its title and description with `usePageTitle(title, description)`. Add a new public page to `prerenderedPaths` in `src/entry-prerender.tsx`, and a new browser-only route to `shellPaths`.
+- Marketing components render in Node at build time, so they must not read `window` or `document` while rendering. For output that depends on the browser, render a host-independent fallback until `useHydrated()` is true (see `WorkspaceLink` in `src/App.tsx`).
+- `npm run test:e2e:built` builds the site and runs [`e2e/built`](./e2e/built) against it.
 
 ## TradingAgents reports (`/TradingAgents/`)
 
@@ -74,7 +90,7 @@ The **Research** tab opens the TradingAgents report site at `/TradingAgents/`. O
 - `TRADINGAGENTS_REPORTS_ORIGIN` (Cloudflare Pages environment variable) is the origin to serve from. It defaults to `https://bichengwang.github.io`, the GitHub Pages copy. Once TradingAgents' `scripts/publish_site.sh` also deploys to its own Cloudflare Pages project, set it to that project's URL, e.g. `https://tradingagents-reports.pages.dev`. The paths are the same on both.
 - The reports share this origin with the signed-in app, so every response carries `Content-Security-Policy: script-src 'none'` and the function strips `<script>` and `<meta http-equiv>` tags. The report pages are static and stay readable without their theme script; the light/dark toggle and instant page loads are off on this copy.
 - The function dresses the pages in the Altair look: it adds the Altair header and footer from [`server/researchChrome.mjs`](./server/researchChrome.mjs), the Altair favicon and mark, and [`public/research.css`](./public/research.css), which maps the MkDocs theme onto the lab tokens and fonts. These are static copies, so keep them in step with `src/App.tsx` and `src/lab.css`. The header's Workspace link follows `VITE_WORKSPACE_ORIGIN` like the app's.
-- `npm run dev` does not run Pages Functions; use `npx wrangler pages dev dist` after `npm run build`. On Netlify, `netlify.toml` redirects `/TradingAgents/*` to the GitHub Pages copy instead.
+- `npm run dev` does not run Pages Functions (this one or `/api/enquiry`); use `npx wrangler pages dev dist` after `npm run build`. On Netlify, `netlify.toml` redirects `/TradingAgents/*` to the GitHub Pages copy instead.
 
 ## Workspace edge function setup
 
@@ -124,10 +140,11 @@ The workspace function exposes these routes under `workspace-api`:
   ```bash
   npm run test:unit
   ```
-- End-to-end tests:
+- End-to-end tests (development server, then the production build):
   ```bash
   npx playwright install
   npm run test:e2e
+  npm run test:e2e:built
   ```
 
 ## Notes

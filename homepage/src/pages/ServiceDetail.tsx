@@ -16,7 +16,7 @@ export default function ServiceDetail() {
   const { slug } = useParams();
   const index = services.findIndex((item) => item.slug === slug);
   const service = services[index];
-  usePageTitle(service ? service.title : "Service not found");
+  usePageTitle(service ? service.title : "Service not found", service?.description);
 
   if (!service) {
     return (

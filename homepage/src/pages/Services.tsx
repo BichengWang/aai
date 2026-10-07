@@ -6,7 +6,10 @@ import ServicePlate from "../components/lab/ServicePlate";
 import { services } from "../data/services";
 
 export default function Services() {
-  usePageTitle("Services");
+  usePageTitle(
+    "Services",
+    "Four service lines in the San Francisco Bay Area: financial planning, legal services, car rental and pet sitting. AI-guided intake, verified local providers and a reply within 24 hours."
+  );
   return (
     <div className="lab-page">
       <LabPageHead

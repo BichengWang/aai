@@ -47,3 +47,6 @@ jobs:
 
       - name: Verify production build
         run: npm run build
+
+      - name: Prerendered site end-to-end tests
+        run: npx playwright test -c playwright.built.config.ts

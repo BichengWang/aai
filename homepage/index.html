@@ -18,8 +18,25 @@
       property="og:description"
       content="Altair is an applied AI lab in the San Francisco Bay Area. We build AI-guided intake, verification and matching for trusted local providers, plus tools like a document review workspace."
     />
+    <meta name="twitter:card" content="summary_large_image" />
     <title>Altair AI LLC | Applied AI for everyday local services</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Workspace URLs get the same static files as the marketing site, whose
+         pages are prerendered. Hide that markup until src/main.tsx replaces it.
+         Mirrors detectActiveApp in src/lib/runtime.ts. -->
+    <script>
+      (function () {
+        var host = location.hostname;
+        if (host === "llm" || host.indexOf("llm.") === 0 || new URLSearchParams(location.search).get("app") === "workspace") {
+          document.documentElement.setAttribute("data-app", "workspace");
+        }
+      })();
+    </script>
+    <style>
+      html[data-app="workspace"] #root {
+        visibility: hidden;
+      }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Loaded here, not by an @import in the bundled CSS, so the font request starts with the page. -->
