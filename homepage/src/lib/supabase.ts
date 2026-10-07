@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "../types/auth";
 import { appendNextSearchParam, buildAppPath } from "./runtime";
 
@@ -78,16 +78,38 @@ const hasValidSupabaseConfig =
   Boolean(supabasePublishableKey?.trim()) &&
   !isPlaceholderPublishableKey(supabasePublishableKey);
 
-export const supabase = hasValidSupabaseConfig
-  ? createClient<Database>(supabaseUrl!, supabasePublishableKey!, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-      },
-    })
-  : null;
-export const isSupabaseConfigured = Boolean(supabase);
+export const isSupabaseConfigured = hasValidSupabaseConfig;
+
+let client: Promise<SupabaseClient<Database>> | undefined;
+
+/**
+ * The Supabase client, or null when auth is not configured. The SDK is about a
+ * third of the app's JavaScript and no page needs it to render, so it loads on
+ * first use rather than with every page.
+ */
+export function getSupabase(): Promise<SupabaseClient<Database> | null> {
+  if (!hasValidSupabaseConfig) {
+    return Promise.resolve(null);
+  }
+
+  client ??= import("@supabase/supabase-js").then(
+    ({ createClient }) =>
+      createClient<Database>(supabaseUrl!, supabasePublishableKey!, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+        },
+      }),
+    (error: unknown) => {
+      // Let the next caller retry, e.g. after a failed chunk download.
+      client = undefined;
+      throw error;
+    }
+  );
+
+  return client;
+}
 
 export function getMissingConfigMessage() {
   return "Supabase authentication is not configured. Replace the placeholder VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY values, or provide NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.";
