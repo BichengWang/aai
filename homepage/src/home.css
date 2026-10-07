@@ -49,6 +49,27 @@
   margin-top: 18px;
 }
 
+.lab-partner-badge {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: #faf9f5;
+  border: 1px solid var(--lab-line);
+  line-height: 0;
+  transition: border-color 160ms var(--lab-ease);
+}
+
+.lab-partner-badge:hover {
+  border-color: var(--lab-line-strong);
+}
+
+.lab-partner-badge img {
+  display: block;
+  width: clamp(200px, 60vw, 240px);
+  height: auto;
+}
+
 .lab-hero-grid > .lab-figure {
   width: 100%;
   max-width: 520px;
@@ -895,6 +916,10 @@
 
   .lab-hero-note {
     animation: lab-rise 720ms var(--lab-ease) 280ms both;
+  }
+
+  .lab-partner-badge {
+    animation: lab-rise 720ms var(--lab-ease) 320ms both;
   }
 
   .lab-metrics {
