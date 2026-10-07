@@ -76,6 +76,25 @@ test("homepage lab layout holds at 360px and links every service", async ({ page
   );
 });
 
+test("hero shows both partner network marks, loaded and linked", async ({ page }) => {
+  await page.goto("/");
+
+  const partners = page.locator(".lab-partners");
+  await expect(partners.getByText("Partner networks")).toBeVisible();
+
+  for (const [name, href] of [
+    ["Claude Partner Network", "https://claude.com/partners"],
+    ["OpenAI Partner Network", "https://openai.com/business/partners/"],
+  ]) {
+    const mark = partners.getByRole("img", { name });
+    await expect(mark).toBeVisible();
+    await expect
+      .poll(() => mark.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0))
+      .toBe(true);
+    await expect(partners.getByRole("link", { name })).toHaveAttribute("href", href);
+  }
+});
+
 test("lab chrome and page head apply across the marketing site", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#0b0c10");
