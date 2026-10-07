@@ -1,7 +1,8 @@
 import { defineConfig } from "@playwright/test";
 
 // End-to-end checks of the production build: prerendered pages, hydrated in
-// the browser. `npm run test:e2e:built` builds first.
+// the browser. `npm run test:e2e:built` builds first, with placeholder Supabase
+// settings (https://example.com) so the auth SDK loads as in production.
 export default defineConfig({
   testDir: "./e2e/built",
   retries: 0,

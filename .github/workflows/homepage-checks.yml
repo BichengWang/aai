@@ -47,6 +47,10 @@ jobs:
 
       - name: Verify production build
         run: npm run build
+        env:
+          # Placeholder project, as in playwright.built.config.ts.
+          VITE_SUPABASE_URL: https://example.com
+          VITE_SUPABASE_PUBLISHABLE_KEY: playwright-publishable-key
 
       - name: Prerendered site end-to-end tests
         run: npx playwright test -c playwright.built.config.ts

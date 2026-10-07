@@ -3,7 +3,7 @@ import { usePageTitle } from "../lib/usePageChrome";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getDefaultSignedInPath, resolveRedirectPath } from "../lib/runtime";
-import { getMissingConfigMessage, supabase } from "../lib/supabase";
+import { getAuthErrorMessage, getMissingConfigMessage, getSupabase } from "../lib/supabase";
 import {
   finishSignIn,
   parseCallbackError,
@@ -34,15 +34,16 @@ export default function AuthCallback() {
       return;
     }
 
-    if (!authConfigured || !supabase) {
+    if (!authConfigured) {
       setError(getMissingConfigMessage());
       setStatus("Supabase auth is not configured.");
       return;
     }
 
-    const client = supabase;
     const next = resolveRedirectPath(searchParams.get("next"), getDefaultSignedInPath());
+    let active = true;
     let completed = false;
+    let cleanup: (() => void) | undefined;
 
     if (errorMessage && isRecoverableStateError) {
       setStatus("Recovering your OAuth sign-in session...");
@@ -58,15 +59,35 @@ export default function AuthCallback() {
       navigate(next, { replace: true });
     };
 
-    const cleanup = finishSignIn(client, artifacts, {
-      onCompleted: completeSignIn,
-      onError: (msg) => {
-        setError(msg);
-        setStatus("OAuth sign-in did not complete.");
-      },
-    });
+    const fail = (msg: string) => {
+      setError(msg);
+      setStatus("OAuth sign-in did not complete.");
+    };
 
-    return cleanup;
+    getSupabase().then(
+      (client) => {
+        if (!active) {
+          return;
+        }
+
+        if (!client) {
+          fail(getMissingConfigMessage());
+          return;
+        }
+
+        cleanup = finishSignIn(client, artifacts, { onCompleted: completeSignIn, onError: fail });
+      },
+      (caughtError: unknown) => {
+        if (active) {
+          fail(getAuthErrorMessage(caughtError));
+        }
+      }
+    );
+
+    return () => {
+      active = false;
+      cleanup?.();
+    };
   }, [authConfigured, navigate, refreshProfile, searchParams]);
 
   return (
