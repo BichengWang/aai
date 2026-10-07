@@ -114,6 +114,9 @@ export function createEnquiryHandler({ env = process.env, fetchEmail = fetch } =
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
           "Idempotency-Key": `altair-enquiry/${submissionId}`,
+          // Resend rejects requests without one (403, error 1010), and fetch on
+          // Cloudflare Pages, unlike Node's, sends none.
+          "User-Agent": "altair-enquiry/1.0",
         },
         body: JSON.stringify({
           from, to: [to], reply_to: email,
