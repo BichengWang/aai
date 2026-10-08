@@ -148,10 +148,12 @@ docker build -f Dockerfile.worker -t turo-worker .
 When `WORKER_MODE=scheduled`, the worker starts an HTTP server on `HEALTHZ_PORT` (default 3001):
 
 ```
-GET /healthz  →  200 {"status":"ok"}
+GET /healthz  →  200 {"status":"ok","jobs":{"trip_import":{"running":false,"lastStartedAt":"…","lastSucceededAt":"…","lastFailedAt":null,"lastError":null,"consecutiveFailures":0}, …}}
 ```
 
 Used by Docker, ECS task definitions, and k8s liveness probes. The `HEALTHCHECK` instruction is baked into the image.
+
+`status` is `"degraded"` while any job's latest run failed after all retries; `lastError` says why. The HTTP status stays 200 so an external outage (e.g. Supabase down) does not put the container in a restart loop — alert on the body instead.
 
 ### Logging
 

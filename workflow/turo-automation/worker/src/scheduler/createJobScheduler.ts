@@ -11,8 +11,20 @@ export interface ScheduledJob {
   retryDelayMs?: number;
 }
 
+/** Last-run state of a scheduled job, as reported by /healthz. Timestamps are wall-clock ISO strings. */
+export interface ScheduledJobStatus {
+  running: boolean;
+  lastStartedAt: string | null;
+  lastSucceededAt: string | null;
+  lastFailedAt: string | null;
+  lastError: string | null;
+  /** Runs in a row that failed after all retries; 0 after a success. */
+  consecutiveFailures: number;
+}
+
 export interface JobScheduler {
   start(): void;
+  status(): Record<string, ScheduledJobStatus>;
   /**
    * Stop scheduling new runs and wait for in-flight jobs to finish, up to
    * `timeoutMs`. Resolves `true` if every job finished, `false` on timeout.
@@ -31,6 +43,19 @@ export interface JobScheduler {
 export function createJobScheduler(jobs: ScheduledJob[]): JobScheduler {
   const handles: ReturnType<typeof setInterval>[] = [];
   const runningJobs = new Map<ScheduledJob, Promise<void>>();
+  const statuses = new Map<ScheduledJob, ScheduledJobStatus>(
+    jobs.map((job) => [
+      job,
+      {
+        running: false,
+        lastStartedAt: null,
+        lastSucceededAt: null,
+        lastFailedAt: null,
+        lastError: null,
+        consecutiveFailures: 0,
+      },
+    ])
+  );
 
   async function safeRun(job: ScheduledJob) {
     if (runningJobs.has(job)) {
@@ -48,18 +73,29 @@ export function createJobScheduler(jobs: ScheduledJob[]): JobScheduler {
   }
 
   async function runJob(job: ScheduledJob) {
+    const status = statuses.get(job)!;
+    status.running = true;
+    status.lastStartedAt = new Date().toISOString();
     try {
       logWorkerEvent("scheduler.job_start", { name: job.name });
       await withRetry(() => job.run(), job.name, {
         maxAttempts: job.maxAttempts ?? 3,
         delayMs: job.retryDelayMs ?? 2_000,
       });
+      status.lastSucceededAt = new Date().toISOString();
+      status.consecutiveFailures = 0;
       logWorkerEvent("scheduler.job_done", { name: job.name });
     } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      status.lastFailedAt = new Date().toISOString();
+      status.lastError = message;
+      status.consecutiveFailures++;
       logWorkerEvent("scheduler.job_error", {
         name: job.name,
-        error: error instanceof Error ? error.message : String(error),
+        error: message,
       }, "error");
+    } finally {
+      status.running = false;
     }
   }
 
@@ -75,6 +111,10 @@ export function createJobScheduler(jobs: ScheduledJob[]): JobScheduler {
         const handle = setInterval(() => void safeRun(job), job.intervalMs);
         handles.push(handle);
       }
+    },
+
+    status() {
+      return Object.fromEntries(jobs.map((job) => [job.name, { ...statuses.get(job)! }]));
     },
 
     async stop({ timeoutMs = 8_000 } = {}) {

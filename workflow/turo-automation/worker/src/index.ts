@@ -2,6 +2,7 @@ import { createWorkerApp } from "./app/createWorkerApp.js";
 import { createHealthServer } from "./lib/createHealthServer.js";
 import { readPositiveIntEnv } from "./lib/env.js";
 import { logWorkerEvent } from "./lib/logger.js";
+import type { JobScheduler } from "./scheduler/createJobScheduler.js";
 
 const KNOWN_MODES = new Set(["scheduled", "run-once", ""]);
 
@@ -16,8 +17,9 @@ async function main() {
   }
 
   if (mode === "scheduled") {
-    const healthServer = await createHealthServer();
-    const scheduler = await workerApp.runScheduled();
+    let scheduler: JobScheduler | undefined;
+    const healthServer = await createHealthServer(() => scheduler?.status() ?? {});
+    scheduler = await workerApp.runScheduled();
 
     // Stop scheduling, let in-flight jobs finish (bounded so the orchestrator's
     // kill deadline is not reached first), then exit. A second signal falls

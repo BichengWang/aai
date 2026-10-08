@@ -123,7 +123,7 @@ PR slices:
 6. Validate `HEALTHZ_PORT` and report health-server listen errors ✓
 7. Graceful shutdown — wait for in-flight jobs and close the health server ✓
 8. Log levels — warnings and failures carry `warn` / `error` in JSON output ✓
-9. `/healthz` reports per-job last-run state
+9. `/healthz` reports per-job last-run state ✓
 10. Phase 11 closeout
 
 ## Current Status
