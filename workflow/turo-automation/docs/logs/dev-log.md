@@ -964,4 +964,12 @@ repeat, and SIGTERM exits cleanly.
 - `WorkerJob.run()` now returns the use-case result so callers can act on it
 - Before: the digest posted to Slack every hour
 
-**Verification**: `npm test`; scheduled mode for 2s with `INTERVAL_DAILY_DIGEST_MS=300` — 7 digest posts before, 1 post + 6 `already_sent_today` skips after. The restart seed reads Supabase `job_runs` and was not exercised end to end (no live Supabase in this environment).
+**Verification**: `npm test`; scheduled mode for 2s with `INTERVAL_DAILY_DIGEST_MS=300` — 7 digest posts before, 1 post + 6 `already_sent_today` skips after. The restart seed was verified in slice 5 against a PostgREST stub.
+
+### Phase 11 slice 5 — system clock outside fixture mode
+
+- `worker/src/lib/time.ts` returned `FIXTURE_NOW` / `FIXTURE_TODAY` unconditionally, so a Supabase-backed worker evaluated every job as of 2026-03-20T18:00Z and wrote `job_runs` ids like `trip_import-2026-03-20T18:00:00.000Z` — each run upserted over the previous one, and durations were always zero
+- The clock now uses system time (UTC) when `SUPABASE_URL` and `SUPABASE_KEY` are set and keeps the fixture time otherwise; `WORKER_CLOCK=system|fixture` overrides
+- Documented `WORKER_CLOCK` in `.env.example` and the architecture overview
+
+**Verification**: `npm test`; ran run-once against a local PostgREST stub (`SUPABASE_URL=http://127.0.0.1:54321`) and captured the `job_runs` upserts — before: every id stamped `2026-03-20T18:00:00.000Z`; after: real start/finish times. Fixture mode output unchanged; `WORKER_CLOCK=system` in fixture mode switches to real time. With the real clock the stub also exercised the slice 4 digest seed: a completed `daily_digest` from today in `job_runs` → restarted scheduled worker skips (0 posts); none → 1 post
