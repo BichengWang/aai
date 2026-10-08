@@ -11,6 +11,7 @@ import {
 import type { User } from "@supabase/supabase-js";
 import { deriveProfileFromUser, loadProfileForUser } from "../lib/profile";
 import { navigateToUrl } from "../lib/browser";
+import { syncResearchAccess } from "../lib/researchAccess";
 import {
   getAuthErrorMessage,
   getGoogleRedirectUrl,
@@ -75,6 +76,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       const initialSessionRequest = client.auth.getSession();
 
       subscription = client.auth.onAuthStateChange((_, nextSession) => {
+        syncResearchAccess(nextSession);
         startTransition(() => {
           setSession(nextSession);
           setUser(nextSession?.user ?? null);
@@ -109,6 +111,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         return;
       }
 
+      syncResearchAccess(initialSession);
       startTransition(() => {
         setSession(initialSession);
         setUser(initialSession?.user ?? null);
@@ -175,6 +178,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       throw new Error(message);
     }
 
+    syncResearchAccess(null);
     startTransition(() => {
       setSession(null);
       setUser(null);
