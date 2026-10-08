@@ -34,7 +34,7 @@ Node.js background job runner. Executes sequentially on each invocation:
 3. `lifecycle_tasks` — generate per-trip tasks based on trip status
 4. `late_return_scan` — detect overdue trips and open incidents
 5. `send_approved_message_drafts` — explicit, opt-in transition from approved drafts to sent
-6. `daily_digest` — build a summary and publish to Slack
+6. `daily_digest` — build a summary and publish to Slack (scheduled mode checks hourly but posts once per day)
 
 Adapter mode is env-gated:
 - `SUPABASE_URL` + `SUPABASE_KEY` → Supabase-backed repositories + Slack notifier
