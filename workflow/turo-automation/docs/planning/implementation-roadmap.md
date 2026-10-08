@@ -121,7 +121,7 @@ PR slices:
 4. Send the daily digest at most once per day in scheduled mode ✓
 5. Use the system clock outside fixture mode ✓
 6. Validate `HEALTHZ_PORT` and report health-server listen errors ✓
-7. Graceful shutdown — wait for in-flight jobs and close the health server
+7. Graceful shutdown — wait for in-flight jobs and close the health server ✓
 8. Log levels — warnings and failures carry `warn` / `error` in JSON output
 9. `/healthz` reports per-job last-run state
 10. Phase 11 closeout

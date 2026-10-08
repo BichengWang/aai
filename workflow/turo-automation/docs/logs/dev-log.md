@@ -981,3 +981,12 @@ repeat, and SIGTERM exits cleanly.
 - Before: `HEALTHZ_PORT=abc` was a fatal `RangeError` at boot, and a port already in use crashed the process with an unhandled `error` event after jobs had already started
 
 **Verification**: `npm test`; scheduled mode with `HEALTHZ_PORT=abc` → warning, listens on 3001, jobs run; with the port held by another process → single `boot.fatal` (`EADDRINUSE`), exit 1, no jobs started; normal port → `GET /healthz` 200 `{"status":"ok"}`, other paths 404
+
+### Phase 11 slice 7 — graceful shutdown
+
+- `JobScheduler.stop()` now clears the intervals and waits for in-flight jobs, bounded by a timeout; it resolves `false` and logs `scheduler.stop_timeout` with the jobs still running if the timeout wins
+- Signal handling moved from `runScheduled()` to `index.ts`, which now also closes the health server; exit code is 0 after a clean drain, 1 after a timeout; a second signal exits immediately
+- `WORKER_SHUTDOWN_TIMEOUT_MS` (default 8000, under Docker's 10s kill deadline)
+- Before: SIGTERM called `process.exit(0)` straight away, cutting off in-flight jobs and their `job_runs` writes
+
+**Verification**: `npm test`; scheduled mode against a PostgREST stub whose `job_runs` writes take 3s, SIGTERM at 1s — before: exit with 0 of 5 jobs reaching `job_done`; after: 5/5 `job_done`, exit 0 after 2.2s. `WORKER_SHUTDOWN_TIMEOUT_MS=500` → `scheduler.stop_timeout`, exit 1 at 0.5s. Idle SIGINT in fixture mode → exit 0 at once

@@ -13,7 +13,11 @@ export interface ScheduledJob {
 
 export interface JobScheduler {
   start(): void;
-  stop(): void;
+  /**
+   * Stop scheduling new runs and wait for in-flight jobs to finish, up to
+   * `timeoutMs`. Resolves `true` if every job finished, `false` on timeout.
+   */
+  stop(options?: { timeoutMs?: number }): Promise<boolean>;
 }
 
 /**
@@ -22,10 +26,11 @@ export interface JobScheduler {
  * Ticks are skipped while that job is still running, including its retries.
  * Failed jobs are retried with exponential backoff up to maxAttempts.
  * Job failures after all retries are logged but do not affect other jobs.
+ * stop() drains in-flight jobs so a shutdown does not cut a job_runs write short.
  */
 export function createJobScheduler(jobs: ScheduledJob[]): JobScheduler {
   const handles: ReturnType<typeof setInterval>[] = [];
-  const runningJobs = new Set<ScheduledJob>();
+  const runningJobs = new Map<ScheduledJob, Promise<void>>();
 
   async function safeRun(job: ScheduledJob) {
     if (runningJobs.has(job)) {
@@ -33,7 +38,16 @@ export function createJobScheduler(jobs: ScheduledJob[]): JobScheduler {
       return;
     }
 
-    runningJobs.add(job);
+    const run = runJob(job);
+    runningJobs.set(job, run);
+    try {
+      await run;
+    } finally {
+      runningJobs.delete(job);
+    }
+  }
+
+  async function runJob(job: ScheduledJob) {
     try {
       logWorkerEvent("scheduler.job_start", { name: job.name });
       await withRetry(() => job.run(), job.name, {
@@ -46,8 +60,6 @@ export function createJobScheduler(jobs: ScheduledJob[]): JobScheduler {
         name: job.name,
         error: error instanceof Error ? error.message : String(error),
       });
-    } finally {
-      runningJobs.delete(job);
     }
   }
 
@@ -65,12 +77,30 @@ export function createJobScheduler(jobs: ScheduledJob[]): JobScheduler {
       }
     },
 
-    stop() {
-      logWorkerEvent("scheduler.stop", { jobCount: handles.length });
+    async stop({ timeoutMs = 8_000 } = {}) {
       for (const handle of handles) {
         clearInterval(handle);
       }
       handles.length = 0;
+
+      const inFlight = [...runningJobs.keys()].map((job) => job.name);
+      logWorkerEvent("scheduler.stop", { inFlight, timeoutMs });
+      if (inFlight.length === 0) return true;
+
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const timedOut = new Promise<false>((resolve) => {
+        timer = setTimeout(() => resolve(false), timeoutMs);
+      });
+      const drained = Promise.allSettled(runningJobs.values()).then(() => true as const);
+      const finished = await Promise.race([drained, timedOut]);
+      clearTimeout(timer);
+
+      if (!finished) {
+        logWorkerEvent("scheduler.stop_timeout", {
+          stillRunning: [...runningJobs.keys()].map((job) => job.name),
+        });
+      }
+      return finished;
     },
   };
 }
