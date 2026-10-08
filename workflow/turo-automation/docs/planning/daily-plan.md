@@ -17,11 +17,11 @@ Phase 11 — scheduled worker hardening, one slice per PR (see `implementation-r
 - [x] Phase 11 slice 6: `HEALTHZ_PORT` validation and listen errors
 - [x] Phase 11 slice 7: graceful shutdown
 - [x] Phase 11 slice 8: log levels
-- [ ] Phase 11 slice 9: per-job state in `/healthz`
+- [x] Phase 11 slice 9: per-job state in `/healthz`
 - [ ] Phase 11 slice 10: closeout
 
 ## Risks / Open Questions
 - Browser-agent flows remain blocked until a real authenticated Turo session is available.
 
 ## Next Suggested Step
-Phase 11 slice 9 — `/healthz` always answers ok; report per-job last-run state so a stuck or failing job is visible.
+Phase 11 slice 10 — closeout: mark Phase 11 complete and refresh current status.

@@ -999,3 +999,11 @@ repeat, and SIGTERM exits cleanly.
 - Before: every JSON line was `"level":"info"`, so alerting on level could not see a fatal boot or a failing job
 
 **Verification**: `npm test`; `NODE_ENV=production` scheduled run against a PostgREST stub that returns 500 on `job_runs` writes, with `HEALTHZ_PORT=abc` — tallied by level: 1 `warn` config warning, 15 `warn` retry attempts, 5 `error` job errors, everything else `info`; port in use → `{"level":"error","event":"boot.fatal",...}`
+
+### Phase 11 slice 9 — per-job state in `/healthz`
+
+- The scheduler tracks each job's `running`, `lastStartedAt`, `lastSucceededAt`, `lastFailedAt`, `lastError`, and `consecutiveFailures` (runs that failed after all retries) and exposes them via `status()`
+- `GET /healthz` returns `{ status, jobs }`; `status` is `"degraded"` while any job's latest run failed. The HTTP status stays 200 so a Supabase outage does not cause a restart loop
+- Before: `/healthz` always returned `{"status":"ok"}`, even with every job failing
+
+**Verification**: `npm test`; fixture scheduled run → 200 `ok` with `lastSucceededAt` set; against a PostgREST stub that fails every `job_runs` write → `ok` with `running: true` during retries, then 200 `degraded` with `lastError: "saveJobRun: stub failure"` and `consecutiveFailures: 1` on all five jobs
