@@ -7,6 +7,7 @@ import {
   createGetTodayOpsSnapshotUseCase,
   createImportTripsUseCase,
   createSendApprovedMessageDraftsUseCase,
+  type BuildDailyDigestData,
   type JobName,
   type JobRun,
   type JobRunRepository,
@@ -110,9 +111,9 @@ interface JobContext {
   actor: string;
 }
 
-interface WorkerJob {
+interface WorkerJob<T = unknown> {
   name: JobName;
-  run(context: JobContext): Promise<void>;
+  run(context: JobContext): Promise<UseCaseResult<T>>;
 }
 
 /**
@@ -124,7 +125,7 @@ function defineJob<T>(
   jobRunRepository: JobRunRepository,
   execute: (params: { now: string; today: string; actor: string }) => Promise<UseCaseResult<T>>,
   summarize: (data: T) => string
-): WorkerJob {
+): WorkerJob<T> {
   return {
     name,
     async run({ actor }) {
@@ -141,7 +142,46 @@ function defineJob<T>(
           ok: result.ok,
         })
       );
+      return result;
     },
+  };
+}
+
+/**
+ * Scheduled mode ticks the digest hourly so it goes out soon after start-up or
+ * the day rolling over, but posts it only once per day. A day counts as sent
+ * once Slack accepts the digest, so a failed or unconfigured post is retried
+ * on the next tick. Recent `job_runs` seed the guard so a restart does not
+ * repost.
+ */
+async function createDailyDigestGuard(jobRunRepository: JobRunRepository) {
+  const today = getWorkerToday();
+  let lastSentDay: string | undefined;
+  try {
+    const recentRuns = await jobRunRepository.listJobRuns();
+    const sentToday = recentRuns.some(
+      (run) =>
+        run.jobName === "daily_digest" &&
+        run.status === "completed" &&
+        run.startedAt.startsWith(today)
+    );
+    if (sentToday) lastSentDay = today;
+  } catch (error) {
+    logWorkerEvent("boot.config.warning", {
+      message: `Could not read job_runs to seed the daily digest guard: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    });
+  }
+
+  return (job: WorkerJob<BuildDailyDigestData>, context: JobContext) => async () => {
+    const day = getWorkerToday();
+    if (lastSentDay === day) {
+      logWorkerEvent("scheduler.job_skip", { name: job.name, reason: "already_sent_today", day });
+      return;
+    }
+    const result = await job.run(context);
+    if (result.ok && result.data.notificationAccepted) lastSentDay = day;
   };
 }
 
@@ -274,10 +314,19 @@ export function createWorkerApp() {
       const jobs = buildJobs(adapters);
       const context = { actor: "scheduler" };
 
-      const schedule = (job: WorkerJob, envVar: string, defaultMs: number) => ({
+      const onceDaily = await createDailyDigestGuard(adapters.jobRunRepository);
+
+      const schedule = (
+        job: WorkerJob,
+        envVar: string,
+        defaultMs: number,
+        run: () => Promise<unknown> = () => job.run(context)
+      ) => ({
         name: job.name,
         intervalMs: readPositiveIntEnv(envVar, defaultMs),
-        run: () => job.run(context),
+        run: async () => {
+          await run();
+        },
       });
 
       const scheduler = createJobScheduler([
@@ -288,7 +337,12 @@ export function createWorkerApp() {
         ...(readTruthyEnvFlag(process.env["WORKER_SEND_APPROVED_DRAFTS"])
           ? [schedule(jobs.sendApprovedDrafts, "INTERVAL_SEND_APPROVED_MS", 5 * 60_000)]
           : []),
-        schedule(jobs.dailyDigest, "INTERVAL_DAILY_DIGEST_MS", 60 * 60_000),
+        schedule(
+          jobs.dailyDigest,
+          "INTERVAL_DAILY_DIGEST_MS",
+          60 * 60_000,
+          onceDaily(jobs.dailyDigest, context)
+        ),
       ]);
 
       scheduler.start();

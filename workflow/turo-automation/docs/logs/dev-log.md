@@ -955,3 +955,13 @@ repeat, and SIGTERM exits cleanly.
 - Documented `INTERVAL_SEND_APPROVED_MS` in `.env.example` and the architecture overview
 
 **Verification**: `npm test`; scheduled mode for 2s with `WORKER_SEND_APPROVED_DRAFTS=true` — 0 send-job runs before, 1 after (listed in `scheduler.start`); with the gate `false` the job is not scheduled
+
+### Phase 11 slice 4 — daily digest once per day
+
+- Scheduled mode still ticks `daily_digest` every `INTERVAL_DAILY_DIGEST_MS` (default 1h) but skips with `scheduler.job_skip` / `already_sent_today` once a digest for the current day was accepted by Slack
+- A failed or unconfigured Slack post (`notificationAccepted: false`) does not count, so it is retried on the next tick
+- On start-up the guard is seeded from recent `job_runs` (a completed `daily_digest` started today), so a restart does not repost; a failed read only logs a warning
+- `WorkerJob.run()` now returns the use-case result so callers can act on it
+- Before: the digest posted to Slack every hour
+
+**Verification**: `npm test`; scheduled mode for 2s with `INTERVAL_DAILY_DIGEST_MS=300` — 7 digest posts before, 1 post + 6 `already_sent_today` skips after. The restart seed reads Supabase `job_runs` and was not exercised end to end (no live Supabase in this environment).
