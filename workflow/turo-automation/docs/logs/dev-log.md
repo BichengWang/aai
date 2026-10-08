@@ -928,3 +928,14 @@ repeat, and SIGTERM exits cleanly.
 **Verification**: docs-only sync against current `main` implementation; no code changes
 
 **Blockers**: browser-agent further read-only extraction requires a real authenticated host session past Turo's blocking layer
+
+## 2026-10-08
+
+### Phase 11 slice 1 — interval env validation
+
+- Added `worker/src/lib/env.ts::readPositiveIntEnv`; scheduled mode now reads every `INTERVAL_*_MS` through it
+- A non-numeric, non-positive, or oversized (> 2^31-1 ms) value falls back to the default and logs `boot.config.warning`
+- Before: `INTERVAL_IMPORT_MS=abc` gave `setInterval(NaN)`, which fired the import job about 800 times per second
+- Added Phase 11 (scheduled worker hardening) to the roadmap
+
+**Verification**: `npm test`; ran `WORKER_MODE=scheduled node worker/dist/index.js` for 3s with `INTERVAL_IMPORT_MS=abc`, `INTERVAL_LIFECYCLE_MS=-5`, `INTERVAL_DAILY_DIGEST_MS=0` — 2444 job starts before the fix, 5 after, one warning per bad var

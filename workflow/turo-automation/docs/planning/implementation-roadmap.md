@@ -111,8 +111,23 @@ PR slices:
 6. Extract shared use-case setup helper — `buildUseCases(adapters)` eliminates duplicated 40-line blocks in `run()` and `runScheduled()` ✓
 7. Phase 10 closeout — refresh sample CSV dates to April 2026; close out Phase 10 docs ✓
 
+## Phase 11 — Scheduled Worker Hardening
+Objective: make the long-running scheduled worker safe to leave unattended — correct config handling, every gated job reachable, real time, clean shutdown, and health that reflects job state.
+
+PR slices:
+1. Validate `INTERVAL_*_MS` env vars — non-numeric, non-positive, or oversized values fall back to the default with a warning instead of a tight timer loop ✓
+2. Define each job once and share it between run-once and scheduled mode
+3. Run the approved-draft send job in scheduled mode when `WORKER_SEND_APPROVED_DRAFTS` is on
+4. Send the daily digest at most once per day in scheduled mode
+5. Use the system clock outside fixture mode
+6. Validate `HEALTHZ_PORT` and report health-server listen errors
+7. Graceful shutdown — wait for in-flight jobs and close the health server
+8. Log levels — warnings and failures carry `warn` / `error` in JSON output
+9. `/healthz` reports per-job last-run state
+10. Phase 11 closeout
+
 ## Current Status
-- All Phases 0–10 are complete.
+- Phases 0–10 are complete; Phase 11 is in progress.
 - The TypeScript worker stack is containerised, CI-protected, observable, and publishable to GHCR.
 - `browser-agent-py/` has host-aligned module packages (`core`, `trips`, `inbox`, `calendar`, `vehicles`, `user_profile`) with read-only flows verified.
 - `business`, `more`, and `switch-to-guest` modules are scaffolded but remain docs-only; each probed URL returns blocked/403 with the current saved session.
