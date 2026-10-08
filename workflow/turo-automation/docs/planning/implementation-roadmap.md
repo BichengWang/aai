@@ -116,7 +116,7 @@ Objective: make the long-running scheduled worker safe to leave unattended — c
 
 PR slices:
 1. Validate `INTERVAL_*_MS` env vars — non-numeric, non-positive, or oversized values fall back to the default with a warning instead of a tight timer loop ✓
-2. Define each job once and share it between run-once and scheduled mode
+2. Define each job once and share it between run-once and scheduled mode ✓
 3. Run the approved-draft send job in scheduled mode when `WORKER_SEND_APPROVED_DRAFTS` is on
 4. Send the daily digest at most once per day in scheduled mode
 5. Use the system clock outside fixture mode
