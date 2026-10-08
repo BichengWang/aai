@@ -947,3 +947,11 @@ repeat, and SIGTERM exits cleanly.
 - Removed the duplicated per-job blocks (file went from 460 to 305 lines); no behavior change
 
 **Verification**: `npm test`; run-once output with `WORKER_SEND_APPROVED_DRAFTS=true` is byte-identical before and after; scheduled mode for 2s with `INTERVAL_IMPORT_MS=500` runs all five jobs and repeats the import
+
+### Phase 11 slice 3 — approved-draft send in scheduled mode
+
+- `runScheduled()` now schedules `send_approved_message_drafts` when `WORKER_SEND_APPROVED_DRAFTS` is on, every `INTERVAL_SEND_APPROVED_MS` (default 5 min)
+- Before: the gate only applied to run-once mode, so a deployed scheduled worker with the gate on never sent approved drafts
+- Documented `INTERVAL_SEND_APPROVED_MS` in `.env.example` and the architecture overview
+
+**Verification**: `npm test`; scheduled mode for 2s with `WORKER_SEND_APPROVED_DRAFTS=true` — 0 send-job runs before, 1 after (listed in `scheduler.start`); with the gate `false` the job is not scheduled

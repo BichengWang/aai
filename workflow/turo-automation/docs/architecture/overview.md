@@ -40,7 +40,7 @@ Adapter mode is env-gated:
 - `SUPABASE_URL` + `SUPABASE_KEY` → Supabase-backed repositories + Slack notifier
 - absent → fixture-backed in-memory adapters (safe for CI and local dev)
 
-`WORKER_SEND_APPROVED_DRAFTS=true` enables the explicit approved-draft send step in `run()`; default off.
+`WORKER_SEND_APPROVED_DRAFTS=true` enables the explicit approved-draft send step in both run-once and scheduled mode (every `INTERVAL_SEND_APPROVED_MS`, default 5 min); default off.
 
 Observability and deployment:
 - `WORKER_MODE=scheduled` starts the scheduler and activates a `GET /healthz` HTTP server on `HEALTHZ_PORT` (default 3001) for container orchestrator liveness probes

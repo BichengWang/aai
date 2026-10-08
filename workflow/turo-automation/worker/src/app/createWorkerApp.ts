@@ -262,6 +262,7 @@ export function createWorkerApp() {
      *   INTERVAL_LATE_RETURN_MS         default 15 min
      *   INTERVAL_GENERATE_DRAFTS_MS     default 30 min
      *   INTERVAL_DAILY_DIGEST_MS        default  1 hour
+     *   INTERVAL_SEND_APPROVED_MS       default  5 min (only when WORKER_SEND_APPROVED_DRAFTS is on)
      */
     async runScheduled() {
       const mode = useSupabase ? "supabase" : "fixture";
@@ -284,6 +285,9 @@ export function createWorkerApp() {
         schedule(jobs.lifecycleTasks, "INTERVAL_LIFECYCLE_MS", 15 * 60_000),
         schedule(jobs.lateReturnScan, "INTERVAL_LATE_RETURN_MS", 15 * 60_000),
         schedule(jobs.generateDrafts, "INTERVAL_GENERATE_DRAFTS_MS", 30 * 60_000),
+        ...(readTruthyEnvFlag(process.env["WORKER_SEND_APPROVED_DRAFTS"])
+          ? [schedule(jobs.sendApprovedDrafts, "INTERVAL_SEND_APPROVED_MS", 5 * 60_000)]
+          : []),
         schedule(jobs.dailyDigest, "INTERVAL_DAILY_DIGEST_MS", 60 * 60_000),
       ]);
 
