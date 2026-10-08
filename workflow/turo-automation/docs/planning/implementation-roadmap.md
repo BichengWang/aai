@@ -111,7 +111,7 @@ PR slices:
 6. Extract shared use-case setup helper — `buildUseCases(adapters)` eliminates duplicated 40-line blocks in `run()` and `runScheduled()` ✓
 7. Phase 10 closeout — refresh sample CSV dates to April 2026; close out Phase 10 docs ✓
 
-## Phase 11 — Scheduled Worker Hardening
+## Phase 11 — Scheduled Worker Hardening ✓
 Objective: make the long-running scheduled worker safe to leave unattended — correct config handling, every gated job reachable, real time, clean shutdown, and health that reflects job state.
 
 PR slices:
@@ -124,15 +124,17 @@ PR slices:
 7. Graceful shutdown — wait for in-flight jobs and close the health server ✓
 8. Log levels — warnings and failures carry `warn` / `error` in JSON output ✓
 9. `/healthz` reports per-job last-run state ✓
-10. Phase 11 closeout
+10. Phase 11 closeout ✓
 
 ## Current Status
-- Phases 0–10 are complete; Phase 11 is in progress.
+- All Phases 0–11 are complete.
 - The TypeScript worker stack is containerised, CI-protected, observable, and publishable to GHCR.
+- The scheduled worker validates its config, runs every gated job, uses real time against Supabase, posts the digest once per day, drains jobs on shutdown, logs with real levels, and reports per-job state on `/healthz`.
 - `browser-agent-py/` has host-aligned module packages (`core`, `trips`, `inbox`, `calendar`, `vehicles`, `user_profile`) with read-only flows verified.
 - `business`, `more`, and `switch-to-guest` modules are scaffolded but remain docs-only; each probed URL returns blocked/403 with the current saved session.
 - The next browser-agent implementation step requires a real authenticated host session before adding new read-only extraction flows.
-- Phase 11 scope should be driven by operational usage of the deployed worker stack; no pre-defined scope yet.
+- Known follow-ups from Phase 11: worker dates are UTC (no host time zone yet); use-case results with error issues are logged as `error` but do not count as failed runs in `/healthz`.
+- Phase 12 scope should be driven by operational usage of the deployed worker stack.
 
 ## Rules for Future PRs
 - one highest-priority PR at a time

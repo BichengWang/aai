@@ -18,10 +18,10 @@ Phase 11 — scheduled worker hardening, one slice per PR (see `implementation-r
 - [x] Phase 11 slice 7: graceful shutdown
 - [x] Phase 11 slice 8: log levels
 - [x] Phase 11 slice 9: per-job state in `/healthz`
-- [ ] Phase 11 slice 10: closeout
+- [x] Phase 11 slice 10: closeout
 
 ## Risks / Open Questions
 - Browser-agent flows remain blocked until a real authenticated Turo session is available.
 
 ## Next Suggested Step
-Phase 11 slice 10 — closeout: mark Phase 11 complete and refresh current status.
+Phase 11 is complete. Deploy the scheduled worker with real Supabase and Slack credentials; shape Phase 12 from what that shows.
