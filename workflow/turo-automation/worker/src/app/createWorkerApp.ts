@@ -294,7 +294,7 @@ export function createWorkerApp() {
     /**
      * Start the worker in scheduled mode.
      * Jobs run immediately on start, then repeat at their configured intervals.
-     * The scheduler keeps the process alive until SIGTERM or SIGINT.
+     * Returns the scheduler so the caller can stop it on shutdown.
      *
      * Default intervals (overridable via env vars):
      *   INTERVAL_IMPORT_MS              default  5 min
@@ -346,17 +346,8 @@ export function createWorkerApp() {
       ]);
 
       scheduler.start();
-
-      // Graceful shutdown
-      const shutdown = () => {
-        logWorkerEvent("scheduler.shutdown", { signal: "received" });
-        scheduler.stop();
-        process.exit(0);
-      };
-      process.on("SIGTERM", shutdown);
-      process.on("SIGINT", shutdown);
-
       logWorkerEvent("scheduler.running", { message: "Worker is scheduled and running." });
+      return scheduler;
     },
   };
 }

@@ -46,6 +46,7 @@ The worker clock follows the adapter mode: system time (UTC) with Supabase, the 
 
 Observability and deployment:
 - `WORKER_MODE=scheduled` starts the scheduler and activates a `GET /healthz` HTTP server on `HEALTHZ_PORT` (default 3001) for container orchestrator liveness probes
+- SIGTERM/SIGINT in scheduled mode stops scheduling, closes the health server, and waits up to `WORKER_SHUTDOWN_TIMEOUT_MS` (default 8s) for in-flight jobs before exiting
 - `NODE_ENV=production` switches logging from human-readable two-line output to single-line JSON (`{"level","ts","event",...payload}`) for log aggregators
 - `Dockerfile.worker` builds a lean multi-stage image; `docker-compose.yml` wires it for local dev
 - `.github/workflows/ci-turo-automation.yml` runs build + tests on every PR and push to main
