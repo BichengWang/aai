@@ -15,7 +15,7 @@ async function main() {
   }
 
   if (mode === "scheduled") {
-    createHealthServer();
+    await createHealthServer();
     await workerApp.runScheduled();
   } else {
     await workerApp.run();

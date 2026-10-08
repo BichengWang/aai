@@ -120,7 +120,7 @@ PR slices:
 3. Run the approved-draft send job in scheduled mode when `WORKER_SEND_APPROVED_DRAFTS` is on ✓
 4. Send the daily digest at most once per day in scheduled mode ✓
 5. Use the system clock outside fixture mode ✓
-6. Validate `HEALTHZ_PORT` and report health-server listen errors
+6. Validate `HEALTHZ_PORT` and report health-server listen errors ✓
 7. Graceful shutdown — wait for in-flight jobs and close the health server
 8. Log levels — warnings and failures carry `warn` / `error` in JSON output
 9. `/healthz` reports per-job last-run state
