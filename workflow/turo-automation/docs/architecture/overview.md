@@ -45,7 +45,7 @@ The worker clock follows the adapter mode: system time (UTC) with Supabase, the 
 `WORKER_SEND_APPROVED_DRAFTS=true` enables the explicit approved-draft send step in both run-once and scheduled mode (every `INTERVAL_SEND_APPROVED_MS`, default 5 min); default off.
 
 Observability and deployment:
-- `WORKER_MODE=scheduled` starts the scheduler and activates a `GET /healthz` HTTP server on `HEALTHZ_PORT` (default 3001) for container orchestrator liveness probes
+- `WORKER_MODE=scheduled` starts the scheduler and activates a `GET /healthz` HTTP server on `HEALTHZ_PORT` (default 3001) for container orchestrator liveness probes; the body reports per-job last-run state and `status: "degraded"` while any job's latest run failed after all retries (HTTP status stays 200)
 - SIGTERM/SIGINT in scheduled mode stops scheduling, closes the health server, and waits up to `WORKER_SHUTDOWN_TIMEOUT_MS` (default 8s) for in-flight jobs before exiting
 - `NODE_ENV=production` switches logging from human-readable two-line output to single-line JSON (`{"level","ts","event",...payload}`) for log aggregators; `level` is `warn` for config fallbacks and retried attempts, `error` for fatal boot errors, jobs that failed after all retries, a shutdown drain timeout, and use-case results that are not ok
 - `Dockerfile.worker` builds a lean multi-stage image; `docker-compose.yml` wires it for local dev
