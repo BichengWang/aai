@@ -20,6 +20,7 @@ import { runLateReturnScanJob } from "../jobs/runLateReturnScanJob.js";
 import { runLifecycleTasksJob } from "../jobs/runLifecycleTasksJob.js";
 import { runSendApprovedMessageDraftsJob } from "../jobs/runSendApprovedMessageDraftsJob.js";
 import { runTodayOpsSnapshotJob } from "../jobs/runTodayOpsSnapshotJob.js";
+import { readPositiveIntEnv } from "../lib/env.js";
 import { logUseCaseResult, logWorkerEvent } from "../lib/logger.js";
 import { getWorkerNowIso, getWorkerToday } from "../lib/time.js";
 import { createJobScheduler } from "../scheduler/createJobScheduler.js";
@@ -311,12 +312,11 @@ export function createWorkerApp() {
         generateMessageDrafts,
       } = buildUseCases(adapters);
 
-      const env = process.env;
-      const intervalImport = Number(env["INTERVAL_IMPORT_MS"] ?? 5 * 60_000);
-      const intervalLifecycle = Number(env["INTERVAL_LIFECYCLE_MS"] ?? 15 * 60_000);
-      const intervalLateReturn = Number(env["INTERVAL_LATE_RETURN_MS"] ?? 15 * 60_000);
-      const intervalGenerateDrafts = Number(env["INTERVAL_GENERATE_DRAFTS_MS"] ?? 30 * 60_000);
-      const intervalDailyDigest = Number(env["INTERVAL_DAILY_DIGEST_MS"] ?? 60 * 60_000);
+      const intervalImport = readPositiveIntEnv("INTERVAL_IMPORT_MS", 5 * 60_000);
+      const intervalLifecycle = readPositiveIntEnv("INTERVAL_LIFECYCLE_MS", 15 * 60_000);
+      const intervalLateReturn = readPositiveIntEnv("INTERVAL_LATE_RETURN_MS", 15 * 60_000);
+      const intervalGenerateDrafts = readPositiveIntEnv("INTERVAL_GENERATE_DRAFTS_MS", 30 * 60_000);
+      const intervalDailyDigest = readPositiveIntEnv("INTERVAL_DAILY_DIGEST_MS", 60 * 60_000);
 
       const scheduler = createJobScheduler([
         {
