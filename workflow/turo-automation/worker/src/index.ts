@@ -12,7 +12,7 @@ async function main() {
   if (!KNOWN_MODES.has(mode)) {
     logWorkerEvent("boot.config.warning", {
       message: `Unrecognised WORKER_MODE="${mode}". Valid values: "scheduled" or unset (run-once). Defaulting to run-once.`,
-    });
+    }, "warn");
   }
 
   if (mode === "scheduled") {
@@ -40,6 +40,6 @@ async function main() {
 void main().catch((error: unknown) => {
   logWorkerEvent("boot.fatal", {
     error: error instanceof Error ? error.message : String(error),
-  });
+  }, "error");
   process.exitCode = 1;
 });

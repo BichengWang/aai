@@ -22,6 +22,6 @@ export function readPositiveIntEnv(
 
   logWorkerEvent("boot.config.warning", {
     message: `${name}="${raw}" is not a positive integer up to ${max} — using default ${defaultValue}.`,
-  });
+  }, "warn");
   return defaultValue;
 }
