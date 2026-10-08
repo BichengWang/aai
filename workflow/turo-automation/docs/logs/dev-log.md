@@ -1007,3 +1007,11 @@ repeat, and SIGTERM exits cleanly.
 - Before: `/healthz` always returned `{"status":"ok"}`, even with every job failing
 
 **Verification**: `npm test`; fixture scheduled run → 200 `ok` with `lastSucceededAt` set; against a PostgREST stub that fails every `job_runs` write → `ok` with `running: true` during retries, then 200 `degraded` with `lastError: "saveJobRun: stub failure"` and `consecutiveFailures: 1` on all five jobs
+
+### Phase 11 closeout
+
+- Marked Phase 11 complete in the roadmap and refreshed its current status and known follow-ups (UTC dates; error results not counted as failed runs in `/healthz`)
+- Refreshed `docs/plan.md`: it still described Phase 8 as in progress and repeated the Constraints heading
+- Phase 11 landed as PRs #176–#184 plus this closeout
+
+**Verification**: full `npm run build` + `npm test`; final end-to-end pass on the combined changes — run-once fixture mode exits 0; scheduled `NODE_ENV=production` against a PostgREST stub with `WORKER_SEND_APPROVED_DRAFTS=true`, `INTERVAL_IMPORT_MS=bogus`, `INTERVAL_DAILY_DIGEST_MS=300`: one `warn` config warning, six jobs listed on `/healthz` (`ok`), SIGTERM → drained, exit 0. With `SLACK_WEBHOOK_URL` pointed at the stub: 1 Slack post + 6 `already_sent_today` skips in 2s; without it the digest is retried each tick because nothing was accepted
