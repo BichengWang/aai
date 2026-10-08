@@ -10,6 +10,7 @@ import {
   type JobName,
   type JobRun,
   type JobRunRepository,
+  type UseCaseResult,
 } from "@turo-automation/shared";
 import { createFixtureAdapters } from "../adapters/createFixtureAdapters.js";
 import { createSupabaseAdapters } from "../adapters/createSupabaseAdapters.js";
@@ -42,13 +43,6 @@ function buildJobRun(params: {
     summary: params.summary,
     issueCount: params.issueCount,
   };
-}
-
-async function persistJobRun(
-  jobRunRepository: JobRunRepository,
-  jobRun: JobRun
-) {
-  await jobRunRepository.saveJobRun(jobRun);
 }
 
 function readTruthyEnvFlag(value: string | undefined): boolean {
@@ -111,6 +105,116 @@ function buildUseCases(adapters: AnyAdapters) {
   };
 }
 
+interface JobContext {
+  /** Who triggered the run, recorded on created records ("worker.bootstrap" or "scheduler"). */
+  actor: string;
+}
+
+interface WorkerJob {
+  name: JobName;
+  run(context: JobContext): Promise<void>;
+}
+
+/**
+ * Wrap a use-case call as a worker job: run it, log the result, and record a
+ * `job_runs` row with real start/finish timestamps.
+ */
+function defineJob<T>(
+  name: JobName,
+  jobRunRepository: JobRunRepository,
+  execute: (params: { now: string; today: string; actor: string }) => Promise<UseCaseResult<T>>,
+  summarize: (data: T) => string
+): WorkerJob {
+  return {
+    name,
+    async run({ actor }) {
+      const startedAt = getWorkerNowIso();
+      const result = await execute({ now: startedAt, today: getWorkerToday(), actor });
+      logUseCaseResult(name, result);
+      await jobRunRepository.saveJobRun(
+        buildJobRun({
+          jobName: name,
+          startedAt,
+          finishedAt: getWorkerNowIso(),
+          summary: summarize(result.data),
+          issueCount: result.issues.length,
+          ok: result.ok,
+        })
+      );
+    },
+  };
+}
+
+function buildJobs(adapters: AnyAdapters) {
+  const useCases = buildUseCases(adapters);
+  const repo = adapters.jobRunRepository;
+
+  return {
+    todayOpsSnapshot: defineJob(
+      "today_ops_snapshot",
+      repo,
+      ({ now, today }) =>
+        runTodayOpsSnapshotJob({ useCase: useCases.getTodayOpsSnapshot, today, generatedAt: now }),
+      (data) => `Snapshot contains ${data.summary.pickupCount} pickups.`
+    ),
+    tripImport: defineJob(
+      "trip_import",
+      repo,
+      ({ now, actor }) =>
+        runImportTripsJob({ useCase: useCases.importTrips, triggeredBy: actor, importedAt: now }),
+      (data) => `Imported ${data.importedTrips.length} trips.`
+    ),
+    lifecycleTasks: defineJob(
+      "lifecycle_tasks",
+      repo,
+      ({ now, actor }) =>
+        runLifecycleTasksJob({ useCase: useCases.generateLifecycleTasks, asOf: now, createdBy: actor }),
+      (data) => `Created ${data.createdTasks.length} lifecycle tasks.`
+    ),
+    lateReturnScan: defineJob(
+      "late_return_scan",
+      repo,
+      ({ now, actor }) =>
+        runLateReturnScanJob({ useCase: useCases.detectLateReturns, asOf: now, openedBy: actor }),
+      (data) => `Created ${data.incidentsCreated.length} late return incidents.`
+    ),
+    generateDrafts: defineJob(
+      "generate_drafts",
+      repo,
+      ({ now, actor }) =>
+        runGenerateMessageDraftsJob({
+          useCase: useCases.generateMessageDrafts,
+          asOf: now,
+          requestedBy: actor,
+        }),
+      (data) => `Generated ${data.createdDrafts.length} message drafts.`
+    ),
+    sendApprovedDrafts: defineJob(
+      "send_approved_message_drafts",
+      repo,
+      ({ now, actor }) =>
+        runSendApprovedMessageDraftsJob({
+          useCase: useCases.sendApprovedMessageDrafts,
+          sentAt: now,
+          triggeredBy: actor,
+        }),
+      (data) => `Sent ${data.sentDrafts.length} approved message drafts.`
+    ),
+    dailyDigest: defineJob(
+      "daily_digest",
+      repo,
+      ({ now, today }) =>
+        runDailyDigestJob({
+          useCase: useCases.buildDailyDigest,
+          today,
+          generatedAt: now,
+          channel: "slack://host-ops",
+        }),
+      () => "Daily digest dispatched."
+    ),
+  };
+}
+
 const hasSupabaseUrl = Boolean(process.env["SUPABASE_URL"]);
 const hasSupabaseKey = Boolean(process.env["SUPABASE_KEY"]);
 const useSupabase = hasSupabaseUrl && hasSupabaseKey;
@@ -125,9 +229,6 @@ if (hasSupabaseUrl !== hasSupabaseKey) {
 }
 
 export function createWorkerApp() {
-  const generatedAt = getWorkerNowIso();
-  const today = getWorkerToday();
-
   return {
     async run() {
       const mode = useSupabase ? "supabase" : "fixture";
@@ -136,152 +237,18 @@ export function createWorkerApp() {
       const adapters = useSupabase
         ? await createSupabaseAdapters()
         : createFixtureAdapters();
+      const jobs = buildJobs(adapters);
+      const context = { actor: "worker.bootstrap" };
 
-      const {
-        getTodayOpsSnapshot,
-        importTrips,
-        generateLifecycleTasks,
-        detectLateReturns,
-        buildDailyDigest,
-        generateMessageDrafts,
-        sendApprovedMessageDrafts,
-      } = buildUseCases(adapters);
-
-      const snapshotStart = getWorkerNowIso();
-      const snapshotResult = await runTodayOpsSnapshotJob({
-        useCase: getTodayOpsSnapshot,
-        today,
-        generatedAt,
-      });
-      logUseCaseResult("today_ops_snapshot", snapshotResult);
-      await persistJobRun(
-        adapters.jobRunRepository,
-        buildJobRun({
-          jobName: "today_ops_snapshot",
-          startedAt: snapshotStart,
-          finishedAt: getWorkerNowIso(),
-          summary: `Snapshot contains ${snapshotResult.data.summary.pickupCount} pickups.`,
-          issueCount: snapshotResult.issues.length,
-          ok: snapshotResult.ok,
-        })
-      );
-
-      const importStart = getWorkerNowIso();
-      const importResult = await runImportTripsJob({
-        useCase: importTrips,
-        triggeredBy: "worker.bootstrap",
-        importedAt: generatedAt,
-      });
-      logUseCaseResult("trip_import", importResult);
-      await persistJobRun(
-        adapters.jobRunRepository,
-        buildJobRun({
-          jobName: "trip_import",
-          startedAt: importStart,
-          finishedAt: getWorkerNowIso(),
-          summary: `Imported ${importResult.data.importedTrips.length} trips.`,
-          issueCount: importResult.issues.length,
-          ok: importResult.ok,
-        })
-      );
-
-      const lifecycleStart = getWorkerNowIso();
-      const lifecycleResult = await runLifecycleTasksJob({
-        useCase: generateLifecycleTasks,
-        asOf: generatedAt,
-        createdBy: "worker.bootstrap",
-      });
-      logUseCaseResult("lifecycle_tasks", lifecycleResult);
-      await persistJobRun(
-        adapters.jobRunRepository,
-        buildJobRun({
-          jobName: "lifecycle_tasks",
-          startedAt: lifecycleStart,
-          finishedAt: getWorkerNowIso(),
-          summary: `Created ${lifecycleResult.data.createdTasks.length} lifecycle tasks.`,
-          issueCount: lifecycleResult.issues.length,
-          ok: lifecycleResult.ok,
-        })
-      );
-
-      const lateReturnStart = getWorkerNowIso();
-      const lateReturnResult = await runLateReturnScanJob({
-        useCase: detectLateReturns,
-        asOf: generatedAt,
-        openedBy: "worker.bootstrap",
-      });
-      logUseCaseResult("late_return_scan", lateReturnResult);
-      await persistJobRun(
-        adapters.jobRunRepository,
-        buildJobRun({
-          jobName: "late_return_scan",
-          startedAt: lateReturnStart,
-          finishedAt: getWorkerNowIso(),
-          summary: `Created ${lateReturnResult.data.incidentsCreated.length} late return incidents.`,
-          issueCount: lateReturnResult.issues.length,
-          ok: lateReturnResult.ok,
-        })
-      );
-
-      const generateDraftsStart = getWorkerNowIso();
-      const generateDraftsResult = await runGenerateMessageDraftsJob({
-        useCase: generateMessageDrafts,
-        asOf: generatedAt,
-        requestedBy: "worker.bootstrap",
-      });
-      logUseCaseResult("generate_drafts", generateDraftsResult);
-      await persistJobRun(
-        adapters.jobRunRepository,
-        buildJobRun({
-          jobName: "generate_drafts",
-          startedAt: generateDraftsStart,
-          finishedAt: getWorkerNowIso(),
-          summary: `Generated ${generateDraftsResult.data.createdDrafts.length} message drafts.`,
-          issueCount: generateDraftsResult.issues.length,
-          ok: generateDraftsResult.ok,
-        })
-      );
-
+      await jobs.todayOpsSnapshot.run(context);
+      await jobs.tripImport.run(context);
+      await jobs.lifecycleTasks.run(context);
+      await jobs.lateReturnScan.run(context);
+      await jobs.generateDrafts.run(context);
       if (readTruthyEnvFlag(process.env["WORKER_SEND_APPROVED_DRAFTS"])) {
-        const sendApprovedStart = getWorkerNowIso();
-        const sendApprovedDraftsResult = await runSendApprovedMessageDraftsJob({
-          useCase: sendApprovedMessageDrafts,
-          sentAt: generatedAt,
-          triggeredBy: "worker.bootstrap",
-        });
-        logUseCaseResult("send_approved_message_drafts", sendApprovedDraftsResult);
-        await persistJobRun(
-          adapters.jobRunRepository,
-          buildJobRun({
-            jobName: "send_approved_message_drafts",
-            startedAt: sendApprovedStart,
-            finishedAt: getWorkerNowIso(),
-            summary: `Sent ${sendApprovedDraftsResult.data.sentDrafts.length} approved message drafts.`,
-            issueCount: sendApprovedDraftsResult.issues.length,
-            ok: sendApprovedDraftsResult.ok,
-          })
-        );
+        await jobs.sendApprovedDrafts.run(context);
       }
-
-      const dailyDigestStart = getWorkerNowIso();
-      const dailyDigestResult = await runDailyDigestJob({
-        useCase: buildDailyDigest,
-        today,
-        generatedAt,
-        channel: "slack://host-ops",
-      });
-      logUseCaseResult("daily_digest", dailyDigestResult);
-      await persistJobRun(
-        adapters.jobRunRepository,
-        buildJobRun({
-          jobName: "daily_digest",
-          startedAt: dailyDigestStart,
-          finishedAt: getWorkerNowIso(),
-          summary: "Daily digest dispatched.",
-          issueCount: dailyDigestResult.issues.length,
-          ok: dailyDigestResult.ok,
-        })
-      );
+      await jobs.dailyDigest.run(context);
     },
 
     /**
@@ -303,144 +270,21 @@ export function createWorkerApp() {
       const adapters = useSupabase
         ? await createSupabaseAdapters()
         : createFixtureAdapters();
+      const jobs = buildJobs(adapters);
+      const context = { actor: "scheduler" };
 
-      const {
-        importTrips,
-        generateLifecycleTasks,
-        detectLateReturns,
-        buildDailyDigest,
-        generateMessageDrafts,
-      } = buildUseCases(adapters);
-
-      const intervalImport = readPositiveIntEnv("INTERVAL_IMPORT_MS", 5 * 60_000);
-      const intervalLifecycle = readPositiveIntEnv("INTERVAL_LIFECYCLE_MS", 15 * 60_000);
-      const intervalLateReturn = readPositiveIntEnv("INTERVAL_LATE_RETURN_MS", 15 * 60_000);
-      const intervalGenerateDrafts = readPositiveIntEnv("INTERVAL_GENERATE_DRAFTS_MS", 30 * 60_000);
-      const intervalDailyDigest = readPositiveIntEnv("INTERVAL_DAILY_DIGEST_MS", 60 * 60_000);
+      const schedule = (job: WorkerJob, envVar: string, defaultMs: number) => ({
+        name: job.name,
+        intervalMs: readPositiveIntEnv(envVar, defaultMs),
+        run: () => job.run(context),
+      });
 
       const scheduler = createJobScheduler([
-        {
-          name: "trip_import",
-          intervalMs: intervalImport,
-          async run() {
-            const now = getWorkerNowIso();
-            const result = await runImportTripsJob({
-              useCase: importTrips,
-              triggeredBy: "scheduler",
-              importedAt: now,
-            });
-            logUseCaseResult("trip_import", result);
-            await persistJobRun(
-              adapters.jobRunRepository,
-              buildJobRun({
-                jobName: "trip_import",
-                startedAt: now,
-                finishedAt: getWorkerNowIso(),
-                summary: `Imported ${result.data.importedTrips.length} trips.`,
-                issueCount: result.issues.length,
-                ok: result.ok,
-              })
-            );
-          },
-        },
-        {
-          name: "lifecycle_tasks",
-          intervalMs: intervalLifecycle,
-          async run() {
-            const now = getWorkerNowIso();
-            const result = await runLifecycleTasksJob({
-              useCase: generateLifecycleTasks,
-              asOf: now,
-              createdBy: "scheduler",
-            });
-            logUseCaseResult("lifecycle_tasks", result);
-            await persistJobRun(
-              adapters.jobRunRepository,
-              buildJobRun({
-                jobName: "lifecycle_tasks",
-                startedAt: now,
-                finishedAt: getWorkerNowIso(),
-                summary: `Created ${result.data.createdTasks.length} lifecycle tasks.`,
-                issueCount: result.issues.length,
-                ok: result.ok,
-              })
-            );
-          },
-        },
-        {
-          name: "late_return_scan",
-          intervalMs: intervalLateReturn,
-          async run() {
-            const now = getWorkerNowIso();
-            const result = await runLateReturnScanJob({
-              useCase: detectLateReturns,
-              asOf: now,
-              openedBy: "scheduler",
-            });
-            logUseCaseResult("late_return_scan", result);
-            await persistJobRun(
-              adapters.jobRunRepository,
-              buildJobRun({
-                jobName: "late_return_scan",
-                startedAt: now,
-                finishedAt: getWorkerNowIso(),
-                summary: `Created ${result.data.incidentsCreated.length} late return incidents.`,
-                issueCount: result.issues.length,
-                ok: result.ok,
-              })
-            );
-          },
-        },
-        {
-          name: "generate_drafts",
-          intervalMs: intervalGenerateDrafts,
-          async run() {
-            const now = getWorkerNowIso();
-            const result = await runGenerateMessageDraftsJob({
-              useCase: generateMessageDrafts,
-              asOf: now,
-              requestedBy: "scheduler",
-            });
-            logUseCaseResult("generate_drafts", result);
-            await persistJobRun(
-              adapters.jobRunRepository,
-              buildJobRun({
-                jobName: "generate_drafts",
-                startedAt: now,
-                finishedAt: getWorkerNowIso(),
-                summary: `Generated ${result.data.createdDrafts.length} message drafts.`,
-                issueCount: result.issues.length,
-                ok: result.ok,
-              })
-            );
-          },
-        },
-        {
-          name: "daily_digest",
-          intervalMs: intervalDailyDigest,
-          async run() {
-            const now = getWorkerNowIso();
-            const today = getWorkerToday();
-            const result = await runDailyDigestJob({
-              useCase: buildDailyDigest,
-              today,
-              generatedAt: now,
-              channel: "slack://host-ops",
-            });
-            logUseCaseResult("daily_digest", result);
-            await persistJobRun(
-              adapters.jobRunRepository,
-              buildJobRun({
-                jobName: "daily_digest",
-                startedAt: now,
-                finishedAt: getWorkerNowIso(),
-                summary: "Daily digest dispatched.",
-                issueCount: result.issues.length,
-                ok: result.ok,
-              })
-            );
-          },
-        },
+        schedule(jobs.tripImport, "INTERVAL_IMPORT_MS", 5 * 60_000),
+        schedule(jobs.lifecycleTasks, "INTERVAL_LIFECYCLE_MS", 15 * 60_000),
+        schedule(jobs.lateReturnScan, "INTERVAL_LATE_RETURN_MS", 15 * 60_000),
+        schedule(jobs.generateDrafts, "INTERVAL_GENERATE_DRAFTS_MS", 30 * 60_000),
+        schedule(jobs.dailyDigest, "INTERVAL_DAILY_DIGEST_MS", 60 * 60_000),
       ]);
 
       scheduler.start();

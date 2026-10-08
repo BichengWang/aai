@@ -939,3 +939,11 @@ repeat, and SIGTERM exits cleanly.
 - Added Phase 11 (scheduled worker hardening) to the roadmap
 
 **Verification**: `npm test`; ran `WORKER_MODE=scheduled node worker/dist/index.js` for 3s with `INTERVAL_IMPORT_MS=abc`, `INTERVAL_LIFECYCLE_MS=-5`, `INTERVAL_DAILY_DIGEST_MS=0` — 2444 job starts before the fix, 5 after, one warning per bad var
+
+### Phase 11 slice 2 — shared job definitions
+
+- Added `defineJob()` and `buildJobs()` in `worker/src/app/createWorkerApp.ts`: each job is defined once (use-case call, `job_runs` summary) and handles logging and `job_runs` persistence itself
+- `run()` and `runScheduled()` now only choose which jobs to run, in what order or at what interval, and the actor (`worker.bootstrap` / `scheduler`)
+- Removed the duplicated per-job blocks (file went from 460 to 305 lines); no behavior change
+
+**Verification**: `npm test`; run-once output with `WORKER_SEND_APPROVED_DRAFTS=true` is byte-identical before and after; scheduled mode for 2s with `INTERVAL_IMPORT_MS=500` runs all five jobs and repeats the import
