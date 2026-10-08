@@ -3,25 +3,25 @@
 Use this file for the current working plan. Keep it short, current, and actionable.
 
 ## Date
-2026-04-03
+2026-10-08
 
 ## Objective
-Advance Phase 10 (operational readiness) one slice at a time.
-
-## Completed (all phases through Phase 9)
-- [x] All Phases 0–9 merged — containerised worker, CI, health check, JSON logging, GHCR publish
+Phase 11 — scheduled worker hardening, one slice per PR (see `implementation-roadmap.md`).
 
 ## Today's Priorities
-- [x] Phase 10 slice 1: config completeness — add missing `INTERVAL_GENERATE_DRAFTS_MS` to `.env.example`, add `docs/samples/trips.csv` reference template (PR #129)
-- [x] Phase 10 slice 2: job run duration tracking — record actual `finishedAt` in `buildJobRun` (PR #130)
-- [x] Phase 10 slice 3: structured fatal error logging — replace `console.error` with `logWorkerEvent("boot.fatal", ...)` in `worker/src/index.ts` (PR #131)
-- [x] Phase 10 slice 4: per-job `startedAt` in run-once mode — capture per-job timestamps in `run()` (PR #132)
-- [x] Phase 10 slice 5: sample CSV consolidation — remove duplicate `docs/samples/trips.csv`, point `.env.example` to `data/trips.sample.csv` (PR #133)
-- [x] Phase 10 slice 6: extract shared use-case setup helper to eliminate duplicated adapter wiring in `run()` and `runScheduled()` (PR #134)
-- [x] Phase 10 closeout: refresh sample CSV dates; mark Phase 10 complete in roadmap
+- [x] Phase 11 slice 1: validate `INTERVAL_*_MS` env vars
+- [ ] Phase 11 slice 2: define each job once for run-once and scheduled mode
+- [ ] Phase 11 slice 3: approved-draft send job in scheduled mode
+- [ ] Phase 11 slice 4: daily digest at most once per day
+- [ ] Phase 11 slice 5: system clock outside fixture mode
+- [ ] Phase 11 slice 6: `HEALTHZ_PORT` validation and listen errors
+- [ ] Phase 11 slice 7: graceful shutdown
+- [ ] Phase 11 slice 8: log levels
+- [ ] Phase 11 slice 9: per-job state in `/healthz`
+- [ ] Phase 11 slice 10: closeout
 
 ## Risks / Open Questions
 - Browser-agent flows remain blocked until a real authenticated Turo session is available.
 
 ## Next Suggested Step
-After slice 1 merges, deploy the worker container using the GHCR image against real Supabase credentials. The next Phase 10 slices will be shaped by what friction that reveals.
+Phase 11 slice 2 — collapse the duplicated job blocks in `run()` and `runScheduled()` so later slices change one place.
