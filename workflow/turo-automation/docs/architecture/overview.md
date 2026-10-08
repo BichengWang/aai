@@ -40,6 +40,8 @@ Adapter mode is env-gated:
 - `SUPABASE_URL` + `SUPABASE_KEY` → Supabase-backed repositories + Slack notifier
 - absent → fixture-backed in-memory adapters (safe for CI and local dev)
 
+The worker clock follows the adapter mode: system time (UTC) with Supabase, the fixed fixture time without it. `WORKER_CLOCK=system|fixture` overrides it.
+
 `WORKER_SEND_APPROVED_DRAFTS=true` enables the explicit approved-draft send step in both run-once and scheduled mode (every `INTERVAL_SEND_APPROVED_MS`, default 5 min); default off.
 
 Observability and deployment:
