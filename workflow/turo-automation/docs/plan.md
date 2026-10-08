@@ -7,11 +7,13 @@
 - build and contract tests pass locally
 
 ## Current State
-All Phases 0–7 are complete. The TypeScript web/worker/shared stack is production-ready with Supabase-backed persistence, and `browser-agent-py/` covers read-only host flows through Phase 7.
+All Phases 0–11 are complete. The TypeScript web/worker/shared stack is production-ready with Supabase-backed persistence, a containerised and hardened scheduled worker, and `browser-agent-py/` covers read-only host flows through Phase 7. See `docs/planning/implementation-roadmap.md` for per-phase detail.
 
 ### TypeScript stack (complete)
 - Supabase-backed repositories for all entities (trips, tasks, incidents, messages, approvals, job runs)
 - Env-gated worker (Supabase mode / fixture fallback) with six scheduled jobs
+- Containerised worker with CI, GHCR publish, structured JSON logs with levels, and `/healthz` reporting per-job state
+- Scheduled-mode hardening: validated env config, system clock with Supabase, once-per-day digest, graceful shutdown
 - Env-gated web dashboard with timeline, utilization, approval, and incident actions
 - Explicit guest-send path with `WORKER_SEND_APPROVED_DRAFTS` gate
 - Operator identity sourced from `VITE_OPERATOR_IDENTITY`
@@ -25,17 +27,9 @@ All Phases 0–7 are complete. The TypeScript web/worker/shared stack is product
 - `modules/user_profile/` — `profile-check`
 - `modules/business/`, `modules/more/`, `modules/switch_to_guest/` — scaffolded, docs-only (blocked in saved session)
 
-## Phase 8 (in progress)
-Production deployment readiness:
-- `Dockerfile.worker` — multi-stage container build for the worker ✓
-- `.dockerignore` — keep build context lean ✓
-- `docker-compose.yml` — local end-to-end development wiring ✓
-
 ## Next Steps
 - Browser agent: wait for a real authenticated host session that can get past Turo's blocking layer before adding further read-only extraction flows.
-- TypeScript stack: Phase 8 complete. Identify Phase 9 priorities from operational usage (e.g., worker health endpoint, API layer, or production deployment pipeline).
-
-## Constraints
+- TypeScript stack: deploy the scheduled worker against real Supabase and Slack credentials and let what operating it reveals shape Phase 12 (candidates: host time zone for "today", counting error results as failed runs).
 
 ## Constraints
 - keep the existing `web` / `worker` / `shared` package topology
