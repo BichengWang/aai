@@ -990,3 +990,12 @@ repeat, and SIGTERM exits cleanly.
 - Before: SIGTERM called `process.exit(0)` straight away, cutting off in-flight jobs and their `job_runs` writes
 
 **Verification**: `npm test`; scheduled mode against a PostgREST stub whose `job_runs` writes take 3s, SIGTERM at 1s — before: exit with 0 of 5 jobs reaching `job_done`; after: 5/5 `job_done`, exit 0 after 2.2s. `WORKER_SHUTDOWN_TIMEOUT_MS=500` → `scheduler.stop_timeout`, exit 1 at 0.5s. Idle SIGINT in fixture mode → exit 0 at once
+
+### Phase 11 slice 8 — log levels
+
+- `logWorkerEvent()` takes an optional level (`info` default, `warn`, `error`); production JSON carries it in `level`, development output sends warn/error to stderr
+- `warn`: `boot.config.warning`, `retry.attempt_failed`. `error`: `boot.fatal`, `scheduler.job_error`, `scheduler.stop_timeout`
+- `logUseCaseResult()` logs `error` when the result is not ok, `warn` when it has warning issues, else `info`
+- Before: every JSON line was `"level":"info"`, so alerting on level could not see a fatal boot or a failing job
+
+**Verification**: `npm test`; `NODE_ENV=production` scheduled run against a PostgREST stub that returns 500 on `job_runs` writes, with `HEALTHZ_PORT=abc` — tallied by level: 1 `warn` config warning, 15 `warn` retry attempts, 5 `error` job errors, everything else `info`; port in use → `{"level":"error","event":"boot.fatal",...}`

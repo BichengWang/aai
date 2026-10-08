@@ -16,7 +16,7 @@ Phase 11 — scheduled worker hardening, one slice per PR (see `implementation-r
 - [x] Phase 11 slice 5: system clock outside fixture mode
 - [x] Phase 11 slice 6: `HEALTHZ_PORT` validation and listen errors
 - [x] Phase 11 slice 7: graceful shutdown
-- [ ] Phase 11 slice 8: log levels
+- [x] Phase 11 slice 8: log levels
 - [ ] Phase 11 slice 9: per-job state in `/healthz`
 - [ ] Phase 11 slice 10: closeout
 
@@ -24,4 +24,4 @@ Phase 11 — scheduled worker hardening, one slice per PR (see `implementation-r
 - Browser-agent flows remain blocked until a real authenticated Turo session is available.
 
 ## Next Suggested Step
-Phase 11 slice 8 — every JSON log line is `level: "info"`, including fatal errors and job failures; give warnings and failures their real level.
+Phase 11 slice 9 — `/healthz` always answers ok; report per-job last-run state so a stuck or failing job is visible.

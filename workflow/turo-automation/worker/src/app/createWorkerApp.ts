@@ -171,7 +171,7 @@ async function createDailyDigestGuard(jobRunRepository: JobRunRepository) {
       message: `Could not read job_runs to seed the daily digest guard: ${
         error instanceof Error ? error.message : String(error)
       }`,
-    });
+    }, "warn");
   }
 
   return (job: WorkerJob<BuildDailyDigestData>, context: JobContext) => async () => {
@@ -265,7 +265,7 @@ if (hasSupabaseUrl !== hasSupabaseKey) {
   const missing = hasSupabaseUrl ? "SUPABASE_KEY" : "SUPABASE_URL";
   logWorkerEvent("boot.config.warning", {
     message: `${missing} is not set — falling back to fixture adapters. Set both SUPABASE_URL and SUPABASE_KEY to enable Supabase persistence.`,
-  });
+  }, "warn");
 }
 
 export function createWorkerApp() {

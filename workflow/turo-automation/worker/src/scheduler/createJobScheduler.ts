@@ -59,7 +59,7 @@ export function createJobScheduler(jobs: ScheduledJob[]): JobScheduler {
       logWorkerEvent("scheduler.job_error", {
         name: job.name,
         error: error instanceof Error ? error.message : String(error),
-      });
+      }, "error");
     }
   }
 
@@ -98,7 +98,7 @@ export function createJobScheduler(jobs: ScheduledJob[]): JobScheduler {
       if (!finished) {
         logWorkerEvent("scheduler.stop_timeout", {
           stillRunning: [...runningJobs.keys()].map((job) => job.name),
-        });
+        }, "error");
       }
       return finished;
     },
