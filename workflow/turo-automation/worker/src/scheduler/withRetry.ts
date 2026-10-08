@@ -38,7 +38,7 @@ export async function withRetry<T>(
         maxAttempts,
         error: error instanceof Error ? error.message : String(error),
         willRetry: !isLast,
-      });
+      }, "warn");
 
       if (!isLast) {
         const waitMs = delayMs * Math.pow(backoffFactor, attempt - 1);

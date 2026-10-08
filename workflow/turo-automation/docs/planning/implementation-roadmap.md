@@ -122,7 +122,7 @@ PR slices:
 5. Use the system clock outside fixture mode ✓
 6. Validate `HEALTHZ_PORT` and report health-server listen errors ✓
 7. Graceful shutdown — wait for in-flight jobs and close the health server ✓
-8. Log levels — warnings and failures carry `warn` / `error` in JSON output
+8. Log levels — warnings and failures carry `warn` / `error` in JSON output ✓
 9. `/healthz` reports per-job last-run state
 10. Phase 11 closeout
 
