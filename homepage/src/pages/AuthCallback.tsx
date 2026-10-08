@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { usePageTitle } from "../lib/usePageChrome";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { navigateToUrl } from "../lib/browser";
+import { isResearchPath, syncResearchAccess } from "../lib/researchAccess";
 import { getDefaultSignedInPath, resolveRedirectPath } from "../lib/runtime";
 import { getAuthErrorMessage, getMissingConfigMessage, getSupabase } from "../lib/supabase";
 import {
@@ -56,6 +58,14 @@ export default function AuthCallback() {
 
       completed = true;
       await refreshProfile();
+
+      if (isResearchPath(next)) {
+        const client = await getSupabase();
+        syncResearchAccess((await client?.auth.getSession())?.data.session ?? null);
+        navigateToUrl(next);
+        return;
+      }
+
       navigate(next, { replace: true });
     };
 
