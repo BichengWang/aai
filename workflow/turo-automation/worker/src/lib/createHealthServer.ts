@@ -1,4 +1,5 @@
 import { createServer, type Server } from "node:http";
+import { readPositiveIntEnv } from "./env.js";
 import { logWorkerEvent } from "./logger.js";
 
 /**
@@ -9,9 +10,11 @@ import { logWorkerEvent } from "./logger.js";
  * to verify the worker process is alive.
  *
  * Port is controlled by the HEALTHZ_PORT env var (default 3001).
+ * Resolves once the server is listening and rejects if it cannot bind (for
+ * example EADDRINUSE), so the caller can fail before any job starts.
  */
-export function createHealthServer(): Server {
-  const port = Number(process.env["HEALTHZ_PORT"] ?? 3001);
+export function createHealthServer(): Promise<Server> {
+  const port = readPositiveIntEnv("HEALTHZ_PORT", 3001, 65_535);
 
   const server = createServer((req, res) => {
     if (req.method === "GET" && req.url === "/healthz") {
@@ -27,9 +30,12 @@ export function createHealthServer(): Server {
     }
   });
 
-  server.listen(port, () => {
-    logWorkerEvent("healthz.listening", { port });
+  return new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(port, () => {
+      server.off("error", reject);
+      logWorkerEvent("healthz.listening", { port });
+      resolve(server);
+    });
   });
-
-  return server;
 }

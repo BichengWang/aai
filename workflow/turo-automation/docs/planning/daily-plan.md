@@ -14,7 +14,7 @@ Phase 11 — scheduled worker hardening, one slice per PR (see `implementation-r
 - [x] Phase 11 slice 3: approved-draft send job in scheduled mode
 - [x] Phase 11 slice 4: daily digest at most once per day
 - [x] Phase 11 slice 5: system clock outside fixture mode
-- [ ] Phase 11 slice 6: `HEALTHZ_PORT` validation and listen errors
+- [x] Phase 11 slice 6: `HEALTHZ_PORT` validation and listen errors
 - [ ] Phase 11 slice 7: graceful shutdown
 - [ ] Phase 11 slice 8: log levels
 - [ ] Phase 11 slice 9: per-job state in `/healthz`
@@ -24,4 +24,4 @@ Phase 11 — scheduled worker hardening, one slice per PR (see `implementation-r
 - Browser-agent flows remain blocked until a real authenticated Turo session is available.
 
 ## Next Suggested Step
-Phase 11 slice 6 — validate `HEALTHZ_PORT` and report health-server listen errors instead of crashing with an unhandled `error` event.
+Phase 11 slice 7 — SIGTERM exits immediately mid-job; wait for in-flight jobs and close the health server first.

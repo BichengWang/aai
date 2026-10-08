@@ -973,3 +973,11 @@ repeat, and SIGTERM exits cleanly.
 - Documented `WORKER_CLOCK` in `.env.example` and the architecture overview
 
 **Verification**: `npm test`; ran run-once against a local PostgREST stub (`SUPABASE_URL=http://127.0.0.1:54321`) and captured the `job_runs` upserts — before: every id stamped `2026-03-20T18:00:00.000Z`; after: real start/finish times. Fixture mode output unchanged; `WORKER_CLOCK=system` in fixture mode switches to real time. With the real clock the stub also exercised the slice 4 digest seed: a completed `daily_digest` from today in `job_runs` → restarted scheduled worker skips (0 posts); none → 1 post
+
+### Phase 11 slice 6 — health-server port and listen errors
+
+- `HEALTHZ_PORT` is read through `readPositiveIntEnv` (now with an optional `max`, 65535 here); an invalid value falls back to 3001 with a warning
+- `createHealthServer()` now resolves once listening and rejects on a bind error; `index.ts` awaits it before starting the scheduler
+- Before: `HEALTHZ_PORT=abc` was a fatal `RangeError` at boot, and a port already in use crashed the process with an unhandled `error` event after jobs had already started
+
+**Verification**: `npm test`; scheduled mode with `HEALTHZ_PORT=abc` → warning, listens on 3001, jobs run; with the port held by another process → single `boot.fatal` (`EADDRINUSE`), exit 1, no jobs started; normal port → `GET /healthz` 200 `{"status":"ok"}`, other paths 404
