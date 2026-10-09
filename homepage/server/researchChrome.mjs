@@ -83,7 +83,7 @@ export function researchGate(path) {
     '<div class="altair-gate-body">' +
     '<p class="altair-gate-kicker">Members preview</p>' +
     '<p class="altair-gate-title" id="altair-gate-title">Keep reading with an Altair account</p>' +
-    '<p class="altair-gate-lede">This is a sample of the newest results. Sign in for every decision summary and the complete reports behind them, with targets, confidence and horizons.</p>' +
+    '<p class="altair-gate-lede">You are viewing a sample. Sign in for every decision summary and the complete reports behind them, with targets, confidence and horizons.</p>' +
     "</div>" +
     '<div class="altair-gate-actions">' +
     `<a class="altair-gate-button altair-gate-button--primary" href="/login?next=${next}">Log in to continue</a>` +
@@ -120,7 +120,7 @@ box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 24px 60px -20px rgba(11,12,16,.
 .md-typeset .altair-gate .altair-gate-button--primary:hover{border-color:#fff;background:#fff;color:var(--lab-night,#0b0c10)}
 .md-typeset .altair-gate .altair-gate-button:focus-visible{outline:2px solid var(--lab-night-accent,#a3b4ff);outline-offset:2px}
 .md-typeset .altair-gate .altair-gate-note{font:500 11px/1.4 var(--lab-font-mono,ui-monospace,monospace);letter-spacing:.04em;text-align:center;color:var(--lab-night-fg-3,#868991)}
-@media (max-width:760px){.md-typeset .altair-gate{bottom:12px;margin-top:-110px}.md-typeset .altair-gate-card{grid-template-columns:auto 1fr;padding:18px}.md-typeset .altair-gate .altair-gate-actions{grid-column:1/-1}.md-typeset .altair-gate .altair-gate-title{font-size:21px}}
+@media (max-width:760px){.md-typeset .altair-gate{bottom:12px;margin-top:-110px}.md-typeset .altair-gate-card{grid-template-columns:1fr;gap:14px;padding:18px 18px 16px}.md-typeset .altair-gate-icon,.md-typeset .altair-gate .altair-gate-lede{display:none}.md-typeset .altair-gate .altair-gate-title{font-size:20px}.md-typeset .altair-gate .altair-gate-actions{grid-template-columns:1fr 1fr;min-width:0}.md-typeset .altair-gate .altair-gate-button{padding:0 10px;white-space:nowrap}.md-typeset .altair-gate .altair-gate-note{grid-column:1/-1}}
 </style>`;
 
 export function researchFooter(workspace, signedIn) {

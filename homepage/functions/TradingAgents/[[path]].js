@@ -25,15 +25,20 @@ const ALTAIR_HEAD =
 // content encoding never apply to this domain.
 const FORWARDED_HEADERS = ["cache-control", "content-type", "etag", "expires", "last-modified"];
 
-// How much of a page a visitor who is not signed in sees: about this many
-// characters of its body text, cut at the next block (row, paragraph,
-// heading...) so the rest is never sent. The tail fades out under the
-// sign-in prompt, which leaves a sample of the newest results.
-const PREVIEW_CHARS = 1800;
-const BLOCK_TAGS = new Set([
-  "blockquote", "details", "div", "dl", "figure", "h1", "h2", "h3", "h4", "h5", "h6",
-  "li", "ol", "p", "pre", "section", "table", "tbody", "thead", "tr", "ul",
+// How much of a page a visitor who is not signed in sees: this many content
+// blocks (table rows, paragraphs, list items, headings) of its body; every
+// block after them is dropped and never sent. The tail fades out under the
+// sign-in prompt, which leaves a sample of the newest results. Counting
+// blocks rather than text keeps the rewriter's callbacks to a few per row,
+// which matters on the 1,400-row home page.
+const PREVIEW_BLOCKS = 22;
+const COUNTED_TAGS = new Set([
+  "blockquote", "dd", "dt", "h1", "h2", "h3", "h4", "h5", "h6", "li", "p", "pre", "tr",
 ]);
+const REMOVABLE_TAGS = [
+  ...COUNTED_TAGS,
+  "details", "div", "dl", "figure", "hr", "img", "ol", "section", "table", "tbody", "tfoot", "thead", "ul",
+];
 
 // Files a preview may load in full: the pages' own styles, images and fonts.
 // Anything else (the search index, sitemap, raw data) carries report text.
@@ -152,43 +157,48 @@ export async function onRequest({ request, env }) {
   return rewriter.transform(response);
 }
 
-// Keeps about PREVIEW_CHARS of the page body (Material's
+// Keeps the first PREVIEW_BLOCKS blocks of the page body (Material's
 // article.md-content__inner), drops the rest along with in-page navigation
 // (the date rail, the table of contents) and ends the body with the sign-in
 // prompt.
 function previewOnly(rewriter, path) {
-  let seen = 0;
+  let kept = 0;
   let cut = false;
   let skipping = 0;
+  const block = {
+    element(element) {
+      if (skipping) return;
+      if (kept >= PREVIEW_BLOCKS) {
+        element.remove();
+        cut = true;
+      } else if (COUNTED_TAGS.has(element.tagName)) {
+        kept += 1;
+      }
+    },
+  };
   rewriter
     .on(".md-content__inner", {
-      text(chunk) {
-        if (!skipping) seen += chunk.text.trim().length;
-      },
       element(element) {
         element.onEndTag((end) => {
           if (cut) end.before(researchGate(path), { html: true });
         });
       },
     })
-    .on(".md-content__inner *", {
-      element(element) {
-        if (seen > PREVIEW_CHARS && BLOCK_TAGS.has(element.tagName)) {
-          element.remove();
-          cut = true;
-        }
-      },
-    })
     .on(".md-content__inner nav", {
       element(element) {
-        // Removed text still streams by; it is not part of the sample.
+        // The rail's dates are not part of the sample, so its blocks are
+        // left out of the count.
         skipping += 1;
         element.onEndTag(() => {
           skipping -= 1;
         });
         element.remove();
       },
-    })
+    });
+  for (const tag of REMOVABLE_TAGS) {
+    rewriter.on(`.md-content__inner ${tag}`, block);
+  }
+  rewriter
     .on(".md-sidebar--secondary .md-nav", {
       element(element) {
         element.remove();
