@@ -65,21 +65,63 @@ export function researchHeader(workspace, signedIn) {
   );
 }
 
-// Closes a cut-short report for visitors who are not signed in. `path` is the
-// report's own path, so signing in comes back to it.
+const LOCK_ICON =
+  '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false" fill="none" ' +
+  'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+  '<rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>';
+
+// Closes a cut-short page for visitors who are not signed in: a veil that
+// blurs and fades the last of the sample, then a card that floats at the
+// bottom of the screen while the sample scrolls by and settles over the
+// faded tail. `path` is the page's own path, so signing in comes back to it.
 export function researchGate(path) {
-  const next = encodeURIComponent(path);
+  const next = escapeAttribute(encodeURIComponent(path));
   return (
-    '<aside class="altair-gate" aria-label="Sign in to keep reading">' +
-    '<p class="altair-gate-kicker">Preview</p>' +
-    '<p class="altair-gate-title">Sign in to read the full report.</p>' +
-    "<p>The complete analysis, figures and recommendation are open to anyone with an Altair account.</p>" +
-    '<p class="altair-gate-actions">' +
-    `<a class="altair-gate-primary" href="/login?next=${escapeAttribute(next)}">Log in</a>` +
-    `<a href="/register?next=${escapeAttribute(next)}">Create an account</a>` +
-    "</p></aside>"
+    '<div class="altair-veil" aria-hidden="true"></div>' +
+    '<aside class="altair-gate" aria-labelledby="altair-gate-title"><div class="altair-gate-card">' +
+    `<span class="altair-gate-icon">${LOCK_ICON}</span>` +
+    '<div class="altair-gate-body">' +
+    '<p class="altair-gate-kicker">Members preview</p>' +
+    '<p class="altair-gate-title" id="altair-gate-title">Keep reading with an Altair account</p>' +
+    '<p class="altair-gate-lede">This is a sample of the newest results. Sign in for every decision summary and the complete reports behind them, with targets, confidence and horizons.</p>' +
+    "</div>" +
+    '<div class="altair-gate-actions">' +
+    `<a class="altair-gate-button altair-gate-button--primary" href="/login?next=${next}">Log in to continue</a>` +
+    `<a class="altair-gate-button" href="/register?next=${next}">Create an account</a>` +
+    '<p class="altair-gate-note">Google sign-in · returns you here</p>' +
+    "</div></div></aside>"
   );
 }
+
+// The gate's styles travel in the page itself rather than research.css, so a
+// cached copy of that stylesheet can never leave the gate unstyled.
+export const RESEARCH_GATE_STYLE = `<style>
+.md-typeset .daily-summary-layout{display:block}
+.md-typeset .altair-veil{position:relative;height:0}
+.md-typeset .altair-veil::before{content:"";position:absolute;left:-8px;right:-8px;bottom:0;height:min(420px,60vh);pointer-events:none;
+backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+-webkit-mask-image:linear-gradient(to bottom,transparent,#000 70%);mask-image:linear-gradient(to bottom,transparent,#000 70%);
+background:linear-gradient(to bottom,rgba(242,242,238,0) 0%,rgba(242,242,238,.55) 45%,var(--lab-bg,#f2f2ee) 92%)}
+.md-typeset .altair-gate{position:sticky;bottom:20px;z-index:3;margin:-150px 0 48px;font:400 15px/1.6 var(--lab-font-sans,system-ui,sans-serif)}
+.md-typeset .altair-gate-card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px 24px;max-width:860px;margin:0 auto;padding:22px 24px;border:1px solid rgba(237,237,232,.12);border-radius:16px;
+background:rgba(11,12,16,.9);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);color:var(--lab-night-fg,#edede8);
+box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 24px 60px -20px rgba(11,12,16,.55),0 8px 20px -12px rgba(11,12,16,.35);animation:altair-gate-in .5s cubic-bezier(.2,.7,.2,1) both}
+@keyframes altair-gate-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.md-typeset .altair-gate-card{animation:none}}
+.md-typeset .altair-gate-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:12px;background:rgba(163,180,255,.12);color:var(--lab-night-accent,#a3b4ff)}
+.md-typeset .altair-gate p{margin:0}
+.md-typeset .altair-gate .altair-gate-kicker{margin-bottom:4px;font:500 11px/1.4 var(--lab-font-mono,ui-monospace,monospace);letter-spacing:.12em;text-transform:uppercase;color:var(--lab-night-accent,#a3b4ff)}
+.md-typeset .altair-gate .altair-gate-title{font:400 24px/1.15 var(--lab-font-display,Georgia,serif);letter-spacing:-.015em;color:var(--lab-night-fg,#edede8)}
+.md-typeset .altair-gate .altair-gate-lede{margin-top:6px;max-width:52ch;font-size:14px;line-height:1.55;color:var(--lab-night-fg-2,#a7a9b0)}
+.md-typeset .altair-gate .altair-gate-actions{display:grid;gap:8px;justify-items:stretch;min-width:190px}
+.md-typeset .altair-gate .altair-gate-button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 18px;border:1px solid var(--lab-night-line-strong,rgba(237,237,232,.3));border-radius:9px;font-weight:500;font-size:14px;color:var(--lab-night-fg,#edede8);text-decoration:none;transition:background-color .15s,border-color .15s,transform .15s}
+.md-typeset .altair-gate .altair-gate-button:hover{border-color:var(--lab-night-fg,#edede8);color:var(--lab-night-fg,#edede8);transform:translateY(-1px)}
+.md-typeset .altair-gate .altair-gate-button--primary{border-color:var(--lab-night-fg,#edede8);background:var(--lab-night-fg,#edede8);color:var(--lab-night,#0b0c10)}
+.md-typeset .altair-gate .altair-gate-button--primary:hover{border-color:#fff;background:#fff;color:var(--lab-night,#0b0c10)}
+.md-typeset .altair-gate .altair-gate-button:focus-visible{outline:2px solid var(--lab-night-accent,#a3b4ff);outline-offset:2px}
+.md-typeset .altair-gate .altair-gate-note{font:500 11px/1.4 var(--lab-font-mono,ui-monospace,monospace);letter-spacing:.04em;text-align:center;color:var(--lab-night-fg-3,#868991)}
+@media (max-width:760px){.md-typeset .altair-gate{bottom:12px;margin-top:-110px}.md-typeset .altair-gate-card{grid-template-columns:auto 1fr;padding:18px}.md-typeset .altair-gate .altair-gate-actions{grid-column:1/-1}.md-typeset .altair-gate .altair-gate-title{font-size:21px}}
+</style>`;
 
 export function researchFooter(workspace, signedIn) {
   return (

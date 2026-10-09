@@ -9,6 +9,7 @@
 // of each report and a sign-in prompt (server/researchAccess.mjs).
 import {
   BRAND_MARK,
+  RESEARCH_GATE_STYLE,
   researchFooter,
   researchGate,
   researchHeader,
@@ -24,9 +25,15 @@ const ALTAIR_HEAD =
 // content encoding never apply to this domain.
 const FORWARDED_HEADERS = ["cache-control", "content-type", "etag", "expires", "last-modified"];
 
-// How much of a report a visitor who is not signed in sees: the blocks of
-// the page body (title, paragraphs, tables...) kept before the sign-in prompt.
-const PREVIEW_BLOCKS = 4;
+// How much of a page a visitor who is not signed in sees: about this many
+// characters of its body text, cut at the next block (row, paragraph,
+// heading...) so the rest is never sent. The tail fades out under the
+// sign-in prompt, which leaves a sample of the newest results.
+const PREVIEW_CHARS = 1800;
+const BLOCK_TAGS = new Set([
+  "blockquote", "details", "div", "dl", "figure", "h1", "h2", "h3", "h4", "h5", "h6",
+  "li", "ol", "p", "pre", "section", "table", "tbody", "thead", "tr", "ul",
+]);
 
 // Files a preview may load in full: the pages' own styles, images and fonts.
 // Anything else (the search index, sitemap, raw data) carries report text.
@@ -145,35 +152,51 @@ export async function onRequest({ request, env }) {
   return rewriter.transform(response);
 }
 
-// Keeps the first PREVIEW_BLOCKS blocks of the page body (Material's
-// article.md-content__inner), drops the rest and the table of contents that
-// points into it, and ends the body with the sign-in prompt.
+// Keeps about PREVIEW_CHARS of the page body (Material's
+// article.md-content__inner), drops the rest along with in-page navigation
+// (the date rail, the table of contents) and ends the body with the sign-in
+// prompt.
 function previewOnly(rewriter, path) {
-  let kept = 0;
+  let seen = 0;
   let cut = false;
+  let skipping = 0;
   rewriter
-    .on(".md-content__inner > *", {
-      element(element) {
-        // The edit and view-source buttons come first and are not content.
-        if (element.tagName === "a") return;
-        if (kept < PREVIEW_BLOCKS) {
-          kept += 1;
-          return;
-        }
-        element.remove();
-        cut = true;
-      },
-    })
     .on(".md-content__inner", {
+      text(chunk) {
+        if (!skipping) seen += chunk.text.trim().length;
+      },
       element(element) {
         element.onEndTag((end) => {
           if (cut) end.before(researchGate(path), { html: true });
         });
       },
     })
+    .on(".md-content__inner *", {
+      element(element) {
+        if (seen > PREVIEW_CHARS && BLOCK_TAGS.has(element.tagName)) {
+          element.remove();
+          cut = true;
+        }
+      },
+    })
+    .on(".md-content__inner nav", {
+      element(element) {
+        // Removed text still streams by; it is not part of the sample.
+        skipping += 1;
+        element.onEndTag(() => {
+          skipping -= 1;
+        });
+        element.remove();
+      },
+    })
     .on(".md-sidebar--secondary .md-nav", {
       element(element) {
         element.remove();
+      },
+    })
+    .on("head", {
+      element(element) {
+        element.append(RESEARCH_GATE_STYLE, { html: true });
       },
     });
 }
