@@ -2,9 +2,11 @@ import { useEnquiryForm } from "../lib/useEnquiryForm";
 import EnquiryFormStatus from "../components/EnquiryFormStatus";
 import EnquiryHoneypot from "../components/EnquiryHoneypot";
 import LabSectionHead from "./LabSectionHead";
+import { useContactIdentity } from "../lib/useContactIdentity";
 
 export default function Contact() {
   const { pending, sent, error, handleSubmit } = useEnquiryForm("contact");
+  const identity = useContactIdentity();
 
   return (
     <section id="contact" className="lab-section lab-contact" aria-labelledby="lab-contact-title">
@@ -26,6 +28,8 @@ export default function Contact() {
                   className="lab-input"
                   type="text"
                   name="name"
+                  value={identity.name}
+                  onChange={(event) => identity.setName(event.target.value)}
                   maxLength={120}
                   placeholder="Your name"
                   autoComplete="name"
@@ -38,6 +42,8 @@ export default function Contact() {
                   className="lab-input"
                   type="email"
                   name="email"
+                  value={identity.email}
+                  onChange={(event) => identity.setEmail(event.target.value)}
                   maxLength={254}
                   placeholder="name@email.com"
                   autoComplete="email"

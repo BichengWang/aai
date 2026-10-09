@@ -36,12 +36,12 @@ for (const path of ["/", "/enquiry"]) {
     const form = page.locator(path === "/" ? "#contact form" : "main form");
     await form.getByLabel("Name", { exact: true }).fill("Ada Lovelace");
     await form.getByLabel("Email", { exact: true }).fill("ada@example.com");
-    await form.locator("textarea").fill("Please help me find a local provider.\nI am available next week.");
     if (path === "/enquiry") {
-      await form.getByLabel("Postcode").fill("94103");
+      await form.getByLabel("Tell us what you need").selectOption("other");
       await form.getByLabel("Service needed").selectOption("pet-sitting");
       await form.getByLabel("Timeline").selectOption("week");
     }
+    await form.locator("textarea").fill("Please help me find a local provider.\nI am available next week.");
     await form.getByRole("button").click();
     await expect(form.getByRole("button", { name: "Sending..." })).toBeDisabled();
     await expect(form.getByRole("status")).toHaveCount(0);
@@ -57,12 +57,35 @@ for (const path of ["/", "/enquiry"]) {
     expect(outgoing?.text).toContain("I am available next week.");
     expect(idempotencyKey).toMatch(/^altair-enquiry\/[0-9a-f-]{36}$/);
     if (path === "/enquiry") {
-      expect(outgoing?.text).toContain("Postcode: 94103");
+      expect(outgoing?.text).not.toContain("Postcode:");
       expect(outgoing?.text).toContain("Service: pet-sitting");
       expect(outgoing?.text).toContain("Timeline: week");
     }
   });
 }
+
+test("an enquiry can be sent with only name and email using the default choices", async ({ page }) => {
+  let outgoing: OutgoingEmail | undefined;
+  await routeToHandler(page, async (_url, init) => {
+    outgoing = JSON.parse(init?.body as string);
+    return Response.json({ id: "default-enquiry-id" });
+  });
+  await page.goto("/enquiry");
+  const form = page.locator("main form");
+  await expect(form.getByLabel("Postcode")).toHaveCount(0);
+  await expect(form.locator("textarea")).toHaveCount(0);
+  await expect(form.getByLabel("Service needed")).toHaveValue("financial-planning");
+  await expect(form.getByLabel("Timeline")).toHaveValue("24-hours");
+  await expect(form.getByLabel("Tell us what you need")).toHaveValue("Please help me find a local provider.");
+  await form.getByLabel("Name", { exact: true }).fill("Ada Lovelace");
+  await form.getByLabel("Email", { exact: true }).fill("ada@example.com");
+  await form.getByRole("button", { name: "Submit enquiry" }).click();
+  await expect(form.getByRole("status")).toContainText("has been sent to the Altair team");
+  expect(outgoing?.text).toContain("Please help me find a local provider.");
+  expect(outgoing?.text).toContain("Service: financial-planning");
+  expect(outgoing?.text).toContain("Timeline: 24-hours");
+  expect(outgoing?.text).not.toContain("Postcode:");
+});
 
 test("failed delivery preserves the form and reuses the retry key; edits get a new key", async ({ page }) => {
   const keys: string[] = [];
@@ -74,21 +97,21 @@ test("failed delivery preserves the form and reuses the retry key; edits get a n
   const form = page.locator("main form");
   await form.getByLabel("Name", { exact: true }).fill("Ada Lovelace");
   await form.getByLabel("Email", { exact: true }).fill("ada@example.com");
-  await form.getByLabel("Postcode").fill("94103");
-  await form.getByLabel("Service needed").selectOption("general");
-  await form.getByLabel("Timeline").selectOption("flexible");
-  await form.getByLabel("Tell us what you need").fill("Please help.");
+  await form.getByLabel("Service needed").selectOption("other");
+  await form.getByLabel("Timeline").selectOption("other");
+  await form.getByLabel("Tell us what you need").selectOption("other");
+  await form.getByLabel("Your message").fill("Please help.");
   const submit = form.getByRole("button", { name: "Submit enquiry" });
   await submit.click();
   await expect(form.getByRole("alert")).toContainText("couldn't send");
   await expect(form.getByRole("status")).toHaveCount(0);
-  await expect(form.getByLabel("Tell us what you need")).toHaveValue("Please help.");
+  await expect(form.getByLabel("Your message")).toHaveValue("Please help.");
   await expect(submit).toBeEnabled();
   await submit.click();
   await expect.poll(() => keys.length).toBe(2);
   await expect(submit).toBeEnabled();
   expect(keys[1]).toBe(keys[0]);
-  await form.getByLabel("Tell us what you need").fill("Updated request.");
+  await form.getByLabel("Your message").fill("Updated request.");
   await submit.click();
   await expect(form.getByRole("status")).toBeVisible();
   await expect(form.getByRole("alert")).toHaveCount(0);
@@ -98,7 +121,8 @@ test("failed delivery preserves the form and reuses the retry key; edits get a n
 test("/contact redirects to the single intake form", async ({ page }) => {
   await page.goto("/contact");
   await expect(page).toHaveURL(/\/enquiry$/);
-  await expect(page.getByLabel("Postcode")).toBeVisible();
+  await expect(page.getByLabel("Tell us what you need")).toBeVisible();
+  await expect(page.getByLabel("Postcode")).toHaveCount(0);
 });
 
 test("homepage enquiry link opens the service enquiry form", async ({ page }) => {
@@ -106,7 +130,7 @@ test("homepage enquiry link opens the service enquiry form", async ({ page }) =>
   await page.getByRole("link", { name: /Start an enquiry/ }).click();
   await expect(page).toHaveURL(/\/enquiry$/);
   await expect(page.getByLabel("Email", { exact: true })).toBeVisible();
-  await expect(page.getByLabel("Postcode")).toBeVisible();
+  await expect(page.getByLabel("Tell us what you need")).toBeVisible();
 });
 
 test("unconfigured delivery reports an error through the local server", async ({ page }) => {
@@ -114,10 +138,6 @@ test("unconfigured delivery reports an error through the local server", async ({
   const form = page.locator("main form");
   await form.getByLabel("Name", { exact: true }).fill("Ada Lovelace");
   await form.getByLabel("Email", { exact: true }).fill("ada@example.com");
-  await form.getByLabel("Postcode").fill("94103");
-  await form.getByLabel("Service needed").selectOption("general");
-  await form.getByLabel("Timeline").selectOption("flexible");
-  await form.getByLabel("Tell us what you need").fill("Please help.");
   await form.getByRole("button", { name: "Submit enquiry" }).click();
   await expect(form.getByRole("alert")).toContainText("temporarily unavailable");
   await expect(form.getByRole("status")).toHaveCount(0);
@@ -133,10 +153,6 @@ test("rate limited and non-JSON responses never show success", async ({ page }) 
   const form = page.locator("main form");
   await form.getByLabel("Name", { exact: true }).fill("Ada Lovelace");
   await form.getByLabel("Email", { exact: true }).fill("ada@example.com");
-  await form.getByLabel("Postcode").fill("94103");
-  await form.getByLabel("Service needed").selectOption("general");
-  await form.getByLabel("Timeline").selectOption("flexible");
-  await form.getByLabel("Tell us what you need").fill("Please help.");
   await form.getByRole("button").click();
   await expect(form.getByRole("alert")).toContainText("wait a minute");
   await form.getByRole("button").click();

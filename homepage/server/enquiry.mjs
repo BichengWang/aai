@@ -1,9 +1,9 @@
 const MAX_BODY_BYTES = 32_768;
 const EMAIL = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const SERVICES = new Set(["financial-planning", "legal-services", "local-car-rental", "pet-sitting", "general"]);
+const SERVICES = new Set(["financial-planning", "legal-services", "local-car-rental", "pet-sitting", "general", "other"]);
 const TOPICS = new Set(["services", "partnerships", "support"]);
-const TIMELINES = new Set(["24-hours", "week", "flexible"]);
+const TIMELINES = new Set(["24-hours", "week", "flexible", "other"]);
 
 function json(status, body, headers = {}) {
   return Response.json(body, { status, headers: { "Cache-Control": "no-store", ...headers } });
@@ -80,7 +80,7 @@ export function createEnquiryHandler({ env = process.env, fetchEmail = fetch } =
       const topic = field(body, "topic", 30, false);
       let postcode = "", service = "", timeline = "";
       if (kind === "enquiry") {
-        postcode = field(body, "postcode", 20);
+        postcode = field(body, "postcode", 20, false);
         service = field(body, "service", 40);
         timeline = field(body, "timeline", 20);
         if (!SERVICES.has(service)) throw new Error("Please select a valid service.");
@@ -104,7 +104,7 @@ export function createEnquiryHandler({ env = process.env, fetchEmail = fetch } =
     const text = [
       `New Altair ${kind}`, `Reference: ${submissionId}`, `Name: ${name}`, `Email: ${email}`,
       ...(topic ? [`Topic: ${topic}`] : []),
-      ...(kind === "enquiry" ? [`Postcode: ${postcode}`, `Service: ${service}`, `Timeline: ${timeline}`] : []),
+      ...(kind === "enquiry" ? [...(postcode ? [`Postcode: ${postcode}`] : []), `Service: ${service}`, `Timeline: ${timeline}`] : []),
       "", "Message:", message,
     ].join("\n");
     try {
