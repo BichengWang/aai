@@ -2,6 +2,10 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Contact from "../components/Contact";
 
+vi.mock("../context/AuthContext", () => ({
+  useAuth: () => ({ user: null, profile: null }),
+}));
+
 describe("Contact form", () => {
   afterEach(() => vi.unstubAllGlobals());
 

@@ -23,7 +23,7 @@ test("invalid and oversized submissions never call the email provider", async ()
     [{ ...submission, email: "ada@example.com\r\nBcc: other@example.com" }, 400],
     [{ ...submission, service: "unknown" }, 400],
     [{ ...submission, timeline: "unknown" }, 400],
-    [{ ...submission, postcode: " " }, 400],
+    [{ ...submission, postcode: "x".repeat(21) }, 400],
     [{ ...submission, name: " " }, 400],
     [{ ...submission, message: "x".repeat(5001) }, 400],
     [{ ...submission, message: "x".repeat(40_000) }, 413],
@@ -50,6 +50,20 @@ test("missing configuration never calls the provider or returns success", async 
   assert.equal(response.status, 503);
   assert.match((await response.json()).error, /email qx@altairworld.com/);
   assert.equal(called, false);
+});
+
+test("enquiries without a postcode accept Other and omit location from the email", async () => {
+  let outgoing;
+  const handler = createEnquiryHandler({ env, fetchEmail: async (_url, init) => {
+    outgoing = JSON.parse(init.body);
+    return Response.json({ id: "other-service-id" });
+  } });
+  const { postcode, ...withoutPostcode } = submission;
+  const response = await handler(request({ ...withoutPostcode, service: "other", timeline: "other" }));
+  assert.equal(response.status, 200);
+  assert.match(outgoing.text, /Service: other/);
+  assert.match(outgoing.text, /Timeline: other/);
+  assert.doesNotMatch(outgoing.text, /Postcode:/);
 });
 
 test("only provider acceptance with an email ID returns success", async () => {
