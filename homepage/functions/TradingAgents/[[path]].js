@@ -9,6 +9,7 @@
 // of each report and a sign-in prompt (server/researchAccess.mjs).
 import {
   BRAND_MARK,
+  RESEARCH_GATE_STYLE,
   researchFooter,
   researchGate,
   researchHeader,
@@ -24,9 +25,20 @@ const ALTAIR_HEAD =
 // content encoding never apply to this domain.
 const FORWARDED_HEADERS = ["cache-control", "content-type", "etag", "expires", "last-modified"];
 
-// How much of a report a visitor who is not signed in sees: the blocks of
-// the page body (title, paragraphs, tables...) kept before the sign-in prompt.
-const PREVIEW_BLOCKS = 4;
+// How much of a page a visitor who is not signed in sees: this many content
+// blocks (table rows, paragraphs, list items, headings) of its body; every
+// block after them is dropped and never sent. The tail fades out under the
+// sign-in prompt, which leaves a sample of the newest results. Counting
+// blocks rather than text keeps the rewriter's callbacks to a few per row,
+// which matters on the 1,400-row home page.
+const PREVIEW_BLOCKS = 22;
+const COUNTED_TAGS = new Set([
+  "blockquote", "dd", "dt", "h1", "h2", "h3", "h4", "h5", "h6", "li", "p", "pre", "tr",
+]);
+const REMOVABLE_TAGS = [
+  ...COUNTED_TAGS,
+  "details", "div", "dl", "figure", "hr", "img", "ol", "section", "table", "tbody", "tfoot", "thead", "ul",
+];
 
 // Files a preview may load in full: the pages' own styles, images and fonts.
 // Anything else (the search index, sitemap, raw data) carries report text.
@@ -146,24 +158,25 @@ export async function onRequest({ request, env }) {
 }
 
 // Keeps the first PREVIEW_BLOCKS blocks of the page body (Material's
-// article.md-content__inner), drops the rest and the table of contents that
-// points into it, and ends the body with the sign-in prompt.
+// article.md-content__inner), drops the rest along with in-page navigation
+// (the date rail, the table of contents) and ends the body with the sign-in
+// prompt.
 function previewOnly(rewriter, path) {
   let kept = 0;
   let cut = false;
-  rewriter
-    .on(".md-content__inner > *", {
-      element(element) {
-        // The edit and view-source buttons come first and are not content.
-        if (element.tagName === "a") return;
-        if (kept < PREVIEW_BLOCKS) {
-          kept += 1;
-          return;
-        }
+  let skipping = 0;
+  const block = {
+    element(element) {
+      if (skipping) return;
+      if (kept >= PREVIEW_BLOCKS) {
         element.remove();
         cut = true;
-      },
-    })
+      } else if (COUNTED_TAGS.has(element.tagName)) {
+        kept += 1;
+      }
+    },
+  };
+  rewriter
     .on(".md-content__inner", {
       element(element) {
         element.onEndTag((end) => {
@@ -171,9 +184,29 @@ function previewOnly(rewriter, path) {
         });
       },
     })
+    .on(".md-content__inner nav", {
+      element(element) {
+        // The rail's dates are not part of the sample, so its blocks are
+        // left out of the count.
+        skipping += 1;
+        element.onEndTag(() => {
+          skipping -= 1;
+        });
+        element.remove();
+      },
+    });
+  for (const tag of REMOVABLE_TAGS) {
+    rewriter.on(`.md-content__inner ${tag}`, block);
+  }
+  rewriter
     .on(".md-sidebar--secondary .md-nav", {
       element(element) {
         element.remove();
+      },
+    })
+    .on("head", {
+      element(element) {
+        element.append(RESEARCH_GATE_STYLE, { html: true });
       },
     });
 }

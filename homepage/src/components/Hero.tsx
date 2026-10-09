@@ -7,25 +7,25 @@ const heroMetrics = [
   { label: "Bay Area cities live", value: String(coverageCities.length) },
 ];
 
-// Each network's own mark in its reversed (light-on-dark) form, sized to read as
-// equals: about the same width, with OpenAI's sans a little smaller in cap
-// height than Claude's serif (see .lab-partner--* in home.css).
+// Each network's own mark, traced from a high-resolution capture and reversed
+// for the night surface. Both SVGs share one viewBox width and center on their
+// cap height, so one CSS width renders them at the same scale (see .lab-partner).
 const partnerNetworks = [
   {
     id: "claude",
     name: "Claude Partner Network",
     href: "https://claude.com/partners",
-    src: "/images/partners/claude-partner-network.png",
-    width: 800,
-    height: 64,
+    src: "/images/partners/claude-partner-network.svg",
+    width: 1779,
+    height: 144,
   },
   {
     id: "openai",
     name: "OpenAI Partner Network",
     href: "https://openai.com/business/partners/",
     src: "/images/partners/openai-partner-network.svg",
-    width: 400,
-    height: 30,
+    width: 1779,
+    height: 175,
   },
 ] as const;
 
@@ -69,30 +69,30 @@ export default function Hero() {
           <p className="lab-hero-note lab-micro">
             Free to start · No subscription or credit fees
           </p>
-          <div className="lab-partners">
-            <p className="lab-partners-label lab-micro">Partner networks</p>
-            <ul className="lab-partners-list" role="list">
-              {partnerNetworks.map((partner) => (
-                <li key={partner.id}>
-                  <a
-                    className={`lab-partner lab-partner--${partner.id}`}
-                    href={partner.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img
-                      src={partner.src}
-                      alt={partner.name}
-                      width={partner.width}
-                      height={partner.height}
-                    />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
         <AquilaFigure />
+        <div className="lab-partners">
+          <p className="lab-partners-label lab-micro">Partner networks</p>
+          <ul className="lab-partners-list" role="list">
+            {partnerNetworks.map((partner) => (
+              <li key={partner.id}>
+                <a
+                  className={`lab-partner lab-partner--${partner.id}`}
+                  href={partner.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={partner.src}
+                    alt={partner.name}
+                    width={partner.width}
+                    height={partner.height}
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
         <dl className="lab-metrics">
           {heroMetrics.map((metric) => (
             <div key={metric.label} className="lab-metric">

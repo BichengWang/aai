@@ -263,60 +263,6 @@ body[data-md-color-scheme] {
   color: var(--lab-night-fg-3);
 }
 
-/* ---------- Sign-in prompt closing a report preview ---------- */
-
-.md-typeset .altair-gate {
-  margin: 2.4em 0 1em;
-  padding: 28px 28px 24px;
-  border: 1px solid var(--lab-line);
-  border-radius: 8px;
-  background: var(--lab-bg-2);
-  font: 400 15px/1.6 var(--lab-font-sans);
-}
-
-.md-typeset .altair-gate p {
-  margin: 0 0 12px;
-  color: var(--lab-fg-2);
-}
-
-.md-typeset .altair-gate .altair-gate-kicker {
-  margin-bottom: 8px;
-  font: 500 12px/1.4 var(--lab-font-mono);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--lab-fg-3);
-}
-
-.md-typeset .altair-gate .altair-gate-title {
-  font: 400 26px/1.2 var(--lab-font-display);
-  letter-spacing: -0.01em;
-  color: var(--lab-fg);
-}
-
-.md-typeset .altair-gate .altair-gate-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 20px;
-  margin: 20px 0 0;
-}
-
-.md-typeset .altair-gate a {
-  font-weight: 500;
-}
-
-.md-typeset .altair-gate a.altair-gate-primary {
-  padding: 9px 16px;
-  border-radius: 6px;
-  background: var(--lab-night);
-  color: var(--lab-night-fg);
-}
-
-.md-typeset .altair-gate a.altair-gate-primary:hover {
-  background: var(--lab-accent-strong);
-  color: var(--lab-night-fg);
-}
-
 /* ---------- Altair header and footer ---------- */
 
 .altair-header,

@@ -93,6 +93,13 @@ test("hero shows both partner network marks, loaded and linked", async ({ page }
       .toBe(true);
     await expect(partners.getByRole("link", { name })).toHaveAttribute("href", href);
   }
+
+  // Both marks render at one scale, large enough to read.
+  const widths = await partners
+    .getByRole("img")
+    .evaluateAll((marks) => marks.map((mark) => mark.getBoundingClientRect().width));
+  expect(widths[0]).toBeGreaterThanOrEqual(320);
+  expect(widths[1]).toBe(widths[0]);
 });
 
 test("lab chrome and page head apply across the marketing site", async ({ page }) => {
