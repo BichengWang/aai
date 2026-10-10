@@ -1,0 +1,335 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1352" viewBox="0 0 1600 1352" role="img" aria-label="Agents team workspace architecture: aai owns the web experience, the Supabase control plane and the runtime contract; multi-agents is a stateless execution plane on Modal; only the versioned contract crosses the seam.">
+<defs>
+<marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#121316"/></marker>
+<marker id="a-inks" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#121316"/></marker>
+<marker id="a-aai" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2b3bc9"/></marker>
+<marker id="a-aais" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2b3bc9"/></marker>
+<marker id="a-ma" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/></marker>
+<marker id="a-mas" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/></marker>
+<marker id="a-ext" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64666c"/></marker>
+<marker id="a-exts" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64666c"/></marker>
+</defs>
+<rect x="0" y="0" width="1600" height="1352" rx="0" fill="#f2f2ee" stroke="#f2f2ee" stroke-width="0"/>
+<text x="40" y="46" font-family="Newsreader, 'Iowan Old Style', Georgia, serif" font-size="27" font-weight="500" fill="#121316" text-anchor="start">Agents Team Workspace — cloud-native architecture</text>
+<text x="40" y="72" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#46484e" text-anchor="start">aai owns the experience, the control plane and the contract  ·  ~/my-code/multi-agents is a disposable execution plane on Modal  ·  Postgres is the brain</text>
+<rect x="1270" y="96" width="290" height="140" rx="6" fill="#fafaf8" stroke="#cfcfc9" stroke-width="1"/>
+<text x="1282" y="115" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="700" fill="#64666c" text-anchor="start" letter-spacing="0.08em">LEGEND</text>
+<path d="M 1284 134 L 1332 134" fill="none" stroke="#121316" stroke-width="1.4" marker-end="url(#a-ink)" stroke-linejoin="round"/>
+<text x="1342" y="138" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#46484e" text-anchor="start">request (sync)</text>
+<path d="M 1284 152 L 1332 152" fill="none" stroke="#121316" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#a-ink)" stroke-linejoin="round"/>
+<text x="1342" y="156" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#46484e" text-anchor="start">async · scheduled</text>
+<path d="M 1284 170 L 1332 170" fill="none" stroke="#121316" stroke-width="3" marker-end="url(#a-ink)" stroke-linejoin="round"/>
+<text x="1342" y="174" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#46484e" text-anchor="start">stream</text>
+<rect x="1430" y="126" width="12" height="12" rx="2" fill="#fafaf8" stroke="#2b3bc9" stroke-width="1.4"/>
+<text x="1448" y="136" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#46484e" text-anchor="start">aai repo</text>
+<rect x="1430" y="144" width="12" height="12" rx="2" fill="#fafaf8" stroke="#0f766e" stroke-width="1.4"/>
+<text x="1448" y="154" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#46484e" text-anchor="start">multi-agents repo</text>
+<rect x="1430" y="162" width="12" height="12" rx="2" fill="#fafaf8" stroke="#64666c" stroke-width="1.4"/>
+<text x="1448" y="172" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#46484e" text-anchor="start">external</text>
+<circle cx="1292" cy="202" r="8.5" fill="#121316"/>
+<text x="1292" y="205.6" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+<text x="1308" y="206" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#46484e" text-anchor="start">numbered: assign task → merged PR</text>
+<text x="1308" y="222" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#64666c" text-anchor="start">(follow ① → ⑪)</text>
+<rect x="40" y="96" width="1200" height="140" rx="10" fill="#eceefa" stroke="#2b3bc9" stroke-width="1.2"/>
+<text x="56" y="114" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="700" fill="#2b3bc9" text-anchor="start" letter-spacing="0.08em">EXPERIENCE  ·  aai/homepage  ·  Cloudflare Pages (prod via deploy.yml)  ·  llm.altairworld.com</text>
+<rect x="60" y="122" width="450" height="100" rx="5" fill="#fafaf8" stroke="#2b3bc9" stroke-width="1"/>
+<rect x="60" y="122" width="450" height="2.5" fill="#2b3bc9"/>
+<text x="72" y="141" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#2b3bc9" text-anchor="start" letter-spacing="0.08em">WEB APP · /TEAM/*</text>
+<text x="72" y="159" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">Team workspace (Orca-style, in the browser)</text>
+<text x="72" y="177" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Inbox “Needs You” · Board · Run · Race compare</text>
+<text x="72" y="192" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Missions · Team roster (humans + agents) · Health</text>
+<text x="72" y="207" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">BYOK keys sealed in the browser before upload</text>
+<rect x="530" y="122" width="260" height="100" rx="5" fill="#fafaf8" stroke="#2b3bc9" stroke-width="1"/>
+<rect x="530" y="122" width="260" height="2.5" fill="#2b3bc9"/>
+<text x="542" y="141" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#2b3bc9" text-anchor="start" letter-spacing="0.08em">PWA</text>
+<text x="542" y="159" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">Phone companion</text>
+<text x="542" y="177" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Web Push on real transitions</text>
+<text x="542" y="192" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">one-tap gate decisions</text>
+<text x="542" y="207" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">offline queue · idempotency keys</text>
+<rect x="840" y="122" width="200" height="100" rx="5" fill="#fafaf8" stroke="#2b3bc9" stroke-width="1"/>
+<rect x="840" y="122" width="200" height="2.5" fill="#2b3bc9"/>
+<text x="852" y="141" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#2b3bc9" text-anchor="start" letter-spacing="0.08em">SHIPS FIRST · OBSERVE</text>
+<text x="852" y="159" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">Today’s hand-run loop</text>
+<text x="852" y="177" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">heartbeats → team-runtime</text>
+<text x="852" y="192" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">PRs labeled mission-&lt;id&gt;</text>
+<text x="852" y="207" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">counted from GitHub</text>
+<rect x="1056" y="122" width="164" height="100" rx="5" fill="#fafaf8" stroke="#a15c00" stroke-width="1" stroke-dasharray="5 4"/>
+<rect x="1056" y="122" width="164" height="2.5" fill="#a15c00"/>
+<text x="1068" y="141" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#a15c00" text-anchor="start" letter-spacing="0.08em">LATER</text>
+<text x="1068" y="159" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">MCP + CLI</text>
+<text x="1068" y="177" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">local agents (Orca)</text>
+<text x="1068" y="192" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">join the team</text>
+<text x="1068" y="207" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">same RPCs + gates</text>
+<rect x="40" y="290" width="1200" height="400" rx="10" fill="#eceefa" stroke="#2b3bc9" stroke-width="1.2"/>
+<text x="1224" y="308" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="700" fill="#2b3bc9" text-anchor="end" letter-spacing="0.08em">CONTROL PLANE  ·  aai/homepage/supabase</text>
+<text x="1224" y="322" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="400" fill="#2b3bc9" text-anchor="end" letter-spacing="0.04em">Supabase Pro · Postgres 17 · 5 Edge Functions · Realtime · Storage · pg_cron</text>
+<rect x="60" y="332" width="320" height="76" rx="5" fill="#fafaf8" stroke="#2b3bc9" stroke-width="1"/>
+<rect x="60" y="332" width="320" height="2.5" fill="#2b3bc9"/>
+<text x="72" y="351" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#2b3bc9" text-anchor="start" letter-spacing="0.08em">REALTIME + STORAGE</text>
+<text x="72" y="369" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">Signals and artifacts</text>
+<text x="72" y="387" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">private topics signal only — never the log</text>
+<text x="72" y="402" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">team-artifacts ← signed uploads (30d / 7d)</text>
+<rect x="430" y="332" width="360" height="76" rx="5" fill="#fafaf8" stroke="#2b3bc9" stroke-width="1"/>
+<rect x="430" y="332" width="360" height="2.5" fill="#2b3bc9"/>
+<text x="442" y="351" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#2b3bc9" text-anchor="start" letter-spacing="0.08em">EDGE FN · FIRST-PARTY USER JWT</text>
+<text x="442" y="369" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">team-api</text>
+<text x="442" y="387" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">/v1 commands · exact origins · sealed creds only</text>
+<rect x="840" y="332" width="380" height="76" rx="5" fill="#fafaf8" stroke="#2b3bc9" stroke-width="1"/>
+<rect x="840" y="332" width="380" height="2.5" fill="#2b3bc9"/>
+<text x="852" y="351" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#2b3bc9" text-anchor="start" letter-spacing="0.08em">EDGE FN · HMAC</text>
+<text x="852" y="369" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">team-hooks</text>
+<text x="852" y="387" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">GitHub PR + checks · Slack (low-risk) · dedupe</text>
+<rect x="60" y="440" width="1160" height="124" rx="6" fill="#eceefa" stroke="#2b3bc9" stroke-width="1.6"/>
+<rect x="60" y="440" width="1160" height="2.5" fill="#2b3bc9"/>
+<rect x="60" y="440" width="1160" height="124" rx="6" fill="#ffffff" opacity="0.35"/>
+<text x="76" y="462" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="700" fill="#2b3bc9" text-anchor="start" letter-spacing="0.08em">TEAM + TEAM_PRIVATE SCHEMAS · SYSTEM OF RECORD</text>
+<text x="76" y="482" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="600" fill="#121316" text-anchor="start">The Postgres brain</text>
+<text x="222" y="482" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">SELECT-only RLS · writes are RPCs that lock the target row and check its workspace role · one txn = state + outbox · platform admins own agents_enabled + budgets</text>
+<rect x="76" y="496" width="182.05" height="22" rx="11" fill="#fafaf8" stroke="#2b3bc9" stroke-width="0.9"/>
+<text x="167.025" y="511" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#121316" text-anchor="middle">principals: humans + agents</text>
+<rect x="266.05" y="496" width="194.35000000000002" height="22" rx="11" fill="#fafaf8" stroke="#2b3bc9" stroke-width="0.9"/>
+<text x="363.225" y="511" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#121316" text-anchor="middle">agents: role · model · budget</text>
+<rect x="468.40000000000003" y="496" width="46.75" height="22" rx="11" fill="#fafaf8" stroke="#2b3bc9" stroke-width="0.9"/>
+<text x="491.77500000000003" y="511" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#121316" text-anchor="middle">tasks</text>
+<rect x="523.1500000000001" y="496" width="40.6" height="22" rx="11" fill="#fafaf8" stroke="#2b3bc9" stroke-width="0.9"/>
+<text x="543.45" y="511" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#121316" text-anchor="middle">runs</text>
+<rect x="571.7500000000001" y="496" width="237.4" height="22" rx="11" fill="#fafaf8" stroke="#2b3bc9" stroke-width="0.9"/>
+<text x="690.4500000000002" y="511" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#121316" text-anchor="middle">attempts: lease · fence · N per race</text>
+<rect x="817.1500000000001" y="496" width="145.15" height="22" rx="11" fill="#fafaf8" stroke="#2b3bc9" stroke-width="0.9"/>
+<text x="889.7250000000001" y="511" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#121316" text-anchor="middle">events: journal · seq</text>
+<rect x="970.3000000000001" y="496" width="46.75" height="22" rx="11" fill="#fafaf8" stroke="#2b3bc9" stroke-width="0.9"/>
+<text x="993.6750000000001" y="511" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#121316" text-anchor="middle">gates</text>
+<rect x="76" y="528" width="114.4" height="22" rx="11" fill="#fafaf8" stroke="#2b3bc9" stroke-width="0.9"/>
+<text x="133.2" y="543" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#121316" text-anchor="middle">control_messages</text>
+<rect x="198.4" y="528" width="139.0" height="22" rx="11" fill="#fafaf8" stroke="#2b3bc9" stroke-width="0.9"/>
+<text x="267.9" y="543" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#121316" text-anchor="middle">outbox: claim tokens</text>
+<rect x="345.4" y="528" width="286.6" height="22" rx="11" fill="#fafaf8" stroke="#2b3bc9" stroke-width="0.9"/>
+<text x="488.7" y="543" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#121316" text-anchor="middle">missions: landed / target · last_progress_at</text>
+<rect x="640.0" y="528" width="95.95" height="22" rx="11" fill="#fafaf8" stroke="#2b3bc9" stroke-width="0.9"/>
+<text x="687.975" y="543" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#121316" text-anchor="middle">pull_requests</text>
+<rect x="743.95" y="528" width="169.75" height="22" rx="11" fill="#fafaf8" stroke="#2b3bc9" stroke-width="0.9"/>
+<text x="828.825" y="543" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#121316" text-anchor="middle">merge_approvals: head SHA</text>
+<rect x="921.7" y="528" width="182.05" height="22" rx="11" fill="#fafaf8" stroke="#2b3bc9" stroke-width="0.9"/>
+<text x="1012.725" y="543" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#121316" text-anchor="middle">usage · budget reservations</text>
+<rect x="60" y="598" width="320" height="76" rx="5" fill="#fafaf8" stroke="#2b3bc9" stroke-width="1"/>
+<rect x="60" y="598" width="320" height="2.5" fill="#2b3bc9"/>
+<text x="72" y="617" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#2b3bc9" text-anchor="start" letter-spacing="0.08em">EDGE FN · PER-WATCHER KEYS · READ-ONLY</text>
+<text x="72" y="635" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">team-health</text>
+<text x="72" y="653" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">/health aggregates · /watch/ping</text>
+<text x="72" y="668" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">/merge-approval?sha → {required, approved}</text>
+<rect x="430" y="598" width="360" height="76" rx="5" fill="#fafaf8" stroke="#2b3bc9" stroke-width="1"/>
+<rect x="430" y="598" width="360" height="2.5" fill="#2b3bc9"/>
+<text x="442" y="617" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#2b3bc9" text-anchor="start" letter-spacing="0.08em">EDGE FN · TICKET / LEASE + FENCE / OIDC</text>
+<text x="442" y="635" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">team-runtime</text>
+<text x="442" y="653" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">the only door the runtime may knock on</text>
+<rect x="840" y="598" width="380" height="76" rx="5" fill="#fafaf8" stroke="#2b3bc9" stroke-width="1"/>
+<rect x="840" y="598" width="380" height="2.5" fill="#2b3bc9"/>
+<text x="852" y="617" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#2b3bc9" text-anchor="start" letter-spacing="0.08em">EDGE FN · DUTY-GATED PG_CRON JOBS</text>
+<text x="852" y="635" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">team-tick — effects + supervisor</text>
+<text x="852" y="653" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">outbox 10s · leases 30s · gates 60s · supervisor 60s</text>
+<text x="852" y="668" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">lost lease → re-dispatch · no progress → stalled</text>
+<line x1="40" y1="742" x2="1240" y2="742" stroke="#121316" stroke-width="1.6" stroke-dasharray="9 6"/>
+<rect x="640" y="713" width="360" height="58" rx="5" fill="#fafaf8" stroke="#121316" stroke-width="1.2"/>
+<text x="820" y="731" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="700" fill="#121316" text-anchor="middle" letter-spacing="0.05em">THE SEAM  ·  contracts/runtime/v1</text>
+<text x="820" y="747" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#46484e" text-anchor="middle">↓ AttemptSpec · ControlMessage     ↑ RunEvent · Capabilities</text>
+<text x="820" y="762" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#64666c" text-anchor="middle">JSON Schema + OpenAPI + golden fixtures · owned by aai</text>
+<text x="64" y="735" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="700" fill="#2b3bc9" text-anchor="start">aai ↑</text>
+<text x="64" y="758" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="700" fill="#0f766e" text-anchor="start">multi-agents ↓</text>
+<rect x="40" y="792" width="1200" height="458" rx="10" fill="#e5f1ef" stroke="#0f766e" stroke-width="1.2"/>
+<text x="56" y="810" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="700" fill="#0f766e" text-anchor="start" letter-spacing="0.08em">EXECUTION PLANE  ·  ~/my-code/multi-agents</text>
+<text x="56" y="824" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="400" fill="#0f766e" text-anchor="start" letter-spacing="0.04em">Modal app aai-runtime · staging + prod · scale-to-zero · no DB keys</text>
+<rect x="60" y="834" width="320" height="84" rx="5" fill="#fafaf8" stroke="#0f766e" stroke-width="1"/>
+<rect x="60" y="834" width="320" height="2.5" fill="#0f766e"/>
+<text x="72" y="853" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#0f766e" text-anchor="start" letter-spacing="0.08em">FUNCTION PROFILE · IN-PROCESS</text>
+<text x="72" y="871" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">Workflow engine</text>
+<text x="72" y="889" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Sequential · RefineLoop · BestOfN · Router</text>
+<text x="72" y="904" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">story · store · financial — LLM via gateway</text>
+<rect x="430" y="834" width="360" height="84" rx="5" fill="#fafaf8" stroke="#0f766e" stroke-width="1"/>
+<rect x="430" y="834" width="360" height="2.5" fill="#0f766e"/>
+<text x="442" y="853" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#0f766e" text-anchor="start" letter-spacing="0.08em">MODAL FUNCTION · 1 PER ATTEMPT · RETRIES 0</text>
+<text x="442" y="871" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">attempt_driver</text>
+<text x="442" y="889" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">claims · spawns its own gateway_session</text>
+<text x="442" y="904" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">batches renew the lease · snapshot before fence</text>
+<rect x="840" y="834" width="380" height="84" rx="5" fill="#fafaf8" stroke="#0f766e" stroke-width="1"/>
+<rect x="840" y="834" width="380" height="2.5" fill="#0f766e"/>
+<text x="852" y="853" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#0f766e" text-anchor="start" letter-spacing="0.08em">ASGI · PROXY AUTH + HMAC · NO SECRETS</text>
+<text x="852" y="871" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">api</text>
+<text x="852" y="889" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">/v1/dispatch · /v1/publish · /kill · /sweep</text>
+<text x="852" y="904" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">dedupe on attempt_id · /capabilities · /healthz</text>
+<rect x="60" y="958" width="320" height="112" rx="5" fill="#fafaf8" stroke="#0f766e" stroke-width="1"/>
+<rect x="60" y="958" width="320" height="2.5" fill="#0f766e"/>
+<text x="72" y="977" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#0f766e" text-anchor="start" letter-spacing="0.08em">MODAL CRON */5 · GH ACTIONS */15</text>
+<text x="72" y="995" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">Watchdogs</text>
+<text x="72" y="1013" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">read team-health with their own keys</text>
+<text x="72" y="1028" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">stale job · quota &gt; 70% · unreachable</text>
+<text x="72" y="1043" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">→ Slack + email · daily all-clear</text>
+<rect x="60" y="1086" width="320" height="112" rx="5" fill="#fafaf8" stroke="#0f766e" stroke-width="1"/>
+<rect x="60" y="1086" width="320" height="2.5" fill="#0f766e"/>
+<text x="72" y="1105" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#0f766e" text-anchor="start" letter-spacing="0.08em">DEV · CI · STAGING</text>
+<text x="72" y="1123" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">local driver + fake harness</text>
+<text x="72" y="1141" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">same driver code against `supabase start`</text>
+<text x="72" y="1156" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">full flows end to end, no Modal, no keys</text>
+<text x="72" y="1171" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">nightly staging smoke on a fixture repo</text>
+<rect x="430" y="958" width="360" height="276" rx="5" fill="#fafaf8" stroke="#0f766e" stroke-width="1"/>
+<rect x="430" y="958" width="360" height="2.5" fill="#0f766e"/>
+<text x="442" y="977" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#0f766e" text-anchor="start" letter-spacing="0.08em">MODAL SANDBOX · LANE-NAMED · GVISOR</text>
+<text x="442" y="995" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">Sandbox = cloud worktree</text>
+<text x="442" y="1013" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">coding-agent SDK / CLI + ma-shim (via sb.exec)</text>
+<text x="442" y="1028" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start"></text>
+<text x="442" y="1043" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">phase 1 · setup: clone + deps, registry egress</text>
+<text x="442" y="1058" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">   → snapshot</text>
+<text x="442" y="1073" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">phase 2 · agent: edit · test · commit locally</text>
+<text x="442" y="1088" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">   egress = its own gateway tunnel only</text>
+<text x="442" y="1103" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start"></text>
+<text x="442" y="1118" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">no secrets · no GitHub write credential</text>
+<text x="442" y="1133" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">checkpoint every 15 min</text>
+<text x="442" y="1148" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">a retry adopts the same lane</text>
+<text x="442" y="1163" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Chromium baked in for Playwright e2e</text>
+<rect x="840" y="958" width="380" height="84" rx="5" fill="#fafaf8" stroke="#0f766e" stroke-width="1"/>
+<rect x="840" y="958" width="380" height="2.5" fill="#0f766e"/>
+<text x="852" y="977" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#0f766e" text-anchor="start" letter-spacing="0.08em">MODAL FUNCTIONS · BUILD + PUSH</text>
+<text x="852" y="995" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">publish</text>
+<text x="852" y="1013" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">deterministic commit authored by BichengWang</text>
+<text x="852" y="1028" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">attribution rules · gitleaks · path classes</text>
+<rect x="840" y="1064" width="380" height="64" rx="5" fill="#fafaf8" stroke="#0f766e" stroke-width="1"/>
+<rect x="840" y="1064" width="380" height="2.5" fill="#0f766e"/>
+<text x="852" y="1083" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#0f766e" text-anchor="start" letter-spacing="0.08em">MODAL FUNCTION · NO WEB ENDPOINT</text>
+<text x="852" y="1101" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">unsealer — sole holder of private keys</text>
+<text x="852" y="1119" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">one key per class (provider, push) per environment</text>
+<rect x="840" y="1150" width="380" height="84" rx="5" fill="#fafaf8" stroke="#0f766e" stroke-width="1"/>
+<rect x="840" y="1150" width="380" height="2.5" fill="#0f766e"/>
+<text x="852" y="1169" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#0f766e" text-anchor="start" letter-spacing="0.08em">PER ATTEMPT · MODAL.FORWARD TUNNEL</text>
+<text x="852" y="1187" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">gateway_session</text>
+<text x="852" y="1205" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">field allowlist (no server tools / MCP) · 1 key</text>
+<text x="852" y="1220" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">reserves worst-case cost first · 402 at cap</text>
+<rect x="1270" y="290" width="290" height="604" rx="10" fill="#ececea" stroke="#cfcfc9" stroke-width="1"/>
+<text x="1284" y="308" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="700" fill="#64666c" text-anchor="start" letter-spacing="0.08em">INTEGRATIONS · EXTERNAL</text>
+<rect x="1282" y="318" width="266" height="322" rx="5" fill="#fafaf8" stroke="#cfcfc9" stroke-width="1"/>
+<rect x="1282" y="318" width="266" height="2.5" fill="#64666c"/>
+<text x="1294" y="337" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#64666c" text-anchor="start" letter-spacing="0.08em">GITHUB</text>
+<text x="1294" y="355" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">GitHub</text>
+<text x="1294" y="373" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">repos: aai · multi-agents · fixture</text>
+<text x="1294" y="388" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">PRs + merges by BichengWang</text>
+<text x="1294" y="403" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">branch BichengWang/&lt;slug&gt;</text>
+<text x="1294" y="418" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">fine-grained PATs: push · control</text>
+<text x="1294" y="433" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start"></text>
+<text x="1294" y="448" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">required: ci-gate · attribution-guard</text>
+<text x="1294" y="463" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">· merge-scope-gate (head SHA)</text>
+<text x="1294" y="478" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start"></text>
+<text x="1294" y="493" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">webhooks → team-hooks</text>
+<text x="1294" y="508" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">merged state = only source</text>
+<text x="1294" y="523" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">of truth for “landed”</text>
+<rect x="1282" y="654" width="266" height="226" rx="5" fill="#fafaf8" stroke="#cfcfc9" stroke-width="1"/>
+<rect x="1282" y="654" width="266" height="2.5" fill="#64666c"/>
+<text x="1294" y="673" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#64666c" text-anchor="start" letter-spacing="0.08em">SLACK · WEB PUSH · RESEND</text>
+<text x="1294" y="691" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">Notifications</text>
+<text x="1294" y="709" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">#turo-automation mission thread</text>
+<text x="1294" y="724" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">“landed 7/10 · 3 left · running ·</text>
+<text x="1294" y="739" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">blocker: none”  (blunt counts)</text>
+<text x="1294" y="754" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">stalled → re-alert every 30 min</text>
+<text x="1294" y="769" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">gate DMs — low-risk gates only</text>
+<text x="1294" y="784" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">email: fresh sign-in for high-risk</text>
+<rect x="1270" y="1150" width="290" height="84" rx="5" fill="#fafaf8" stroke="#cfcfc9" stroke-width="1"/>
+<rect x="1270" y="1150" width="290" height="2.5" fill="#64666c"/>
+<text x="1282" y="1169" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#64666c" text-anchor="start" letter-spacing="0.08em">BYOK</text>
+<text x="1282" y="1187" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13.5" font-weight="600" fill="#121316" text-anchor="start">LLM providers</text>
+<text x="1282" y="1205" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Anthropic · OpenAI (Gemini later)</text>
+<text x="1282" y="1220" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">provider-side spend limits too</text>
+<path d="M 470 222 L 470 332" fill="none" stroke="#121316" stroke-width="1.4" marker-end="url(#a-ink)" stroke-linejoin="round"/>
+<circle cx="470" cy="262" r="8.5" fill="#121316"/>
+<text x="470" y="265.6" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">1</text>
+<rect x="480.0" y="249" width="209.6" height="17.5" fill="#f2f2ee" opacity="0.94" rx="3"/>
+<text x="484" y="260.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#121316" text-anchor="start">assign task · decide gate · user JWT</text>
+<path d="M 720 222 L 720 332" fill="none" stroke="#121316" stroke-width="1.4" marker-end="url(#a-ink)" stroke-linejoin="round"/>
+<rect x="728.0" y="249" width="80.8" height="17.5" fill="#f2f2ee" opacity="0.94" rx="3"/>
+<text x="732" y="260.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#121316" text-anchor="start">gate decision</text>
+<path d="M 405 222 L 405 440" fill="none" stroke="#64666c" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#a-ext)" stroke-linejoin="round"/>
+<rect x="197.0" y="418" width="204.0" height="17.5" fill="#eceefa" opacity="0.94" rx="3"/>
+<text x="397" y="429.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#64666c" text-anchor="end">reads: RLS SELECT · backfill by seq</text>
+<path d="M 150 440 L 150 408" fill="none" stroke="#121316" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#a-ink)" stroke-linejoin="round"/>
+<path d="M 150 332 L 150 222" fill="none" stroke="#121316" stroke-width="3" marker-end="url(#a-ink)" stroke-linejoin="round"/>
+<circle cx="150" cy="262" r="8.5" fill="#121316"/>
+<text x="150" y="265.6" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">8</text>
+<rect x="160.0" y="249" width="153.6" height="17.5" fill="#f2f2ee" opacity="0.94" rx="3"/>
+<text x="164" y="260.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#121316" text-anchor="start">live signal → UI refetches</text>
+<rect x="59.6" y="418" width="86.4" height="17.5" fill="#eceefa" opacity="0.94" rx="3"/>
+<text x="142" y="429.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#64666c" text-anchor="end">events trigger</text>
+<path d="M 610.0 408 L 610.0 440" fill="none" stroke="#121316" stroke-width="1.4" marker-end="url(#a-ink)" stroke-linejoin="round"/>
+<circle cx="594.0" cy="421" r="8.5" fill="#121316"/>
+<text x="594.0" y="424.6" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+<rect x="616.0" y="413" width="164.8" height="17.5" fill="#eceefa" opacity="0.94" rx="3"/>
+<text x="620.0" y="424.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#121316" text-anchor="start">RPC → state + outbox (1 txn)</text>
+<path d="M 1282 366 L 1220 366" fill="none" stroke="#64666c" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#a-ext)" stroke-linejoin="round"/>
+<circle cx="1245" cy="366" r="8.5" fill="#121316"/>
+<text x="1245" y="369.6" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">10</text>
+<path d="M 1030.0 408 L 1030.0 440" fill="none" stroke="#121316" stroke-width="1.4" marker-end="url(#a-ink)" stroke-linejoin="round"/>
+<rect x="1036.0" y="413" width="187.2" height="17.5" fill="#eceefa" opacity="0.94" rx="3"/>
+<text x="1040.0" y="424.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#121316" text-anchor="start">PR merged → task done · landed++</text>
+<path d="M 1030.0 564 L 1030.0 598" fill="none" stroke="#121316" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#a-ink)" stroke-linejoin="round"/>
+<rect x="1036.0" y="576" width="125.6" height="17.5" fill="#eceefa" opacity="0.94" rx="3"/>
+<text x="1040.0" y="587.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#64666c" text-anchor="start">outbox kick · pg_cron</text>
+<path d="M 610.0 598 L 610.0 564" fill="none" stroke="#121316" stroke-width="1.4" marker-end="url(#a-ink)" stroke-linejoin="round"/>
+<rect x="616.0" y="576" width="192.8" height="17.5" fill="#eceefa" opacity="0.94" rx="3"/>
+<text x="620.0" y="587.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#121316" text-anchor="start">append events · CAS lease / fence</text>
+<path d="M 1220 618 L 1282 618" fill="none" stroke="#121316" stroke-width="1.4" marker-end="url(#a-ink)" stroke-linejoin="round"/>
+<rect x="1220.0" y="600.5" width="55.9" height="17.0" fill="#ececea" opacity="0.94" rx="3"/>
+<text x="1224" y="611.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#121316" text-anchor="start">open PR ·</text>
+<rect x="1220.0" y="623.5" width="61.2" height="17.0" fill="#ececea" opacity="0.94" rx="3"/>
+<text x="1224" y="634.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#121316" text-anchor="start">auto-merge</text>
+<path d="M 1220 662 L 1282 662" fill="none" stroke="#121316" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#a-ink)" stroke-linejoin="round"/>
+<circle cx="1245" cy="662" r="8.5" fill="#121316"/>
+<text x="1245" y="665.6" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">11</text>
+<path d="M 60 998 L 49 998 L 49 634 L 60 634" fill="none" stroke="#0f766e" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#a-ma)" stroke-linejoin="round"/>
+<path d="M 1030.0 674 L 1030.0 834" fill="none" stroke="#2b3bc9" stroke-width="2.4" marker-end="url(#a-aai)" stroke-linejoin="round"/>
+<circle cx="1030.0" cy="703" r="8.5" fill="#2b3bc9"/>
+<text x="1030.0" y="706.6" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">3</text>
+<rect x="1040.0" y="695" width="125.6" height="44.5" fill="#f2f2ee" opacity="0.94" rx="3"/>
+<text x="1044.0" y="706.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#2b3bc9" text-anchor="start">POST /v1/dispatch</text>
+<text x="1044.0" y="719.5" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#2b3bc9" text-anchor="start">· /v1/publish · /kill</text>
+<text x="1044.0" y="733.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#2b3bc9" text-anchor="start">single-use ticket</text>
+<path d="M 610.0 834 L 610.0 674" fill="none" stroke="#0f766e" stroke-width="2.4" marker-end="url(#a-ma)" stroke-linejoin="round"/>
+<circle cx="610.0" cy="703" r="8.5" fill="#0f766e"/>
+<text x="610.0" y="706.6" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">4</text>
+<circle cx="610.0" cy="815" r="8.5" fill="#0f766e"/>
+<text x="610.0" y="818.6" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">7</text>
+<rect x="317.6" y="695" width="282.4" height="44.5" fill="#f2f2ee" opacity="0.94" rx="3"/>
+<text x="596.0" y="706.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#0f766e" text-anchor="end">④ claim: ticket → fence + lease + AttemptSpec</text>
+<text x="596.0" y="719.5" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#0f766e" text-anchor="end">⑦ event batches renew the lease · complete once</text>
+<text x="596.0" y="733.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#0f766e" text-anchor="end">+ gateway reserve/settle · unsealer leases (OIDC)</text>
+<path d="M 840 876 L 790 876" fill="none" stroke="#0f766e" stroke-width="1.4" marker-end="url(#a-ma)" stroke-linejoin="round"/>
+<rect x="797.7" y="857.5" width="34.6" height="17.0" fill="#e5f1ef" opacity="0.94" rx="3"/>
+<text x="815" y="868.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#0f766e" text-anchor="middle">spawn</text>
+<path d="M 430 876 L 380 876" fill="none" stroke="#0f766e" stroke-width="1.4" marker-end="url(#a-ma)" stroke-linejoin="round"/>
+<rect x="379.7" y="885.5" width="50.6" height="30.0" fill="#e5f1ef" opacity="0.94" rx="3"/>
+<text x="405" y="896.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#0f766e" text-anchor="middle">function</text>
+<text x="405" y="909.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#0f766e" text-anchor="middle">profile</text>
+<path d="M 610.0 918 L 610.0 958" fill="none" stroke="#0f766e" stroke-width="3" marker-end="url(#a-ma)" marker-start="url(#a-mas)" stroke-linejoin="round"/>
+<circle cx="592.0" cy="937" r="8.5" fill="#0f766e"/>
+<text x="592.0" y="940.6" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">5</text>
+<rect x="616.0" y="929" width="248.8" height="17.5" fill="#e5f1ef" opacity="0.94" rx="3"/>
+<text x="620.0" y="940.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#0f766e" text-anchor="start">sandbox profile · JSONL: control ↓ events ↑</text>
+<path d="M 1030.0 918 L 1030.0 958" fill="none" stroke="#0f766e" stroke-width="1.4" marker-end="url(#a-ma)" stroke-linejoin="round"/>
+<rect x="1036.0" y="929" width="80.8" height="17.5" fill="#e5f1ef" opacity="0.94" rx="3"/>
+<text x="1040.0" y="940.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#0f766e" text-anchor="start">spawn publish</text>
+<path d="M 950 1042 L 950 1064" fill="none" stroke="#0f766e" stroke-width="1.4" marker-end="url(#a-ma)" stroke-linejoin="round"/>
+<rect x="956.0" y="1045.5" width="50.6" height="17.0" fill="#e5f1ef" opacity="0.94" rx="3"/>
+<text x="960" y="1056.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#0f766e" text-anchor="start">push PAT</text>
+<path d="M 950 1150 L 950 1128" fill="none" stroke="#0f766e" stroke-width="1.4" marker-end="url(#a-ma)" stroke-linejoin="round"/>
+<rect x="956.0" y="1132.5" width="103.8" height="17.0" fill="#e5f1ef" opacity="0.94" rx="3"/>
+<text x="960" y="1143.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#0f766e" text-anchor="start">this attempt's key</text>
+<path d="M 790 1192 L 840 1192" fill="none" stroke="#0f766e" stroke-width="3" marker-end="url(#a-ma)" stroke-linejoin="round"/>
+<circle cx="815" cy="1175" r="8.5" fill="#0f766e"/>
+<text x="815" y="1178.6" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">6</text>
+<path d="M 1220 1192 L 1270 1192" fill="none" stroke="#64666c" stroke-width="3" marker-end="url(#a-ext)" stroke-linejoin="round"/>
+<path d="M 1220 988 L 1582 988 L 1582 520 L 1548 520" fill="none" stroke="#0f766e" stroke-width="1.4" marker-end="url(#a-ma)" stroke-linejoin="round"/>
+<circle cx="1245" cy="988" r="8.5" fill="#0f766e"/>
+<text x="1245" y="991.6" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">9</text>
+<rect x="1268.0" y="969" width="164.8" height="17.5" fill="#f2f2ee" opacity="0.94" rx="3"/>
+<text x="1272" y="980.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#0f766e" text-anchor="start">push 1 commit as BichengWang</text>
+<rect x="1268.0" y="993" width="120.0" height="17.5" fill="#f2f2ee" opacity="0.94" rx="3"/>
+<text x="1272" y="1004.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#0f766e" text-anchor="start">→ BichengWang/&lt;slug&gt;</text>
+<rect x="40" y="1270" width="1520" height="64" rx="8" fill="#fafaf8" stroke="#121316" stroke-width="1"/>
+<text x="56" y="1292" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="700" fill="#121316" text-anchor="start" letter-spacing="0.08em">GOVERNANCE · BOTH REPOS</text>
+<text x="56" y="1312" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#46484e" text-anchor="start">main: PR required · checks pinned to Actions, run from base SHA: ci-gate (always runs), attribution-guard (no AI names in branches, commits or PR text; no AI co-author trailers), merge-scope-gate, CodeQL</text>
+<text x="56" y="1327" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#46484e" text-anchor="start">auto-merge only for allowlisted paths — anything else needs KW's approval for that exact head SHA · prod deploys only after KW approves: migrations → functions → Pages</text>
+</svg>
