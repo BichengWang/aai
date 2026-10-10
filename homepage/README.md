@@ -45,7 +45,7 @@ Elegant, single-page marketing site for Altair's local services platform.
    ```
    `VITE_AUTH_CALLBACK_URL` is optional but recommended when your frontend is served through a reverse proxy or a non-default local port (for example `http://localhost:3000`) so OAuth always returns to a reachable callback URL.
    These `VITE_*` values are public client-side build variables. Set them in Netlify's environment variables; Vite includes them in the browser bundle. Production Netlify builds fail when the Supabase URL or publishable key is missing.
-   On every host, including Cloudflare Pages, `npm run build` rejects secret-shaped `VITE_*` and `NEXT_PUBLIC_*` names (keys, secrets, tokens, passwords, or service-role credentials), except `VITE_SUPABASE_PUBLISHABLE_KEY`. The check includes `.env` files loaded for production. Remove any such variables from the build environment and keep credentials server-side.
+   On every host, including Cloudflare Pages, `npm run build` rejects secret-shaped `VITE_*` and `NEXT_PUBLIC_*` names (keys, secrets, tokens, passwords, or service-role credentials), except the publishable key (`VITE_SUPABASE_PUBLISHABLE_KEY` or `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`). The check includes `.env` files loaded for production. Remove any such variables from the build environment and keep credentials server-side.
 
 ## Contact and enquiry email delivery
 

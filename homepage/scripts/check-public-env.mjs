@@ -1,8 +1,9 @@
 import { loadEnv } from "vite";
 
 const env = loadEnv("production", process.cwd(), ["VITE_", "NEXT_PUBLIC_"]);
+const publicKeyNames = new Set(["VITE_SUPABASE_PUBLISHABLE_KEY", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"]);
 const secretNames = Object.keys(env)
-  .filter((name) => name !== "VITE_SUPABASE_PUBLISHABLE_KEY")
+  .filter((name) => !publicKeyNames.has(name))
   .filter((name) => /(?:^|_)(?:API_KEY|KEY|SECRET|TOKEN|PASSWORD)(?:_|$)|SERVICE_ROLE/i.test(name))
   .sort();
 
