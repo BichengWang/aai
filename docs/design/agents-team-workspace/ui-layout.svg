@@ -1,0 +1,370 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1290" viewBox="0 0 1600 1290" role="img" aria-label="Team workspace UI: a dark rail listing agents as teammates, a presence board with a Needs You column, a run view whose structured journal replaces the terminal, a gate inspector, and a phone companion for gates and mission counts.">
+<rect x="0" y="0" width="1600" height="1290" rx="0" fill="#f2f2ee"/>
+<text x="40" y="46" font-family="Newsreader, 'Iowan Old Style', Georgia, serif" font-size="27" font-weight="500" fill="#121316" text-anchor="start">Team workspace — UI layout</text>
+<text x="40" y="72" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="400" fill="#46484e" text-anchor="start">Orca’s model (sidebar · dashboard · tabs · annotate diff · mobile) rebuilt for a cloud team: agents are teammates, the journal replaces the terminal, and every decision is a gate</text>
+<rect x="40" y="96" width="1120" height="446" rx="10" fill="#f2f2ee" stroke="#121316" stroke-width="1.2"/>
+<path d="M 40 126 L 40 106 Q 40 96 50 96 L 1150 96 Q 1160 96 1160 106 L 1160 126 Z" fill="#e7e7e1"/>
+<line x1="40" y1="126" x2="1160" y2="126" stroke="#121316" stroke-width="1"/>
+<circle cx="58" cy="111" r="5" fill="#d9d9d3" stroke="#64666c" stroke-width="0.6"/>
+<circle cx="74" cy="111" r="5" fill="#d9d9d3" stroke="#64666c" stroke-width="0.6"/>
+<circle cx="90" cy="111" r="5" fill="#d9d9d3" stroke="#64666c" stroke-width="0.6"/>
+<rect x="150" y="102" width="360" height="18" rx="9" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<text x="162" y="115" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="400" fill="#46484e" text-anchor="start">llm.altairworld.com/team/board</text>
+<path d="M 40 126 L 272 126 L 272 542 L 50 542 Q 40 542 40 532 Z" fill="#0b0c10"/>
+<rect x="58" y="142" width="104" height="18" rx="9" fill="none" stroke="#a3b4ff" stroke-width="1"/>
+<text x="110" y="155" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="600" fill="#a3b4ff" text-anchor="middle" letter-spacing="0.07em">ALTAIR · TEAM</text>
+<text x="58" y="182" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#edede8" text-anchor="start">KW’s workspace ▾</text>
+<circle cx="210" cy="178" r="3.5" fill="#3fb97a"/>
+<text x="218" y="182" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#a7a9b0" text-anchor="start">live</text>
+<text x="58" y="210" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="600" fill="#868991" text-anchor="start" letter-spacing="0.07em">TEAM</text>
+<text x="74" y="232" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="500" fill="#a7a9b0" text-anchor="start" letter-spacing="0.07em">INBOX</text>
+<rect x="132" y="221" width="22" height="15" rx="7.5" fill="#a3b4ff"/>
+<text x="143" y="232" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#0b0c10" text-anchor="middle">3</text>
+<text x="58" y="253" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="11" font-weight="700" fill="#a3b4ff" text-anchor="start">→</text>
+<text x="74" y="253" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="700" fill="#edede8" text-anchor="start" letter-spacing="0.07em">BOARD</text>
+<text x="74" y="274" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="500" fill="#a7a9b0" text-anchor="start" letter-spacing="0.07em">RUNS</text>
+<text x="74" y="295" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="500" fill="#a7a9b0" text-anchor="start" letter-spacing="0.07em">MISSIONS</text>
+<text x="74" y="316" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="500" fill="#a7a9b0" text-anchor="start" letter-spacing="0.07em">TEAM</text>
+<text x="74" y="337" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="500" fill="#a7a9b0" text-anchor="start" letter-spacing="0.07em">SETTINGS</text>
+<text x="74" y="358" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="500" fill="#a7a9b0" text-anchor="start" letter-spacing="0.07em">HEALTH</text>
+<line x1="58" y1="378" x2="254" y2="378" stroke="#2a2c33" stroke-width="1"/>
+<text x="58" y="398" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="600" fill="#868991" text-anchor="start" letter-spacing="0.07em">AGENTS · 5</text>
+<circle cx="64" cy="418" r="5" fill="none" stroke="#1f7a4d" stroke-width="2.2"/>
+<text x="78" y="422" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#edede8" text-anchor="start">builder-1</text>
+<text x="254" y="422" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#a7a9b0" text-anchor="end">working · 12m</text>
+<circle cx="64" cy="440" r="5" fill="#a3b4ff"/>
+<text x="78" y="444" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#edede8" text-anchor="start">builder-2</text>
+<text x="254" y="444" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#a7a9b0" text-anchor="end">needs you</text>
+<circle cx="64" cy="462" r="5" fill="none" stroke="#a15c00" stroke-width="2.2"/>
+<text x="78" y="466" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#edede8" text-anchor="start">reviewer</text>
+<text x="254" y="466" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#a7a9b0" text-anchor="end">in review · #203</text>
+<circle cx="64" cy="484" r="5" fill="none" stroke="#a7a9b0" stroke-width="2" stroke-dasharray="2.5 2"/>
+<text x="78" y="488" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#edede8" text-anchor="start">builder-4</text>
+<text x="254" y="488" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#a7a9b0" text-anchor="end">unverifiable</text>
+<circle cx="64" cy="506" r="5" fill="none" stroke="#868991" stroke-width="2.2"/>
+<text x="78" y="510" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#edede8" text-anchor="start">planner</text>
+<text x="254" y="510" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#a7a9b0" text-anchor="end">idle</text>
+<text x="58" y="526" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="8.5" font-weight="500" fill="#5c5f66" text-anchor="start" letter-spacing="0.07em">CHAT · REVIEW · KEYS · USAGE</text>
+<circle cx="258" cy="394" r="9" fill="#c2410c"/>
+<text x="258" y="398" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">A</text>
+<text x="292" y="166" font-family="Newsreader, 'Iowan Old Style', Georgia, serif" font-size="24" font-weight="500" fill="#121316" text-anchor="start">Board</text>
+<rect x="378" y="150" width="74.0" height="20" rx="10" fill="#fafaf8" stroke="#121316" stroke-width="1"/>
+<text x="415.0" y="164" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="600" fill="#121316" text-anchor="middle">All agents</text>
+<rect x="458.0" y="150" width="33.4" height="20" rx="10" fill="#fafaf8" stroke="#64666c" stroke-width="1"/>
+<text x="474.7" y="164" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="600" fill="#64666c" text-anchor="middle">aai</text>
+<rect x="497.4" y="150" width="85.6" height="20" rx="10" fill="#fafaf8" stroke="#64666c" stroke-width="1"/>
+<text x="540.1999999999999" y="164" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="600" fill="#64666c" text-anchor="middle">multi-agents</text>
+<rect x="1032" y="146" width="108" height="28" rx="4" fill="#121316"/>
+<text x="1086.0" y="164.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#ffffff" text-anchor="middle">+ New task</text>
+<rect x="292" y="184" width="848" height="28" rx="4" fill="#e6f2ec" stroke="#1f7a4d" stroke-width="1"/>
+<text x="304" y="202" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="700" fill="#1f7a4d" text-anchor="start" letter-spacing="0.07em">MISSION</text>
+<text x="362" y="202" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#121316" text-anchor="start">turo phase 12 — landed 4 / 10 · remaining 6 · running · last progress 6 min ago</text>
+<text x="1128" y="202" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#1f7a4d" text-anchor="end">Slack thread ↗</text>
+<text x="292.0" y="236" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="700" fill="#2b3bc9" text-anchor="start" letter-spacing="0.07em">NEEDS YOU · 2</text>
+<rect x="292.0" y="242" width="160" height="2" fill="#2b3bc9"/>
+<rect x="292.0" y="252" width="160" height="78" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="292.0" y="252" width="160" height="2" fill="#121316"/>
+<rect x="292.0" y="252" width="160" height="2" fill="#2b3bc9"/>
+<circle cx="306.0" cy="269" r="5" fill="#2b3bc9"/>
+<text x="318.0" y="273" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#121316" text-anchor="start">builder-2</text>
+<text x="302.0" y="292" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#121316" text-anchor="start">Approve deps install</text>
+<text x="302.0" y="308" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="500" fill="#64666c" text-anchor="start" letter-spacing="0.02em">tool · low risk · 2m</text>
+<text x="302.0" y="322" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0.02em">BichengWang/slack-thread</text>
+<rect x="292.0" y="338" width="160" height="78" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="292.0" y="338" width="160" height="2" fill="#121316"/>
+<rect x="292.0" y="338" width="160" height="2" fill="#2b3bc9"/>
+<circle cx="306.0" cy="355" r="5" fill="#2b3bc9"/>
+<text x="318.0" y="359" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#121316" text-anchor="start">builder-1</text>
+<text x="302.0" y="378" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#121316" text-anchor="start">Merge PR #204</text>
+<text x="302.0" y="394" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="500" fill="#64666c" text-anchor="start" letter-spacing="0.02em">merge · high risk · 4m</text>
+<text x="302.0" y="408" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0.02em">head 3e9c1a7 · checks 4/4</text>
+<text x="464.5" y="236" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="700" fill="#1f7a4d" text-anchor="start" letter-spacing="0.07em">WORKING · 3</text>
+<rect x="464.5" y="242" width="160" height="2" fill="#1f7a4d"/>
+<rect x="464.5" y="252" width="160" height="78" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="464.5" y="252" width="160" height="2" fill="#121316"/>
+<rect x="464.5" y="252" width="160" height="2" fill="#1f7a4d"/>
+<circle cx="478.5" cy="269" r="5" fill="none" stroke="#1f7a4d" stroke-width="2.2"/>
+<text x="490.5" y="273" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#121316" text-anchor="start">builder-3</text>
+<text x="474.5" y="292" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#121316" text-anchor="start">Retry digest dedupe</text>
+<text x="474.5" y="308" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="500" fill="#64666c" text-anchor="start" letter-spacing="0.02em">18m · $0.62 / $4</text>
+<text x="474.5" y="322" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0.02em">lane 1 · attempt 2 (infra)</text>
+<rect x="464.5" y="338" width="160" height="78" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="464.5" y="338" width="160" height="2" fill="#121316"/>
+<rect x="464.5" y="338" width="160" height="2" fill="#1f7a4d"/>
+<circle cx="478.5" cy="355" r="5" fill="none" stroke="#1f7a4d" stroke-width="2.2"/>
+<text x="490.5" y="359" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#121316" text-anchor="start">story-writer</text>
+<text x="474.5" y="378" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#121316" text-anchor="start">RefineLoop: moon heist</text>
+<text x="474.5" y="394" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="500" fill="#64666c" text-anchor="start" letter-spacing="0.02em">iteration 2 · score 7.5</text>
+<text x="474.5" y="408" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0.02em">function profile</text>
+<rect x="464.5" y="424" width="160" height="78" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="464.5" y="424" width="160" height="2" fill="#121316"/>
+<rect x="464.5" y="424" width="160" height="2" fill="#1f7a4d"/>
+<circle cx="478.5" cy="441" r="5" fill="none" stroke="#9a9ca2" stroke-width="2" stroke-dasharray="2.5 2"/>
+<text x="490.5" y="445" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#121316" text-anchor="start">builder-4</text>
+<text x="474.5" y="464" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#121316" text-anchor="start">Fix lease sweep</text>
+<text x="474.5" y="480" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="500" fill="#64666c" text-anchor="start" letter-spacing="0.02em">unverifiable · 2m</text>
+<text x="474.5" y="494" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0.02em">runtime unreachable</text>
+<text x="637.0" y="236" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="700" fill="#a15c00" text-anchor="start" letter-spacing="0.07em">IN REVIEW · 1</text>
+<rect x="637.0" y="242" width="160" height="2" fill="#a15c00"/>
+<rect x="637.0" y="252" width="160" height="78" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="637.0" y="252" width="160" height="2" fill="#121316"/>
+<rect x="637.0" y="252" width="160" height="2" fill="#a15c00"/>
+<circle cx="651.0" cy="269" r="5" fill="none" stroke="#a15c00" stroke-width="2.2"/>
+<text x="663.0" y="273" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#121316" text-anchor="start">reviewer</text>
+<text x="647.0" y="292" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#121316" text-anchor="start">PR #203</text>
+<text x="647.0" y="308" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="500" fill="#64666c" text-anchor="start" letter-spacing="0.02em">pr_open · 41m</text>
+<text x="647.0" y="322" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0.02em">checks 3/4 · ci-gate ⏳</text>
+<text x="809.5" y="236" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="700" fill="#64666c" text-anchor="start" letter-spacing="0.07em">DONE · 2</text>
+<rect x="809.5" y="242" width="160" height="2" fill="#64666c"/>
+<rect x="809.5" y="252" width="160" height="78" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="809.5" y="252" width="160" height="2" fill="#121316"/>
+<rect x="809.5" y="252" width="160" height="2" fill="#64666c"/>
+<circle cx="823.5" cy="269" r="5" fill="none" stroke="#64666c" stroke-width="2.2"/>
+<text x="835.5" y="273" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#121316" text-anchor="start">builder-1</text>
+<text x="819.5" y="292" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#121316" text-anchor="start">#201 merged</text>
+<text x="819.5" y="308" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="500" fill="#64666c" text-anchor="start" letter-spacing="0.02em">1h ago · $1.40</text>
+<text x="819.5" y="322" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0.02em">landed 3 → 4</text>
+<rect x="809.5" y="338" width="160" height="78" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="809.5" y="338" width="160" height="2" fill="#121316"/>
+<rect x="809.5" y="338" width="160" height="2" fill="#64666c"/>
+<circle cx="823.5" cy="355" r="5" fill="none" stroke="#64666c" stroke-width="2.2"/>
+<text x="835.5" y="359" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#121316" text-anchor="start">builder-3</text>
+<text x="819.5" y="378" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#121316" text-anchor="start">#202 merged</text>
+<text x="819.5" y="394" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="500" fill="#64666c" text-anchor="start" letter-spacing="0.02em">52m ago · $2.05</text>
+<text x="982.0" y="236" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="700" fill="#9a9ca2" text-anchor="start" letter-spacing="0.07em">IDLE · 1</text>
+<rect x="982.0" y="242" width="160" height="2" fill="#9a9ca2"/>
+<rect x="982.0" y="252" width="160" height="78" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="982.0" y="252" width="160" height="2" fill="#121316"/>
+<rect x="982.0" y="252" width="160" height="2" fill="#9a9ca2"/>
+<circle cx="996.0" cy="269" r="5" fill="none" stroke="#9a9ca2" stroke-width="2.2"/>
+<text x="1008.0" y="273" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#121316" text-anchor="start">planner</text>
+<text x="992.0" y="292" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#121316" text-anchor="start">Next increment ready</text>
+<text x="992.0" y="308" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="500" fill="#64666c" text-anchor="start" letter-spacing="0.02em">mission.plan_next</text>
+<circle cx="410" cy="232" r="9" fill="#c2410c"/>
+<text x="410" y="236" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">B</text>
+<circle cx="612.5" cy="441" r="9" fill="#c2410c"/>
+<text x="612.5" y="445" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">C</text>
+<rect x="40" y="566" width="1120" height="610" rx="10" fill="#f2f2ee" stroke="#121316" stroke-width="1.2"/>
+<path d="M 40 596 L 40 576 Q 40 566 50 566 L 1150 566 Q 1160 566 1160 576 L 1160 596 Z" fill="#e7e7e1"/>
+<line x1="40" y1="596" x2="1160" y2="596" stroke="#121316" stroke-width="1"/>
+<circle cx="58" cy="581" r="5" fill="#d9d9d3" stroke="#64666c" stroke-width="0.6"/>
+<circle cx="74" cy="581" r="5" fill="#d9d9d3" stroke="#64666c" stroke-width="0.6"/>
+<circle cx="90" cy="581" r="5" fill="#d9d9d3" stroke="#64666c" stroke-width="0.6"/>
+<rect x="150" y="572" width="360" height="18" rx="9" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<text x="162" y="585" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="400" fill="#46484e" text-anchor="start">llm.altairworld.com/team/runs/7f3a</text>
+<path d="M 40 596 L 96 596 L 96 1176 L 50 1176 Q 40 1176 40 1166 Z" fill="#0b0c10"/>
+<rect x="58" y="618" width="20" height="20" rx="4" fill="#14161c" stroke="#2a2c33" stroke-width="1"/>
+<rect x="58" y="648" width="20" height="20" rx="4" fill="#14161c" stroke="#2a2c33" stroke-width="1"/>
+<rect x="58" y="678" width="20" height="20" rx="4" fill="#14161c" stroke="#2a2c33" stroke-width="1"/>
+<rect x="58" y="708" width="20" height="20" rx="4" fill="#14161c" stroke="#2a2c33" stroke-width="1"/>
+<rect x="58" y="738" width="20" height="20" rx="4" fill="#14161c" stroke="#2a2c33" stroke-width="1"/>
+<rect x="58" y="768" width="20" height="20" rx="4" fill="#14161c" stroke="#2a2c33" stroke-width="1"/>
+<rect x="58" y="798" width="20" height="20" rx="4" fill="#14161c" stroke="#2a2c33" stroke-width="1"/>
+<circle cx="78" cy="620" r="6" fill="#a3b4ff"/>
+<text x="116" y="620" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="600" fill="#64666c" text-anchor="start" letter-spacing="0.07em">RUNS / 7F3A · TASK T-118 · AAI</text>
+<text x="116" y="646" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" font-weight="600" fill="#121316" text-anchor="start">Post mission status to one Slack thread</text>
+<rect x="116" y="658" width="85.6" height="20" rx="10" fill="#eceefa" stroke="#2b3bc9" stroke-width="1"/>
+<text x="158.8" y="672" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="600" fill="#2b3bc9" text-anchor="middle">waiting · 4m</text>
+<rect x="209.6" y="658" width="132.0" height="20" rx="10" fill="#e6f2ec" stroke="#1f7a4d" stroke-width="1"/>
+<text x="275.6" y="672" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="600" fill="#1f7a4d" text-anchor="middle">PR #204 · checks 4/4</text>
+<rect x="349.6" y="658" width="143.6" height="20" rx="10" fill="#fafaf8" stroke="#46484e" stroke-width="1"/>
+<text x="421.40000000000003" y="672" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="600" fill="#46484e" text-anchor="middle">builder-1 · Sonnet 5.5</text>
+<text x="507.20000000000005" y="672" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="600" fill="#64666c" text-anchor="start" letter-spacing="0.07em">COST</text>
+<rect x="547.2" y="664" width="150" height="8" rx="4" fill="#e7e7e1"/>
+<rect x="547.2" y="664" width="42" height="8" rx="4" fill="#121316"/>
+<rect x="589.2" y="664" width="15" height="8" rx="0" fill="#64666c" opacity="0.45"/>
+<text x="705.2" y="672" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#46484e" text-anchor="start">$1.12 + $0.40 reserved / $4.00</text>
+<rect x="992" y="612" width="70" height="26" rx="4" fill="none" stroke="#46484e" stroke-width="1"/>
+<text x="1027.0" y="629.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#46484e" text-anchor="middle">Cancel</text>
+<rect x="1070" y="612" width="70" height="26" rx="4" fill="none" stroke="#46484e" stroke-width="1"/>
+<text x="1105.0" y="629.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#46484e" text-anchor="middle">Retry</text>
+<text x="116" y="704" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#121316" text-anchor="start">Journal</text>
+<rect x="116" y="712" width="52" height="2" fill="#121316"/>
+<text x="202" y="704" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="500" fill="#64666c" text-anchor="start">Diff</text>
+<text x="288" y="704" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="500" fill="#64666c" text-anchor="start">Checks</text>
+<text x="374" y="704" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="500" fill="#64666c" text-anchor="start">Logs</text>
+<text x="460" y="704" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="500" fill="#64666c" text-anchor="start">Artifacts</text>
+<line x1="116" y1="714" x2="760" y2="714" stroke="#d4d4ce" stroke-width="1"/>
+<circle cx="182" cy="700" r="9" fill="#c2410c"/>
+<text x="182" y="704" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">D</text>
+<text x="116" y="738" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0">14:02:11</text>
+<text x="178" y="738" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="600" fill="#2b3bc9" text-anchor="start" letter-spacing="0">attempt.started</text>
+<text x="312" y="738" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">lane 1 · attempt 1 · fence 1 · image 9c1e…</text>
+<text x="116" y="762" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0">14:02:40</text>
+<text x="178" y="762" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="600" fill="#2b3bc9" text-anchor="start" letter-spacing="0">sandbox</text>
+<text x="312" y="762" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">setup → snapshot → agent phase · egress: gateway only</text>
+<text x="116" y="786" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0">14:04:05</text>
+<text x="178" y="786" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="600" fill="#121316" text-anchor="start" letter-spacing="0">step.started</text>
+<text x="312" y="786" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">plan · 3 steps</text>
+<text x="116" y="810" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0">14:09:52</text>
+<text x="178" y="810" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="600" fill="#121316" text-anchor="start" letter-spacing="0">tool.call bash</text>
+<text x="312" y="810" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">npm run test:e2e  →  41 passed</text>
+<line x1="116" y1="836" x2="290" y2="836" stroke="#a15c00" stroke-width="1" stroke-dasharray="4 3"/>
+<line x1="578" y1="836" x2="760" y2="836" stroke="#a15c00" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="434" y="840" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="600" fill="#a15c00" text-anchor="middle">lane 1 · attempt 2 · fence 3 · infra retry · adopted snapshot</text>
+<text x="116" y="860" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0">14:21:30</text>
+<text x="178" y="860" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="600" fill="#121316" text-anchor="start" letter-spacing="0">vcs.diff.ready</text>
+<text x="312" y="860" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">3 files · +88 −12</text>
+<rect x="116" y="872" width="644" height="128" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="116" y="872" width="644" height="22" rx="4" fill="#e7e7e1"/>
+<text x="126" y="887" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="500" fill="#46484e" text-anchor="start" letter-spacing="0">homepage/supabase/functions/team-tick/missions.ts</text>
+<text x="126" y="912" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0">41</text>
+<text x="152" y="912" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="400" fill="#121316" text-anchor="start" letter-spacing="0">  const text = statusLine(mission)</text>
+<rect x="117" y="917" width="642" height="18" rx="0" fill="#e6f2ec"/>
+<text x="126" y="930" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0">42</text>
+<text x="152" y="930" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="400" fill="#121316" text-anchor="start" letter-spacing="0">+ await slack.chat.update({ ts: mission.slack_ts, text })</text>
+<rect x="117" y="935" width="642" height="18" rx="0" fill="#e6f2ec"/>
+<text x="126" y="948" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0">43</text>
+<text x="152" y="948" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="400" fill="#121316" text-anchor="start" letter-spacing="0">+ await slack.chat.postMessage({ thread_ts, text })</text>
+<rect x="152" y="956" width="594" height="36" rx="4" fill="#f7eedf" stroke="#a15c00" stroke-width="1"/>
+<text x="164" y="971" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="500" fill="#121316" text-anchor="start">KW · line 43: route this through the outbox so a restart never double-posts</text>
+<text x="164" y="985" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#64666c" text-anchor="start">1 unresolved comment</text>
+<rect x="564" y="962" width="172" height="24" rx="4" fill="#121316"/>
+<text x="650.0" y="978.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#ffffff" text-anchor="middle">Send 1 comment to builder-1 →</text>
+<circle cx="752" cy="956" r="9" fill="#c2410c"/>
+<text x="752" y="960" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">E</text>
+<text x="116" y="1026" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0">14:26:02</text>
+<text x="178" y="1026" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="600" fill="#2b3bc9" text-anchor="start" letter-spacing="0">gate.requested</text>
+<text x="312" y="1026" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">merge · high risk (derived by the server) → inspector</text>
+<text x="116" y="1050" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="400" fill="#64666c" text-anchor="start" letter-spacing="0">14:26:03</text>
+<text x="178" y="1050" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="600" fill="#121316" text-anchor="start" letter-spacing="0">agent.status</text>
+<text x="312" y="1050" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">waiting · sandbox snapshots and sleeps after 10 min</text>
+<text x="116" y="1080" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#64666c" text-anchor="start">Reload-safe: the journal backfills by seq from Postgres, then follows the live signal.</text>
+<rect x="784" y="698" width="356" height="196" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="784" y="698" width="356" height="2" fill="#2b3bc9"/>
+<text x="798" y="718" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="700" fill="#2b3bc9" text-anchor="start" letter-spacing="0.07em">GATE · MERGE · HIGH RISK</text>
+<text x="798" y="740" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="600" fill="#121316" text-anchor="start">Merge PR #204</text>
+<text x="798" y="758" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#46484e" text-anchor="start">head 3e9c1a7 · ci-gate ✓ attribution ✓ CodeQL ✓</text>
+<text x="798" y="774" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#46484e" text-anchor="start">outside the auto-merge allowlist:</text>
+<text x="798" y="790" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="500" fill="#121316" text-anchor="start" letter-spacing="0">homepage/src/features/team/**</text>
+<rect x="798" y="806" width="150" height="32" rx="4" fill="#2b3bc9"/>
+<text x="873.0" y="826.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#ffffff" text-anchor="middle">Approve this SHA</text>
+<rect x="956" y="806" width="76" height="32" rx="4" fill="none" stroke="#121316" stroke-width="1"/>
+<text x="994.0" y="826.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#121316" text-anchor="middle">Deny</text>
+<text x="798" y="858" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#64666c" text-anchor="start">owner sign-in required · expires in 4d 23h</text>
+<text x="798" y="874" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#64666c" text-anchor="start">a new push invalidates this approval</text>
+<circle cx="1126" cy="716" r="9" fill="#c2410c"/>
+<text x="1126" y="720" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">F</text>
+<rect x="784" y="908" width="356" height="92" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="784" y="908" width="356" height="2" fill="#121316"/>
+<text x="798" y="928" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="700" fill="#64666c" text-anchor="start" letter-spacing="0.07em">ATTEMPTS · LANE 1</text>
+<circle cx="804" cy="948" r="4.5" fill="none" stroke="#b42318" stroke-width="2.2"/>
+<text x="816" y="952" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">#1  lost · infra · fence 2 · 14:14</text>
+<circle cx="804" cy="970" r="4.5" fill="none" stroke="#1f7a4d" stroke-width="2.2"/>
+<text x="816" y="974" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="500" fill="#121316" text-anchor="start">#2  running · fence 3 · live 4s ago</text>
+<text x="816" y="990" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#64666c" text-anchor="start">infra retries do not use max_attempts</text>
+<rect x="784" y="1014" width="356" height="92" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="784" y="1014" width="356" height="2" fill="#121316"/>
+<text x="798" y="1034" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9.5" font-weight="700" fill="#64666c" text-anchor="start" letter-spacing="0.07em">SANDBOX · RUN-7F3A-O1</text>
+<text x="798" y="1054" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">agent phase · checkpoint 6 min ago</text>
+<text x="798" y="1072" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">image 9c1e… · contract 1.3 · release r42</text>
+<text x="798" y="1090" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">egress: its own gateway tunnel only</text>
+<rect x="1214" y="96" width="316" height="600" rx="34" fill="#121316"/>
+<rect x="1222" y="104" width="300" height="584" rx="27" fill="#f2f2ee"/>
+<rect x="1332.0" y="110" width="80" height="18" rx="9" fill="#121316"/>
+<text x="1244" y="124" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#121316" text-anchor="start">9:41</text>
+<rect x="1234" y="140" width="276" height="66" rx="14" fill="#ffffff" stroke="#d4d4ce" stroke-width="1"/>
+<text x="1248" y="158" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="8.5" font-weight="600" fill="#64666c" text-anchor="start" letter-spacing="0.07em">ALTAIR TEAM · NOW</text>
+<text x="1248" y="176" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="600" fill="#121316" text-anchor="start">builder-2 needs you</text>
+<text x="1248" y="193" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Run pnpm install --frozen-lockfile?</text>
+<circle cx="1508" cy="142" r="9" fill="#c2410c"/>
+<text x="1508" y="146" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">G</text>
+<text x="1372.0" y="226" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#64666c" text-anchor="middle">tap opens the gate full screen ↓</text>
+<text x="1240" y="258" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="700" fill="#1f7a4d" text-anchor="start" letter-spacing="0.07em">TOOL PERMISSION · LOW RISK</text>
+<text x="1240" y="286" font-family="Newsreader, 'Iowan Old Style', Georgia, serif" font-size="20" font-weight="500" fill="#121316" text-anchor="start">builder-2 wants to run</text>
+<rect x="1240" y="300" width="264" height="34" rx="4" fill="#0b0c10"/>
+<text x="1252" y="322" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10.5" font-weight="500" fill="#edede8" text-anchor="start" letter-spacing="0">pnpm install --frozen-lockfile</text>
+<text x="1240" y="356" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">run 9b2e · task T-121 · setup phase</text>
+<text x="1240" y="373" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">policy rule deps.install → ask</text>
+<text x="1240" y="390" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">egress during setup: registries only</text>
+<rect x="1240" y="412" width="127.0" height="44" rx="4" fill="#121316"/>
+<text x="1303.5" y="438.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#ffffff" text-anchor="middle">Approve</text>
+<rect x="1377.0" y="412" width="127.0" height="44" rx="4" fill="none" stroke="#121316" stroke-width="1"/>
+<text x="1440.5" y="438.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#121316" text-anchor="middle">Deny</text>
+<rect x="1240" y="468" width="264" height="44" rx="4" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<text x="1252" y="495" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#64666c" text-anchor="start">Answer or steer…</text>
+<text x="1240" y="540" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#64666c" text-anchor="start">High-risk gates (merge, spend, credential)</text>
+<text x="1240" y="555" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#64666c" text-anchor="start">ask for a fresh Google sign-in first.</text>
+<text x="1240" y="578" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#64666c" text-anchor="start">Offline? The decision is queued with</text>
+<text x="1240" y="593" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#64666c" text-anchor="start">an idempotency key and sent on reconnect.</text>
+<line x1="1222" y1="630" x2="1522" y2="630" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="1250.5" y="640" width="18" height="14" rx="3" fill="none" stroke="#121316" stroke-width="1.4"/>
+<text x="1259.5" y="668" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="8" font-weight="700" fill="#121316" text-anchor="middle" letter-spacing="0.05em">INBOX</text>
+<rect x="1325.5" y="640" width="18" height="14" rx="3" fill="none" stroke="#64666c" stroke-width="1.4"/>
+<text x="1334.5" y="668" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="8" font-weight="500" fill="#64666c" text-anchor="middle" letter-spacing="0.05em">BOARD</text>
+<rect x="1400.5" y="640" width="18" height="14" rx="3" fill="none" stroke="#64666c" stroke-width="1.4"/>
+<text x="1409.5" y="668" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="8" font-weight="500" fill="#64666c" text-anchor="middle" letter-spacing="0.05em">MISSIONS</text>
+<rect x="1475.5" y="640" width="18" height="14" rx="3" fill="none" stroke="#64666c" stroke-width="1.4"/>
+<text x="1484.5" y="668" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="8" font-weight="500" fill="#64666c" text-anchor="middle" letter-spacing="0.05em">RUNS</text>
+<circle cx="1268.5" cy="640" r="7" fill="#2b3bc9"/>
+<text x="1268.5" y="643.5" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+<rect x="1214" y="720" width="316" height="456" rx="34" fill="#121316"/>
+<rect x="1222" y="728" width="300" height="440" rx="27" fill="#f2f2ee"/>
+<rect x="1332.0" y="734" width="80" height="18" rx="9" fill="#121316"/>
+<text x="1244" y="748" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#121316" text-anchor="start">9:41</text>
+<text x="1240" y="776" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="9" font-weight="700" fill="#64666c" text-anchor="start" letter-spacing="0.07em">MISSION · TURO PHASE 12</text>
+<text x="1240" y="826" font-family="Newsreader, 'Iowan Old Style', Georgia, serif" font-size="46" font-weight="400" fill="#121316" text-anchor="start">4 / 10</text>
+<text x="1376" y="812" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">landed (GitHub merged)</text>
+<text x="1376" y="827" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">remaining 6</text>
+<circle cx="1506" cy="772" r="9" fill="#c2410c"/>
+<text x="1506" y="776" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">H</text>
+<rect x="1240" y="840" width="264" height="22" rx="11" fill="#e6f2ec" stroke="#1f7a4d" stroke-width="1"/>
+<text x="1372.0" y="855" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#1f7a4d" text-anchor="middle">running · heartbeat 20s · progress 6m</text>
+<circle cx="1245" cy="886" r="4.5" fill="#1f7a4d"/>
+<text x="1258" y="890" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="600" fill="#121316" text-anchor="start" letter-spacing="0">#201</text>
+<text x="1298" y="890" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">merged</text>
+<circle cx="1245" cy="910" r="4.5" fill="#1f7a4d"/>
+<text x="1258" y="914" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="600" fill="#121316" text-anchor="start" letter-spacing="0">#202</text>
+<text x="1298" y="914" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">merged</text>
+<circle cx="1245" cy="934" r="4.5" fill="none" stroke="#a15c00" stroke-width="2.2"/>
+<text x="1258" y="938" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="600" fill="#121316" text-anchor="start" letter-spacing="0">#203</text>
+<text x="1298" y="938" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">pr_open · checks 3/4</text>
+<circle cx="1245" cy="958" r="4.5" fill="none" stroke="#2b3bc9" stroke-width="2.2"/>
+<text x="1258" y="962" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="600" fill="#121316" text-anchor="start" letter-spacing="0">#204</text>
+<text x="1298" y="962" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">waiting · merge gate</text>
+<circle cx="1245" cy="982" r="4.5" fill="none" stroke="#64666c" stroke-width="2.2"/>
+<text x="1258" y="986" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="10" font-weight="600" fill="#121316" text-anchor="start" letter-spacing="0">#205</text>
+<text x="1298" y="986" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">planned</text>
+<text x="1240" y="1020" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#64666c" text-anchor="start">attempts: 5 agent · 1 infra · spend $9.80</text>
+<rect x="1240" y="1034" width="80" height="30" rx="4" fill="none" stroke="#121316" stroke-width="1"/>
+<text x="1280.0" y="1053.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#121316" text-anchor="middle">Pause</text>
+<rect x="1328" y="1034" width="80" height="30" rx="4" fill="none" stroke="#b42318" stroke-width="1"/>
+<text x="1368.0" y="1053.0" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#b42318" text-anchor="middle">Stop…</text>
+<text x="1420" y="1054" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="600" fill="#1f7a4d" text-anchor="start">Slack ↗</text>
+<line x1="1222" y1="1110" x2="1522" y2="1110" stroke="#d4d4ce" stroke-width="1"/>
+<rect x="1250.5" y="1120" width="18" height="14" rx="3" fill="none" stroke="#64666c" stroke-width="1.4"/>
+<text x="1259.5" y="1148" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="8" font-weight="500" fill="#64666c" text-anchor="middle" letter-spacing="0.05em">INBOX</text>
+<rect x="1325.5" y="1120" width="18" height="14" rx="3" fill="none" stroke="#64666c" stroke-width="1.4"/>
+<text x="1334.5" y="1148" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="8" font-weight="500" fill="#64666c" text-anchor="middle" letter-spacing="0.05em">BOARD</text>
+<rect x="1400.5" y="1120" width="18" height="14" rx="3" fill="none" stroke="#121316" stroke-width="1.4"/>
+<text x="1409.5" y="1148" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="8" font-weight="700" fill="#121316" text-anchor="middle" letter-spacing="0.05em">MISSIONS</text>
+<rect x="1475.5" y="1120" width="18" height="14" rx="3" fill="none" stroke="#64666c" stroke-width="1.4"/>
+<text x="1484.5" y="1148" font-family="'Geist Mono', 'SF Mono', Menlo, Consolas, monospace" font-size="8" font-weight="500" fill="#64666c" text-anchor="middle" letter-spacing="0.05em">RUNS</text>
+<circle cx="1268.5" cy="1120" r="7" fill="#2b3bc9"/>
+<text x="1268.5" y="1123.5" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="9" font-weight="700" fill="#ffffff" text-anchor="middle">2</text>
+<rect x="40" y="1196" width="1520" height="82" rx="6" fill="#fafaf8" stroke="#d4d4ce" stroke-width="1"/>
+<circle cx="62" cy="1212" r="9" fill="#c2410c"/>
+<text x="62" y="1216" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">A</text>
+<text x="78" y="1216" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Rail: Orca’s worktree sidebar becomes the team roster — agents have presence, roles and budgets.</text>
+<circle cx="62" cy="1229" r="9" fill="#c2410c"/>
+<text x="62" y="1233" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">B</text>
+<text x="78" y="1233" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Needs You: Orca’s dashboard column becomes one inbox for every gate, merge and promote.</text>
+<circle cx="62" cy="1246" r="9" fill="#c2410c"/>
+<text x="62" y="1250" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">C</text>
+<text x="78" y="1250" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Presence comes from leases and heartbeats; a dashed ring means unverifiable, never assumed dead.</text>
+<circle cx="62" cy="1263" r="9" fill="#c2410c"/>
+<text x="62" y="1267" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">D</text>
+<text x="78" y="1267" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Journal replaces the terminal: structured events with attempt and fence boundaries.</text>
+<circle cx="822" cy="1212" r="9" fill="#c2410c"/>
+<text x="822" y="1216" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">E</text>
+<text x="838" y="1216" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Annotate a diff line, then send all comments as one revision turn (Orca’s Annotate AI Diff).</text>
+<circle cx="822" cy="1229" r="9" fill="#c2410c"/>
+<text x="822" y="1233" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">F</text>
+<text x="838" y="1233" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Gate risk is derived by the server; a high-risk merge approves one exact head SHA.</text>
+<circle cx="822" cy="1246" r="9" fill="#c2410c"/>
+<text x="822" y="1250" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">G</text>
+<text x="838" y="1250" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">Phone: a push opens one gate full screen; low risk is one tap, high risk needs a fresh sign-in.</text>
+<circle cx="822" cy="1263" r="9" fill="#c2410c"/>
+<text x="822" y="1267" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#ffffff" text-anchor="middle">H</text>
+<text x="838" y="1267" font-family="Geist, Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#46484e" text-anchor="start">The landed counter is GitHub’s merged state — never an agent’s own report.</text>
+</svg>
