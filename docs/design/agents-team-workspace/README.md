@@ -1,11 +1,11 @@
 # Agents team workspace
 
-A cloud-native take on [Orca](https://github.com/stablyai/orca): the same model of parallel workspaces, a "Needs You" dashboard, line-anchored diff review and a phone companion, rebuilt so that agents run in the cloud and sit on the team roster next to people.
+A cloud-native take on [Orca](https://github.com/stablyai/orca): parallel agent workspaces and one "Needs you" list, rebuilt so that agents run in the cloud and sit on the team roster next to people. The UI starts as an MVP and grows only when a page is needed.
 
 | Diagram | What it shows |
 | --- | --- |
 | [architecture.svg](./architecture.svg) | Planes, owners and the one contract that crosses between the repos. Steps ① to ⑪ follow a task to a merged PR. |
-| [ui-layout.svg](./ui-layout.svg) | Board, run view, gate inspector and phone screens, with notes mapping each part to its Orca equivalent. |
+| [ui-layout.svg](./ui-layout.svg) | The MVP UI: a Team page (Needs you, Working, Done under the mission line) and a Run page (one timeline that ends in the decision). |
 | [lifecycle.svg](./lifecycle.svg) | Mission, run, attempt and gate state machines, including timeouts, retries and how a run ends. |
 
 ## Where the code lives
@@ -34,4 +34,4 @@ Small PRs, each verified end to end:
 3. Team tenancy, then the mission ledger over today's hand-run loop (observe mode), with Slack status and the stall supervisor.
 4. Run journal and ingest, leases and retries, then the Modal driver and dispatch.
 5. Sealed credentials and budgets, gateway and unsealer, two-phase sandboxes, publish, and the first cloud mission on aai.
-6. Gates on the phone, workflow lanes, then race compare.
+6. Only when needed: a missions page, roster, settings, health, phone gates, workflow lanes and race compare.
