@@ -284,15 +284,32 @@
 
 /* ---------- Intake forms (enquiry, contact) ---------- */
 
+.lab-intake {
+  row-gap: 48px;
+}
+
 .lab-intake > * {
   grid-column: 1 / -1;
+}
+
+.lab-intake-form {
+  container: enquiry / inline-size;
 }
 
 .lab-intake-aside {
   display: grid;
   align-content: start;
   gap: 40px;
-  margin-bottom: 56px;
+}
+
+.lab-intake-form-head {
+  display: grid;
+  gap: 6px;
+}
+
+.lab-request-field {
+  display: grid;
+  gap: 8px;
 }
 
 .lab-intake-note {
@@ -316,7 +333,7 @@
   gap: 20px;
 }
 
-@media (min-width: 600px) {
+@container enquiry (min-width: 560px) {
   .lab-form-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -340,11 +357,12 @@
 @media (min-width: 900px) {
   .lab-intake-aside {
     grid-column: 1 / span 4;
-    margin-bottom: 0;
+    grid-row: 1;
   }
 
   .lab-intake-form {
     grid-column: 6 / -1;
+    grid-row: 1;
   }
 }
 

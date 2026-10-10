@@ -72,11 +72,16 @@ test("an enquiry can be sent with only name and email using the default choices"
   });
   await page.goto("/enquiry");
   const form = page.locator("main form");
+  await expect(form).toHaveAccessibleName("Your enquiry");
+  await expect(form).toHaveAccessibleDescription("Name and email are required.");
   await expect(form.getByLabel("Postcode")).toHaveCount(0);
   await expect(form.locator("textarea")).toHaveCount(0);
   await expect(form.getByLabel("Service needed")).toHaveValue("financial-planning");
   await expect(form.getByLabel("Timeline")).toHaveValue("24-hours");
   await expect(form.getByLabel("Tell us what you need")).toHaveValue("Please help me find a local provider.");
+  await expect(form.getByLabel("Tell us what you need")).toHaveAccessibleDescription(
+    "Choose Other to describe a specific request or a preferred provider."
+  );
   await form.getByLabel("Name", { exact: true }).fill("Ada Lovelace");
   await form.getByLabel("Email", { exact: true }).fill("ada@example.com");
   await form.getByRole("button", { name: "Submit enquiry" }).click();
@@ -86,6 +91,63 @@ test("an enquiry can be sent with only name and email using the default choices"
   expect(outgoing?.text).toContain("Timeline: 24-hours");
   expect(outgoing?.text).not.toContain("Postcode:");
 });
+
+for (const width of [360, 768, 900, 1440]) {
+  test(`enquiry fields stay compact and easy to reach at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/enquiry");
+    const form = page.locator(".lab-intake-form");
+    const aside = page.locator(".lab-intake-aside");
+    await expect(form.getByLabel("Name", { exact: true })).toBeVisible();
+    await page.evaluate(() => document.fonts.ready);
+
+    const fields = await form.locator(".lab-input").evaluateAll((controls) => controls.map((control) => {
+      const label = control.closest("label")!;
+      const text = document.createRange();
+      text.selectNodeContents(label.firstChild!);
+      const bounds = control.getBoundingClientRect();
+      const style = getComputedStyle(control);
+      const context = document.createElement("canvas").getContext("2d")!;
+      context.font = style.font;
+      return {
+        name: control.getAttribute("name"),
+        height: bounds.height,
+        labelGap: bounds.top - text.getBoundingClientRect().bottom,
+        left: bounds.left,
+        right: bounds.right,
+        optionWidth: control instanceof HTMLSelectElement
+          ? context.measureText(control.selectedOptions[0].text).width
+          : undefined,
+        textSpace: bounds.width - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight)
+          - parseFloat(style.borderLeftWidth) - parseFloat(style.borderRightWidth),
+      };
+    }));
+    for (const field of fields) {
+      expect(field.height, `${field.name} has a usable target`).toBeGreaterThanOrEqual(44);
+      expect(field.height, `${field.name} does not stretch to fill the sidebar`).toBeLessThanOrEqual(56);
+      expect(field.labelGap, `${field.name} stays near its label`).toBeLessThanOrEqual(16);
+      expect(field.labelGap).toBeGreaterThanOrEqual(4);
+      expect(field.left).toBeGreaterThanOrEqual(0);
+      expect(field.right).toBeLessThanOrEqual(width);
+      if (field.optionWidth !== undefined) {
+        expect(field.optionWidth, `${field.name} shows the full selected option`).toBeLessThanOrEqual(field.textSpace);
+      }
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+
+    const formBounds = (await form.boundingBox())!;
+    const asideBounds = (await aside.boundingBox())!;
+    if (width < 900) {
+      expect(formBounds.y + formBounds.height).toBeLessThanOrEqual(asideBounds.y);
+      expect(await form.evaluate((element) => Boolean(
+        element.compareDocumentPosition(document.querySelector(".lab-intake-aside")!) & Node.DOCUMENT_POSITION_FOLLOWING
+      ))).toBe(true);
+    } else {
+      expect(asideBounds.x + asideBounds.width).toBeLessThan(formBounds.x);
+      if (width === 1440) expect(formBounds.height).toBeLessThan(asideBounds.height);
+    }
+  });
+}
 
 test("failed delivery preserves the form and reuses the retry key; edits get a new key", async ({ page }) => {
   const keys: string[] = [];

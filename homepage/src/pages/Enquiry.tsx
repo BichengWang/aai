@@ -41,6 +41,98 @@ export default function Enquiry() {
 
       <section className="lab-section" aria-label="Contact and enquiry form">
         <div className="container lab-grid lab-intake">
+          <form
+            className="lab-form lab-intake-form"
+            onSubmit={handleSubmit}
+            aria-busy={pending}
+            aria-labelledby="lab-enquiry-title"
+            aria-describedby="lab-enquiry-help"
+          >
+            <div className="lab-intake-form-head">
+              <h2 className="lab-h3" id="lab-enquiry-title">Your enquiry</h2>
+              <p className="lab-form-hint" id="lab-enquiry-help">Name and email are required.</p>
+            </div>
+            <fieldset className="form-fields" disabled={pending || sent}>
+              <EnquiryHoneypot />
+              <div className="lab-form-row">
+                <label className="lab-field">
+                  Name
+                  <input className="lab-input" type="text" name="name" value={identity.name} onChange={(event) => identity.setName(event.target.value)} maxLength={120} autoComplete="name" required />
+                </label>
+                <label className="lab-field">
+                  Email
+                  <input className="lab-input" type="email" name="email" value={identity.email} onChange={(event) => identity.setEmail(event.target.value)} maxLength={254} autoComplete="email" required />
+                </label>
+              </div>
+              <div className="lab-form-row">
+                <label className="lab-field">
+                  Service needed
+                  <select className="lab-input lab-select" name="service" defaultValue="financial-planning" required>
+                    <option value="general">General enquiry</option>
+                    {services.map((service) => (
+                      <option key={service.slug} value={service.slug}>
+                        {service.title}
+                      </option>
+                    ))}
+                    <option value="other">Other</option>
+                  </select>
+                </label>
+                <label className="lab-field">
+                  Timeline
+                  <select className="lab-input lab-select" name="timeline" defaultValue="24-hours" required>
+                    <option value="24-hours">Within 24 hours</option>
+                    <option value="week">Within a week</option>
+                    <option value="flexible">Flexible / not sure yet</option>
+                    <option value="other">Other</option>
+                  </select>
+                </label>
+              </div>
+              <div className="lab-request-field">
+                <label className="lab-field">
+                  Tell us what you need
+                  <select
+                    className="lab-input lab-select"
+                    name={request === "other" ? "request" : "message"}
+                    value={request}
+                    onChange={(event) => setRequest(event.target.value)}
+                    aria-describedby="lab-request-help"
+                    required
+                  >
+                    {requestOptions.map((option) => (
+                      <option key={option.message} value={option.message}>{option.label}</option>
+                    ))}
+                    <option value="other">Other</option>
+                  </select>
+                </label>
+                <p className="lab-form-hint" id="lab-request-help">
+                  Choose Other to describe a specific request or a preferred provider.
+                </p>
+              </div>
+              {request === "other" && (
+                <label className="lab-field">
+                  Your message
+                  <textarea
+                    className="lab-input lab-textarea"
+                    name="message"
+                    value={customMessage}
+                    onChange={(event) => setCustomMessage(event.target.value)}
+                    maxLength={5000}
+                    placeholder="Tell us what you need..."
+                    required
+                  />
+                </label>
+              )}
+              <div className="lab-form-actions">
+                <button className="lab-btn lab-btn--primary" type="submit">
+                  {pending ? "Sending..." : sent ? "Enquiry sent" : "Submit enquiry"}
+                </button>
+                <Link className="lab-link" to="/services">
+                  Back to services
+                </Link>
+              </div>
+            </fieldset>
+            <EnquiryFormStatus error={error} sent={sent} kind="enquiry" />
+          </form>
           <aside className="lab-intake-aside">
             <ol className="lab-ruled lab-ruled--numbered" role="list">
               {commitments.map((item, index) => (
@@ -77,88 +169,8 @@ export default function Enquiry() {
                 We review your request, confirm availability, and send back a
                 shortlist with clear next steps.
               </p>
-              <p className="lab-body">
-                Choose Other to tell us about a specific request or a preferred
-                provider.
-              </p>
             </div>
           </aside>
-          <form className="lab-form lab-intake-form" onSubmit={handleSubmit} aria-busy={pending}>
-            <fieldset className="form-fields" disabled={pending || sent}>
-              <EnquiryHoneypot />
-              <div className="lab-form-row">
-                <label className="lab-field">
-                  Name
-                  <input className="lab-input" type="text" name="name" value={identity.name} onChange={(event) => identity.setName(event.target.value)} maxLength={120} autoComplete="name" required />
-                </label>
-                <label className="lab-field">
-                  Email
-                  <input className="lab-input" type="email" name="email" value={identity.email} onChange={(event) => identity.setEmail(event.target.value)} maxLength={254} autoComplete="email" required />
-                </label>
-              </div>
-              <div className="lab-form-row">
-                <label className="lab-field">
-                  Service needed
-                  <select className="lab-input lab-select" name="service" defaultValue="financial-planning" required>
-                    <option value="general">General enquiry</option>
-                    {services.map((service) => (
-                      <option key={service.slug} value={service.slug}>
-                        {service.title}
-                      </option>
-                    ))}
-                    <option value="other">Other</option>
-                  </select>
-                </label>
-                <label className="lab-field">
-                  Timeline
-                  <select className="lab-input lab-select" name="timeline" defaultValue="24-hours" required>
-                    <option value="24-hours">Within 24 hours</option>
-                    <option value="week">Within a week</option>
-                    <option value="flexible">Flexible / not sure yet</option>
-                    <option value="other">Other</option>
-                  </select>
-                </label>
-              </div>
-              <label className="lab-field">
-                Tell us what you need
-                <select
-                  className="lab-input lab-select"
-                  name={request === "other" ? "request" : "message"}
-                  value={request}
-                  onChange={(event) => setRequest(event.target.value)}
-                  required
-                >
-                  {requestOptions.map((option) => (
-                    <option key={option.message} value={option.message}>{option.label}</option>
-                  ))}
-                  <option value="other">Other</option>
-                </select>
-              </label>
-              {request === "other" && (
-                <label className="lab-field">
-                  Your message
-                  <textarea
-                    className="lab-input lab-textarea"
-                    name="message"
-                    value={customMessage}
-                    onChange={(event) => setCustomMessage(event.target.value)}
-                    maxLength={5000}
-                    placeholder="Tell us what you need..."
-                    required
-                  />
-                </label>
-              )}
-              <div className="lab-form-actions">
-                <button className="lab-btn lab-btn--primary" type="submit">
-                  {pending ? "Sending..." : sent ? "Enquiry sent" : "Submit enquiry"}
-                </button>
-                <Link className="lab-link" to="/services">
-                  Back to services
-                </Link>
-              </div>
-            </fieldset>
-            <EnquiryFormStatus error={error} sent={sent} kind="enquiry" />
-          </form>
         </div>
       </section>
     </div>
