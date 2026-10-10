@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/check-netlify-auth-env.mjs && vite build && vite build --ssr src/entry-prerender.tsx --outDir dist-ssr && node scripts/prerender.mjs && node scripts/verify-built-routes.mjs",
+    "build": "node scripts/check-public-env.mjs && node scripts/check-netlify-auth-env.mjs && vite build && vite build --ssr src/entry-prerender.tsx --outDir dist-ssr && node scripts/prerender.mjs && node scripts/verify-built-routes.mjs",
     "preview": "vite preview",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:built": "VITE_SUPABASE_URL=https://example.com VITE_SUPABASE_PUBLISHABLE_KEY=playwright-publishable-key npm run build && playwright test -c playwright.built.config.ts",
     "test:server": "node --test server/enquiry.test.mjs",
+    "test:db": "node --test scripts/test-db.mjs",
     "test": "npm run test:unit && npm run test:server"
   },
   "dependencies": {
@@ -23,6 +24,7 @@
     "react-router-dom": "7.18.4"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
     "@playwright/test": "1.63.0",
     "@testing-library/jest-dom": "6.8.0",
     "@testing-library/react": "16.3.1",

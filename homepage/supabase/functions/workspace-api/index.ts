@@ -20,6 +20,11 @@ type ProviderCredentialRow = {
   updated_at: string;
 };
 
+type PublicProviderCredentialRow = Omit<ProviderCredentialRow, "encrypted_secret">;
+
+const publicCredentialColumns =
+  "id, user_id, provider, label, secret_mask, status, validation_error, last_validated_at, monthly_token_cap, created_at, updated_at";
+
 type ManagedApiKeyRow = {
   id: string;
   user_id: string;
@@ -66,14 +71,25 @@ type UsageEventRow = {
   created_at: string;
 };
 
-function getCorsHeaders(request?: Request) {
-  return {
-    "Access-Control-Allow-Origin": request?.headers.get("Origin") ?? "*",
-    "Access-Control-Allow-Headers":
-      request?.headers.get("Access-Control-Request-Headers") ??
-      "authorization, x-client-info, apikey, content-type",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  };
+const allowedOrigins = new Set(
+  (Deno.env.get("WORKSPACE_ALLOWED_ORIGINS") ??
+    "https://altairworld.com,https://llm.altairworld.com,http://localhost:5173,http://127.0.0.1:5173")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+);
+
+function getCorsHeaders(request: Request) {
+  const headers: Record<string, string> = { Vary: "Origin" };
+  const origin = request.headers.get("Origin");
+
+  if (origin && allowedOrigins.has(origin)) {
+    headers["Access-Control-Allow-Origin"] = origin;
+    headers["Access-Control-Allow-Headers"] = "authorization, x-client-info, apikey, content-type";
+    headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
+  }
+
+  return headers;
 }
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL");
@@ -98,7 +114,6 @@ function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
-      ...getCorsHeaders(),
       "Content-Type": "application/json",
     },
   });
@@ -109,7 +124,7 @@ function errorResponse(message: string, status = 400) {
 }
 
 function getUserClient(authHeader: string) {
-  return createClient(supabaseUrl, supabasePublishableKey, {
+  return createClient(supabaseUrl!, supabasePublishableKey!, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: {
       headers: {
@@ -129,8 +144,7 @@ async function requireUser(request: Request) {
     });
   }
 
-  // `verify_jwt` is disabled for this function so publishable-key projects can
-  // authenticate requests in userland instead of failing at the platform edge.
+  // Handoff consumption has no JWT; all other routes authenticate with getUser.
   const userClient = getUserClient(authHeader);
   const {
     data: { user },
@@ -339,7 +353,7 @@ async function listWorkspaceState(userId: string) {
   const [credentialsResult, managedKeyResult, usageResult] = await Promise.all([
     adminClient
       .from("provider_credentials")
-      .select("*")
+      .select(publicCredentialColumns)
       .eq("user_id", userId)
       .order("created_at", { ascending: false }),
     adminClient.from("managed_api_keys").select("*").eq("user_id", userId).maybeSingle<ManagedApiKeyRow>(),
@@ -358,7 +372,7 @@ async function listWorkspaceState(userId: string) {
     throw usageResult.error;
   }
 
-  const credentials = (credentialsResult.data ?? []) as ProviderCredentialRow[];
+  const credentials = (credentialsResult.data ?? []) as PublicProviderCredentialRow[];
   const usageEvents = (usageResult.data ?? []) as UsageEventRow[];
   const usageSummary = (["openai", "anthropic", "gemini"] as ProviderName[]).map((provider) => {
     const providerCredentials = credentials.filter((credential) => credential.provider === provider);
@@ -439,7 +453,7 @@ async function chooseCredential(
   const category = classifyTask(content);
   const { data, error } = await adminClient
     .from("provider_credentials")
-    .select("*")
+    .select(`${publicCredentialColumns}, encrypted_secret`)
     .eq("user_id", userId)
     .eq("status", "valid");
 
@@ -687,8 +701,8 @@ async function handleCreateCredential(request: Request, userId: string) {
       monthly_token_cap: monthlyTokenCap,
       status: "pending",
     })
-    .select("*")
-    .single<ProviderCredentialRow>();
+    .select("id")
+    .single<{ id: string }>();
 
   if (error) {
     return errorResponse(error.message, 500);
@@ -719,10 +733,10 @@ async function handleValidateCredential(request: Request, userId: string) {
 
   const { data, error } = await adminClient
     .from("provider_credentials")
-    .select("*")
+    .select("id, provider, encrypted_secret")
     .eq("id", credentialId)
     .eq("user_id", userId)
-    .maybeSingle<ProviderCredentialRow>();
+    .maybeSingle<Pick<ProviderCredentialRow, "id" | "provider" | "encrypted_secret">>();
 
   if (error) {
     return errorResponse(error.message, 500);
@@ -1076,7 +1090,7 @@ function getRoutePath(url: URL) {
   return url.pathname.slice(markerIndex + marker.length) || "/";
 }
 
-Deno.serve(async (request) => {
+async function handleRequest(request: Request) {
   if (request.method === "OPTIONS") {
     return new Response("ok", { headers: getCorsHeaders(request) });
   }
@@ -1136,4 +1150,17 @@ Deno.serve(async (request) => {
     const message = caughtError instanceof Error ? caughtError.message : "Unexpected workspace error.";
     return errorResponse(message, 500);
   }
+}
+
+Deno.serve(async (request) => {
+  const origin = request.headers.get("Origin");
+  const response = origin && !allowedOrigins.has(origin)
+    ? errorResponse("This origin is not allowed to access the workspace.", 403)
+    : await handleRequest(request);
+
+  for (const [name, value] of Object.entries(getCorsHeaders(request))) {
+    response.headers.set(name, value);
+  }
+
+  return response;
 });
