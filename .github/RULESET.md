@@ -3,7 +3,7 @@
 After these workflows merge and both checks have reported on a new PR, KW should
 enable the main branch ruleset in [main-ruleset.json](main-ruleset.json):
 
-- Require a pull request and an up-to-date branch before merging.
+- Require a pull request before merging.
 - Require `ci-gate` and `attribution-guard`, each pinned to the GitHub Actions
   integration (ID `15368`).
 - Keep the bypass list empty, including for repository administrators.

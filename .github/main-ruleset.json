@@ -27,7 +27,7 @@
           { "context": "ci-gate", "integration_id": 15368 },
           { "context": "attribution-guard", "integration_id": 15368 }
         ],
-        "strict_required_status_checks_policy": true
+        "strict_required_status_checks_policy": false
       }
     },
     { "type": "non_fast_forward" },
