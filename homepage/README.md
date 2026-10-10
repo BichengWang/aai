@@ -21,8 +21,8 @@ Elegant, single-page marketing site for Altair's local services platform.
 ## Supabase auth setup
 
 1. Create a Supabase project.
-2. In the Supabase SQL editor, run [`supabase/profiles.sql`](./supabase/profiles.sql) to create the `profiles` table, row-level security policies, and the auth trigger that seeds profile rows.
-3. Run [`supabase/workspace.sql`](./supabase/workspace.sql) to create the workspace tables for provider credentials, managed keys, conversations, usage events, and SSO handoffs.
+2. The project owner applies the SQL files in [`supabase/migrations`](./supabase/migrations), the project's only migrations directory, to the hosted project in filename order. Use the Supabase SQL editor or the Supabase CLI from `homepage` (`supabase db push` after linking the project).
+3. Apply both `20261009000000_baseline.sql` and `20261009000100_lock_down_public_schema.sql`, including on an existing project. The baseline preserves the former profile and workspace schema; the second migration removes the unused usage view, restricts function execution and credential reads, and makes credential and usage writes service-only. Both files can be re-run in order; re-running the baseline alone restores the old policies and view.
 4. In Supabase Auth settings, enable:
    - Google provider
    - OAuth 2.1 server if you want Altair to host the consent screen at `https://altairworld.com/oauth/consent`
@@ -45,6 +45,7 @@ Elegant, single-page marketing site for Altair's local services platform.
    ```
    `VITE_AUTH_CALLBACK_URL` is optional but recommended when your frontend is served through a reverse proxy or a non-default local port (for example `http://localhost:3000`) so OAuth always returns to a reachable callback URL.
    These `VITE_*` values are public client-side build variables. Set them in Netlify's environment variables; Vite includes them in the browser bundle. Production Netlify builds fail when the Supabase URL or publishable key is missing.
+   On every host, including Cloudflare Pages, `npm run build` rejects secret-shaped `VITE_*` and `NEXT_PUBLIC_*` names (keys, secrets, tokens, passwords, or service-role credentials), except the publishable key (`VITE_SUPABASE_PUBLISHABLE_KEY` or `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`). The check includes `.env` files loaded for production. Remove any such variables from the build environment and keep credentials server-side.
 
 ## Contact and enquiry email delivery
 
@@ -106,6 +107,8 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 WORKSPACE_ENCRYPTION_SECRET=a-long-random-secret
 ```
 
+The function allows exactly `https://altairworld.com`, `https://llm.altairworld.com`, `http://localhost:5173`, and `http://127.0.0.1:5173` as browser origins. Set `WORKSPACE_ALLOWED_ORIGINS` in its environment to a comma-separated replacement list of exact origins. `verify_jwt = false` remains required for the unauthenticated SSO consume step; all other routes validate the user's session with `getUser()`.
+
 The workspace function exposes these routes under `workspace-api`:
 
 - `POST /credentials/create`
@@ -131,7 +134,7 @@ The workspace function exposes these routes under `workspace-api`:
 - Visit `/review/settings?app=workspace` to store the provider connection used by the review workspace in this browser.
 - The chat uses an OpenAI-compatible `/chat/completions` endpoint.
 - If only `VITE_ANTHROPIC_API_KEY` is set, the review workspace now defaults to `https://api.anthropic.com/v1` and `claude-sonnet-4-20250514`.
-- Saved settings override fallback env vars. Supported env vars are `VITE_LLM_API_KEY`, `VITE_LLM_MODEL`, `VITE_LLM_BASE_URL`, plus `VITE_ANTHROPIC_API_KEY`, `VITE_ANTHROPIC_MODEL`, and `VITE_ANTHROPIC_API_URL`.
+- Saved settings override fallback env vars. Key env vars are for local development only and block production builds; enter provider keys in the review settings instead. Other supported env vars are `VITE_LLM_MODEL`, `VITE_LLM_BASE_URL`, `VITE_ANTHROPIC_MODEL`, and `VITE_ANTHROPIC_API_URL`.
 - The left panel uses a standard DOCX renderer; highlight text in the document to set chat context.
 - The chat currently sends only the highlighted excerpt, not the full document.
 
@@ -140,6 +143,10 @@ The workspace function exposes these routes under `workspace-api`:
 - Unit tests:
   ```bash
   npm run test:unit
+  ```
+- Migration checks (real Postgres in PGlite, with Supabase auth and role fixtures; no Docker required):
+  ```bash
+  npm run test:db
   ```
 - End-to-end tests (development server, then the production build):
   ```bash

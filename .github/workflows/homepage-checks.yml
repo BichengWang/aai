@@ -35,11 +35,14 @@ jobs:
       - name: Email endpoint tests
         run: npm run test:server
 
+      - name: Migration checks
+        run: npm run test:db
+
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Enquiry end-to-end tests
-        run: npx playwright test e2e/enquiry.spec.ts
+      - name: Development end-to-end tests
+        run: npx playwright test e2e/enquiry.spec.ts e2e/workspace.spec.ts
 
       - name: Verify production build
         run: npm run build
