@@ -1,0 +1,83 @@
+name: CI gate
+
+on:
+  pull_request:
+  merge_group:
+    types: [checks_requested]
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      homepage: ${{ steps.paths.outputs.homepage }}
+      turo: ${{ steps.paths.outputs.turo }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+
+      - name: Detect changed paths
+        id: paths
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha }}
+        run: |
+          node <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const { appendFileSync } = require('node:fs');
+          const paths = execFileSync('git', [
+            'diff', '--name-only', '-z', `${process.env.BASE_SHA}...${process.env.HEAD_SHA}`,
+          ], { encoding: 'utf8' }).split('\0');
+          const gate = paths.includes('.github/workflows/ci-gate.yml');
+          const homepage = gate || paths.some(path => path.startsWith('homepage/') ||
+            ['netlify.toml', '.github/workflows/homepage-checks.yml'].includes(path));
+          const turo = gate || paths.some(path => path.startsWith('workflow/turo-automation/') ||
+            path === '.github/workflows/ci-turo-automation.yml');
+          appendFileSync(process.env.GITHUB_OUTPUT, `homepage=${homepage}\nturo=${turo}\n`);
+          NODE
+
+      - name: Replay attribution rules
+        run: node --test .github/scripts/attribution-guard.test.cjs
+
+  homepage:
+    needs: changes
+    if: needs.changes.outputs.homepage == 'true'
+    uses: ./.github/workflows/homepage-checks.yml
+
+  turo:
+    needs: changes
+    if: needs.changes.outputs.turo == 'true'
+    uses: ./.github/workflows/ci-turo-automation.yml
+
+  ci-gate:
+    name: ci-gate
+    needs: [changes, homepage, turo]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require successful checks
+        env:
+          JOB_RESULTS: ${{ toJSON(needs) }}
+        run: |
+          node <<'NODE'
+          const jobs = JSON.parse(process.env.JOB_RESULTS);
+          if (jobs.changes.result !== 'success') process.exit(1);
+          for (const name of ['homepage', 'turo']) {
+            const result = jobs[name].result;
+            const unneeded = jobs.changes.outputs[name] === 'false';
+            if (result !== 'success' && !(unneeded && result === 'skipped')) {
+              console.error(`${name}: ${result}`);
+              process.exit(1);
+            }
+          }
+          NODE

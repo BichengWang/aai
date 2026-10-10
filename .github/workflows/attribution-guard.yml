@@ -1,0 +1,33 @@
+name: Attribution guard
+
+on:
+  pull_request_target:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: attribution-guard-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  attribution-guard:
+    name: attribution-guard
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout base rules and scripts
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: ${{ github.repository }}
+          persist-credentials: false
+          sparse-checkout: .github
+
+      - name: Check pull request attribution
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const rules = require('./.github/attribution-rules.json');
+            const { checkPullRequest } = require('./.github/scripts/attribution-guard.cjs');
+            await checkPullRequest({ github, context, core, rules });
