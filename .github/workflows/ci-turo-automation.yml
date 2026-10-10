@@ -1,5 +1,5 @@
 # CI for the turo-automation TypeScript stack (shared, worker, browser-agent, web).
-# Runs on every push to main and on every PR that touches turo-automation code.
+# Runs on relevant pushes to main and when called by the PR gate.
 
 name: CI – turo-automation
 
@@ -10,10 +10,7 @@ on:
     paths:
       - 'workflow/turo-automation/**'
       - '.github/workflows/ci-turo-automation.yml'
-  pull_request:
-    paths:
-      - 'workflow/turo-automation/**'
-      - '.github/workflows/ci-turo-automation.yml'
+  workflow_call:
 
 permissions:
   contents: read
